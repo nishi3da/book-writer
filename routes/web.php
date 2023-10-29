@@ -19,4 +19,12 @@ Route::get('/', function () {
 
 Auth::routes();
 
+//
+// Route::group(['middleware' => ['auth', 'can:admin_level']], function () {
+// });
+// Route::group(['middleware' => ['auth', 'can:editor_level']], function () {
+// });
+
+
+
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
