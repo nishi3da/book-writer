@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\BookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,11 +26,6 @@ Auth::routes();
 Route::get('admin_register', [RegisterController::class, 'showRegistrationForm'])->name('admin_register');
 Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'])->name('editor_register');
 
-// $this->post('register', 'Auth\RegisterController@register');
-
-// $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-// $this->post('register', 'Auth\RegisterController@register');
-
 
 //
 // Route::group(['middleware' => ['auth', 'can:admin_level']], function () {
@@ -40,3 +36,5 @@ Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'
 
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::resource('/books', BookController::class)->only('index', 'create', 'store', 'show', 'edit', 'update', 'destroy')->middleware('auth');
