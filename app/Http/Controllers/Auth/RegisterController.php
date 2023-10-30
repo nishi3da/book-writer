@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\JsonResponse;
 
 class RegisterController extends Controller
 {
@@ -23,6 +27,16 @@ class RegisterController extends Controller
     */
 
     use RegistersUsers;
+
+        /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
+    }
 
     /**
      * Where to redirect users after registration.
@@ -41,6 +55,38 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+        /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        // ロールを取得
+        if ($request['target_role'] == 'admin_register') {
+            $role = Role::where('name', '管理者')->first();
+        } elseif ($request['target_role'] == 'editor_register') {
+            $role = Role::where('name', '編集者')->first();
+        } else {
+            $role = Role::where('name', '執筆者')->first();
+        }
+
+        event(new Registered($user = $this->create($request->all(), $role)));
+
+        $this->guard()->login($user);
+
+        if ($response = $this->registered($request, $user)) {
+            return $response;
+        }
+
+        return $request->wantsJson()
+                    ? new JsonResponse([], 201)
+                    : redirect($this->redirectPath());
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -51,6 +97,9 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'reading_name' => ['required', 'string', 'max:255'],
+            'affiliation_name' => ['required', 'string', 'max:255'],
+            'affiliation_reading_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -62,12 +111,17 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User
      */
-    protected function create(array $data)
+    protected function create(array $data, $role)
     {
         return User::create([
             'name' => $data['name'],
+            'reading_name' => $data['reading_name'],
+            'affiliation_name' => $data['affiliation_name'],
+            'affiliation_reading_name' => $data['affiliation_reading_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role_id' => $role->id,
         ]);
     }
+
 }

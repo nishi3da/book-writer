@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Controllers\Auth\RegisterController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,6 +21,11 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+
+Route::get('admin_register', [RegisterController::class, 'showRegistrationForm'])->name('admin_register');
+Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'])->name('editor_register');
+
+// $this->post('register', 'Auth\RegisterController@register');
 
 // $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
 // $this->post('register', 'Auth\RegisterController@register');
