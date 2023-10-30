@@ -69,4 +69,4 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Git credential-manager（認証）
 
-git config --global credential.helper "/mnt/C/dev64/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+git config --global credential.helper "/mnt/c/dev64/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
