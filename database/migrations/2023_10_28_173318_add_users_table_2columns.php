@@ -26,7 +26,11 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['role_id']);
-            $table->dropColumn(['role_id', 'reading_name', 'affiliation_name', 'affiliation_reading_name']);
+            $table->dropColumn('role_id');
+            $table->dropColumn('name');
+            $table->dropColumn('reading_name');
+            $table->dropColumn('affiliation_name');
+            $table->dropColumn('affiliation_reading_name');
         });
     }
 };
