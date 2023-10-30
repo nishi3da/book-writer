@@ -20,12 +20,12 @@ class RolesTableSeeder extends Seeder
         ]);
 
         Role::create([
-            'name' => '管理者',
+            'name' => '編集者',
             'level' => 100
         ]);
 
         Role::create([
-            'name' => '管理者',
+            'name' => '執筆者',
             'level' => 200
         ]);
 
