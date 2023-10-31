@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,23 +18,17 @@ use App\Http\Controllers\BookController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// ルートへのアクセスはログイン画面へ
+Route::get('/', [LoginController::class, 'showLoginForm']);
 
+// 認証ルートの一括設定
 Auth::routes();
 
+// 権限別に登録URLを設定
 Route::get('admin_register', [RegisterController::class, 'showRegistrationForm'])->name('admin_register');
 Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'])->name('editor_register');
 
-//
-// Route::group(['middleware' => ['auth', 'can:admin_level']], function () {
-// });
-// Route::group(['middleware' => ['auth', 'can:editor_level']], function () {
-// });
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+// 書籍一覧のルート
 Route::resource('/books', BookController::class)->only('index', 'create', 'store', 'show', 'edit', 'update', 'destroy')->middleware('auth');
 
 // Reactの動作確認
@@ -41,4 +36,5 @@ Route::resource('/books', BookController::class)->only('index', 'create', 'store
 //     return view('index');
 // });
 
+// API用
 Route::get('/book_list', [BookController::class, 'book_list'])->middleware('auth');

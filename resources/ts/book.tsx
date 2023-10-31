@@ -23,6 +23,9 @@ import {
     RowSelectedEvent,
     ValueFormatterParams,
 } from "ag-grid-community";
+import { Button } from "@mui/material";
+import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface ICar {
     make: string;
@@ -62,8 +65,40 @@ const BookList = (): JSX.Element => {
         { headerName: "ID", field: "id" },
         { headerName: "タイトル", field: "title" },
         { headerName: "サブタイトル", field: "sub_title" },
-        { headerName: "編集" },
-        { headerName: "削除" },
+        {
+            headerName: "編集",
+            cellRenderer: (params: any) => {
+                return (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<ModeEditOutlineIcon />}
+                        onClick={() => console.log(params)}
+                        size="small"
+                        sx={{ marginTop: "5px" }}
+                    >
+                        編集
+                    </Button>
+                );
+            },
+        },
+        {
+            headerName: "削除",
+            cellRenderer: (params: any) => {
+                return (
+                    <Button
+                        variant="contained"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                        onClick={() => console.log(params)}
+                        size="small"
+                        sx={{ marginTop: "5px" }}
+                    >
+                        削除
+                    </Button>
+                );
+            },
+        },
     ]);
 
     return (
