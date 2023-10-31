@@ -40,3 +40,5 @@ Route::resource('/books', BookController::class)->only('index', 'create', 'store
 // Route::get('/', function () {
 //     return view('index');
 // });
+
+Route::get('/book_list', [BookController::class, 'book_list'])->middleware('auth');

@@ -18,7 +18,7 @@ class BookController extends Controller
         $books = Book::where('user_id', $id)->get();
         $books_json = json_encode($books);
 
-        echo $books_json;
+        // echo $books_json;
 
         return view('book', ['books_json' => $books_json]);
     }
@@ -69,5 +69,14 @@ class BookController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function book_list() {
+        $id = Auth::id();
+
+        $books = Book::where('user_id', $id)->get();
+        $books_json = json_encode($books);
+
+        return response()->json($books_json);
     }
 }
