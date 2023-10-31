@@ -70,3 +70,19 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 ## Git credential-manager（認証）
 
 git config --global credential.helper "/mnt/c/dev64/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+
+## Laravel + React + Typescript
+
+sail npm install -D react react-dom @types/react @types/react-dom
+sail npm install -D @vitejs/plugin-react
+
+sail npm install -D typescript
+sail npx tsc --init --jsx react-jsx
+
+## vite.configの修正
+vite.config.js
+
+エントリポイントを変更する
+    'resources/sass/app.scss',
+    'resources/ts/index.ts',
+↑フォルダ・ファイルも作成する
