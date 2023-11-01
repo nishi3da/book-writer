@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('sub_title')->nullable();
-            $table->foreignId('user_id')->constrained();
             $table->integer('number_of_contents');
             $table->integer('number_of_sections');
             $table->timestamps();
