@@ -1,5 +1,7 @@
 "use strict";
 
+import { L } from "../labels";
+
 import React, {
     useCallback,
     useMemo,
@@ -36,7 +38,7 @@ interface IDiscountRate {
     discount: number;
 }
 
-const BookList = (): JSX.Element => {
+const BookGrid = (): JSX.Element => {
     // DOM参照
     const gridRef = useRef<AgGridReact<ICar>>(null);
     // 格納する要素（親）のスタイル
@@ -62,11 +64,11 @@ const BookList = (): JSX.Element => {
 
     // カラムの設定（列毎）
     const [columnDefs, setColumnDefs] = useState<ColDef[]>([
-        { headerName: "ID", field: "id" },
-        { headerName: "タイトル", field: "title" },
-        { headerName: "サブタイトル", field: "sub_title" },
+        { headerName: L.BookGrid.Header.ID, field: "id" },
+        { headerName: L.BookGrid.Header.Title, field: "title" },
+        { headerName: L.BookGrid.Header.SubTitle, field: "sub_title" },
         {
-            headerName: "編集",
+            headerName: L.BookGrid.Header.Edit,
             cellRenderer: (params: any) => {
                 return (
                     <Button
@@ -77,13 +79,13 @@ const BookList = (): JSX.Element => {
                         size="small"
                         sx={{ marginTop: "5px" }}
                     >
-                        編集
+                        {L.BookGrid.Header.Edit}
                     </Button>
                 );
             },
         },
         {
-            headerName: "削除",
+            headerName: L.BookGrid.Header.Delete,
             cellRenderer: (params: any) => {
                 return (
                     <Button
@@ -94,7 +96,7 @@ const BookList = (): JSX.Element => {
                         size="small"
                         sx={{ marginTop: "5px" }}
                     >
-                        削除
+                        {L.BookGrid.Header.Delete}
                     </Button>
                 );
             },
@@ -103,7 +105,10 @@ const BookList = (): JSX.Element => {
 
     return (
         <div style={containerStyle}>
-            <div className="test-container">
+            <div className="container">
+                <Button variant="contained" color="primary">
+                    {L.BookGrid.AddBook}
+                </Button>
                 <div style={gridStyle} className="ag-theme-alpine">
                     <AgGridReact<ICar>
                         ref={gridRef}
@@ -115,10 +120,4 @@ const BookList = (): JSX.Element => {
         </div>
     );
 };
-
-const root = createRoot(document.getElementById("book_root")!);
-root.render(
-    <StrictMode>
-        <BookList />
-    </StrictMode>
-);
+export default BookGrid;

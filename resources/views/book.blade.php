@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @viteReactRefresh
-@vite(['resources/sass/app.scss', 'resources/ts/book.tsx'])
+@vite(['resources/ts/bookGridMount.tsx'])
 
 @section('content')
     <div>
