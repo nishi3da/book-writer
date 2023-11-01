@@ -16,4 +16,9 @@ book_users中間テーブルは廃止する
 　理由：n+1問題に該当する模様
 　　　　book_assign・article_assign
 　　　　を作成した方が分かり易い
-　　
+
+
+◆クエリに関するメソッド名
+keyBy
+groupBy
+whereIn
