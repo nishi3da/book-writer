@@ -29,7 +29,7 @@ Route::get('admin_register', [RegisterController::class, 'showRegistrationForm']
 Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'])->name('editor_register');
 
 // 書籍一覧のルート
-Route::resource('/books', BookController::class)->only('index', 'create', 'store', 'show', 'edit', 'update', 'destroy')->middleware('auth');
+Route::resource('/books', BookController::class)->only('index')->middleware('auth');
 
 // Reactの動作確認
 // Route::get('/', function () {
