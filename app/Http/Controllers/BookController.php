@@ -13,14 +13,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $id = Auth::id();
-
-        $books = Book::where('user_id', $id)->get();
-        $books_json = json_encode($books);
-
-        // echo $books_json;
-
-        return view('book', ['books_json' => $books_json]);
+        return view('book');
     }
 
     /**
@@ -74,7 +67,10 @@ class BookController extends Controller
     public function book_list() {
         $id = Auth::id();
 
-        $books = Book::where('user_id', $id)->get();
+        $books = Book::with(['users' => function ($query) use ($id) {
+            $query->where('user_id', $id);
+        }])->get();
+
         $books_json = json_encode($books);
 
         return response()->json($books_json);

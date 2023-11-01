@@ -1,2 +1,19 @@
 開発手順の参考
 https://qiita.com/takahirocook/items/3cfa6585e74effafe5da
+
+
+
+2023/11/01
+rolesは廃止する
+　理由：権限は特に追加予定は無いので、一旦、管理者・編集者・執筆者の３種で固定する
+
+contentsテーブルはarticleに改名する
+　理由：contents = 内容
+　　　　article = 記事
+　　　　のため、articleの方が適当
+
+book_users中間テーブルは廃止する
+　理由：n+1問題に該当する模様
+　　　　book_assign・article_assign
+　　　　を作成した方が分かり易い
+　　

@@ -6,8 +6,16 @@ declare type LableType = {
             SubTitle: string;
             Edit: string;
             Delete: string;
-        }
-        AddBook: string;
-    }
-
-}
+        };
+        AddBook: {
+            ButtonLabel: string;
+            Dialog: {
+                Title: string;
+                Save: string;
+            };
+        };
+        DeleteBook: {
+            ButtonLabel: string;
+        };
+    };
+};

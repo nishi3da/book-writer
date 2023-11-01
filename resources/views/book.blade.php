@@ -5,8 +5,8 @@
 
 @section('content')
     <div>
-        <h1>{{ __('Books') }}</h1>
+        <h1 class="book-grid-title">{{ __('Books') }}</h1>
 
-        <div id="book_root"></div>
+        <div id="book_root" style="height: 80vh;"></div>
     </div>
 @endsection
