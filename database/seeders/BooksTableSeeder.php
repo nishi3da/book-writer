@@ -16,21 +16,18 @@ class BooksTableSeeder extends Seeder
         Book::create([
             'title' => 'Book 1',
             'sub_title' => 'Book 1 Subtitle',
-            'user_id' => 2,
             'number_of_contents' => 3,
             'number_of_sections' => 3
         ]);
         Book::create([
             'title' => 'Book 2',
             'sub_title' => 'Book 2 Subtitle',
-            'user_id' => 2,
             'number_of_contents' => 3,
             'number_of_sections' => 3
         ]);
         Book::create([
             'title' => 'Book 3',
             'sub_title' => 'Book 3 Subtitle',
-            'user_id' => 2,
             'number_of_contents' => 3,
             'number_of_sections' => 3
         ]);
