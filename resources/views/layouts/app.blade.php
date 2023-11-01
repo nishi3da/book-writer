@@ -18,7 +18,7 @@
     @stack('scripts')
 
     @viteReactRefresh
-    @vite(['resources/sass/app.scss'])
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
     <!-- Styles -->
     @stack('styles')
