@@ -21,10 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role_id',
         'reading_name',
         'affiliation_name',
         'affiliation_reading_name',
+        'role',
     ];
 
     /**
@@ -47,19 +47,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function role() {
-        return $this->hasOne(Role::class);
-    }
-
-    public function level() {
-        return $this->role->level;
-    }
 
     public function books() {
         return $this->belongsToMany(Book::class);
     }
 
-    public function contents() {
-        return $this->belongsToMany(Content::class);
+    public function articles() {
+        return $this->belongsToMany(Articles::class);
     }
 }

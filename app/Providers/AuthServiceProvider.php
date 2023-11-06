@@ -26,18 +26,13 @@ class AuthServiceProvider extends ServiceProvider
 
         // 「管理者」のみ許可
         Gate::define('admin_level', function ($user) {
-            return ($user->role()->level < 100);
+            return ($user->role == 'admin');
         });
 
         // 「管理者」「編集者」に適用
         Gate::define('editor_level', function ($user) {
-            return ($user->role()->level < 200);
+            return ($user->role == 'editor');
         });
 
-        // 執筆者が閲覧可能なレベルは、全ての役割で閲覧可能
-        // // 「執筆者」に適用
-        // Gate::define('author_level', function ($user) {
-        //     return ($user->role()->level >= 200);
-        // });
     }
 }

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Log;
+
 use App\Models\Book;
 
 class BookController extends Controller
@@ -66,13 +69,7 @@ class BookController extends Controller
 
     public function book_list() {
         $id = Auth::id();
-
-        $books = Book::with(['users' => function ($query) use ($id) {
-            $query->where('user_id', $id);
-        }])->get();
-
-        $books_json = json_encode($books);
-
-        return response()->json($books_json);
+        $books = Book::with('users')->where('users.id', '=', $id)->first();
+        return response()->json($books);
     }
 }

@@ -2,46 +2,20 @@
 
 import { L } from "../../labels";
 
-import React, {
-    useCallback,
-    useMemo,
-    useRef,
-    useState,
-    StrictMode,
-    useEffect,
-} from "react";
-import { createRoot } from "react-dom/client";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "@ag-grid-community/styles/ag-grid.css";
 import "@ag-grid-community/styles/ag-theme-alpine.css";
 //import "./styles.css";
-import {
-    ColDef,
-    ColGroupDef,
-    GetRowIdFunc,
-    GetRowIdParams,
-    Grid,
-    GridOptions,
-    RowSelectedEvent,
-    ValueFormatterParams,
-} from "ag-grid-community";
+import { ColDef } from "ag-grid-community";
 import { Button } from "@mui/material";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddBookDialog from "./AddBookDialog";
 
-interface ICar {
-    make: string;
-    model: string;
-    price: number;
-}
-interface IDiscountRate {
-    discount: number;
-}
-
 const BookGrid = (): JSX.Element => {
     // DOM参照
-    const gridRef = useRef<AgGridReact<ICar>>(null);
+    const gridRef = useRef<AgGridReact<any>>(null);
     // 格納する要素（親）のスタイル
     const containerStyle = useMemo(
         () => ({ width: "100%", height: "100%" }),
@@ -55,11 +29,11 @@ const BookGrid = (): JSX.Element => {
     const [rowData, setRowData] = useState<any[]>([]);
 
     useEffect(() => {
+        console.log("mounted");
         fetch("/book_list")
             .then((response: Response) => response.json())
             .then((data: string) => {
-                console.log(data);
-                setRowData(JSON.parse(data));
+                setRowData(data);
             });
     }, []);
 
@@ -117,12 +91,13 @@ const BookGrid = (): JSX.Element => {
                         variant="contained"
                         color="error"
                         onClick={() => console.log("Delete book")}
+                        sx={{ marginLeft: "8px" }}
                     >
                         {L.BookGrid.DeleteBook.ButtonLabel}
                     </Button>
                 </div>
                 <div style={gridStyle} className="ag-theme-alpine">
-                    <AgGridReact<ICar>
+                    <AgGridReact<any>
                         ref={gridRef}
                         rowData={rowData}
                         columnDefs={columnDefs}

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ Auth::routes();
 // 権限別に登録URLを設定
 Route::get('admin_register', [RegisterController::class, 'showRegistrationForm'])->name('admin_register');
 Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'])->name('editor_register');
+Route::get('operator_register', [RegisterController::class, 'showRegistrationForm'])->name('operator_register');
 
 // 書籍一覧のルート
 Route::resource('/books', BookController::class)->only('index')->middleware('auth');
@@ -38,3 +40,6 @@ Route::resource('/books', BookController::class)->only('index')->middleware('aut
 
 // API用
 Route::get('/book_list', [BookController::class, 'book_list'])->middleware('auth');
+Route::get('/editors', [UserController::class, 'editors'])->middleware('auth');
+Route::get('/authors', [UserController::class, 'authors'])->middleware('auth');
+

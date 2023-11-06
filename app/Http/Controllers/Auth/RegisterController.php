@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -67,11 +66,13 @@ class RegisterController extends Controller
 
         // ロールを取得
         if ($request['target_role'] == 'admin_register') {
-            $role = Role::where('name', '管理者')->first();
+            $role = 'admin';
         } elseif ($request['target_role'] == 'editor_register') {
-            $role = Role::where('name', '編集者')->first();
+            $role = 'editor';
+        } elseif ($request['target_role'] == 'operator_register') {
+            $role = 'operator';
         } else {
-            $role = Role::where('name', '執筆者')->first();
+            $role = 'author';
         }
 
         event(new Registered($user = $this->create($request->all(), $role)));

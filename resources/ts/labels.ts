@@ -11,11 +11,26 @@ export const L: LableType = {
             ButtonLabel: "新規書籍",
             Dialog: {
                 Title: "新規書籍の追加",
-                Save: "保存",
+                BookTitle: "タイトル",
+                BookSubTitle: "サブタイトル",
+                BookNumberOfArticles: "記事数",
+                BookNumberOfSections: "セクション数",
+                Ok: "追加",
+                Cancel: "キャンセル",
             },
         },
         DeleteBook: {
             ButtonLabel: "書籍を削除",
+        },
+    },
+    EditorGrid: {
+        Header: {
+            ID: "ID",
+            Name: "氏名",
+            ReadingName: "氏名読み",
+            AffiliationName: "所属",
+            AffiliationReadingName: "所属読み",
+            Email: "メールアドレス",
         },
     },
 };

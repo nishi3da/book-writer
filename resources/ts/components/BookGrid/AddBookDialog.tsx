@@ -1,29 +1,17 @@
-import { L } from "../../labels";
 import * as React from "react";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import ListItemText from "@mui/material/ListItemText";
-import ListItem from "@mui/material/ListItem";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import { L } from "../../labels";
+import { InputBase, InputLabel, alpha, styled } from "@mui/material";
+import EditorGrid from "../EditorGrid";
+import AuthorGrid from "../AuthorGrid";
 
-const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement;
-    },
-    ref: React.Ref<unknown>
-) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const AddBookDialog = () => {
+export default function FormDialog() {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -34,60 +22,122 @@ const AddBookDialog = () => {
         setOpen(false);
     };
 
+    const CustomInput = styled(InputBase)(({ theme }) => ({
+        "&": {
+            width: "100%",
+            maxWidth: "100%",
+        },
+        "& .MuiInputBase-input": {
+            borderRadius: 4,
+            position: "relative",
+            backgroundColor:
+                theme.palette.mode === "light" ? "#fcfcfb" : "#2b2b2b",
+            border: "1px solid #ced4da",
+            fontSize: 16,
+            width: "100%",
+            padding: "10px 12px",
+            marginBottom: "10px",
+            transition: theme.transitions.create([
+                "border-color",
+                "background-color",
+                "box-shadow",
+            ]),
+            // Use the system font instead of the default Roboto font.
+            fontFamily: [
+                "-apple-system",
+                "BlinkMacSystemFont",
+                '"Segoe UI"',
+                "Roboto",
+                '"Helvetica Neue"',
+            ].join(","),
+            "&S:focus": {
+                boxShadow: `${alpha(
+                    theme.palette.primary.main,
+                    0.25
+                )} 0 0 0 0.2rem`,
+                borderColor: theme.palette.primary.main,
+            },
+        },
+    }));
+
+    const CustomInputLable = styled(InputLabel)(({ theme }) => ({
+        "&": {
+            fontSize: "25px",
+            marginTop: "20px",
+            color: "black",
+        },
+    }));
+
     return (
         <React.Fragment>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleClickOpen}
-            >
+            <Button variant="contained" onClick={handleClickOpen}>
                 {L.BookGrid.AddBook.ButtonLabel}
             </Button>
-            <Dialog
-                fullScreen
-                open={open}
-                onClose={handleClose}
-                TransitionComponent={Transition}
-            >
-                <AppBar sx={{ position: "relative" }}>
-                    <Toolbar>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                        <Typography
-                            sx={{ ml: 2, flex: 1 }}
-                            variant="h6"
-                            component="div"
-                        >
-                            {L.BookGrid.AddBook.Dialog.Title}
-                        </Typography>
-                        <Button autoFocus color="inherit" onClick={handleClose}>
-                            {L.BookGrid.AddBook.Dialog.Save}
-                        </Button>
-                    </Toolbar>
-                </AppBar>
-                <List>
-                    <ListItem>
-                        <ListItemText
-                            primary="Phone ringtone"
-                            secondary="Titania"
-                        />
-                    </ListItem>
-                    <Divider />
-                    <ListItem>
-                        <ListItemText
-                            primary="Default notification ringtone"
-                            secondary="Tethys"
-                        />
-                    </ListItem>
-                </List>
+            <Dialog open={open} onClose={handleClose} fullScreen>
+                <DialogTitle>{L.BookGrid.AddBook.Dialog.Title}</DialogTitle>
+                <DialogContent>
+                    {/* <DialogContentText></DialogContentText> */}
+                    <CustomInputLable shrink htmlFor="custom-input">
+                        {L.BookGrid.AddBook.Dialog.BookTitle}
+                    </CustomInputLable>
+                    <CustomInput
+                        placeholder={L.BookGrid.AddBook.Dialog.BookTitle}
+                    />
+
+                    <CustomInputLable shrink htmlFor="custom-input">
+                        {L.BookGrid.AddBook.Dialog.BookSubTitle}
+                    </CustomInputLable>
+                    <CustomInput
+                        placeholder={L.BookGrid.AddBook.Dialog.BookSubTitle}
+                    />
+
+                    <CustomInputLable shrink htmlFor="custom-input">
+                        {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
+                    </CustomInputLable>
+                    <CustomInput
+                        type="number"
+                        inputProps={{
+                            min: 1,
+                            max: 500,
+                        }}
+                        placeholder={
+                            L.BookGrid.AddBook.Dialog.BookNumberOfArticles
+                        }
+                    />
+
+                    <CustomInputLable shrink htmlFor="custom-input">
+                        {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
+                    </CustomInputLable>
+                    <CustomInput
+                        type="number"
+                        inputProps={{
+                            min: 1,
+                            max: 500,
+                        }}
+                        placeholder={
+                            L.BookGrid.AddBook.Dialog.BookNumberOfSections
+                        }
+                    />
+
+                    <CustomInputLable shrink htmlFor="custom-input">
+                        編集者
+                    </CustomInputLable>
+                    <EditorGrid />
+
+                    <CustomInputLable shrink htmlFor="custom-input">
+                        執筆者者
+                    </CustomInputLable>
+                    <AuthorGrid />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>
+                        {L.BookGrid.AddBook.Dialog.Cancel}
+                    </Button>
+                    <Button onClick={handleClose}>
+                        {L.BookGrid.AddBook.Dialog.Ok}
+                    </Button>
+                </DialogActions>
             </Dialog>
         </React.Fragment>
     );
-};
-export default AddBookDialog;
+}
