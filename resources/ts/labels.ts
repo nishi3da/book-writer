@@ -23,7 +23,7 @@ export const L: LableType = {
             ButtonLabel: "書籍を削除",
         },
     },
-    EditorGrid: {
+    UsersGrid: {
         Header: {
             ID: "ID",
             Name: "氏名",
@@ -32,5 +32,8 @@ export const L: LableType = {
             AffiliationReadingName: "所属読み",
             Email: "メールアドレス",
         },
+        QuickFilterPlaceHolder: "クイックフィルタ",
+        EditorsPrefix: "編集者",
+        AuthorsPrefix: "執筆者",
     },
 };
