@@ -15,6 +15,8 @@ declare type LableType = {
         BookSubTitle: string;
         BookNumberOfArticles: string;
         BookNumberOfSections: string;
+        Editors: string;
+        Authors: string;
         Ok: string;
         Cancel: string;
       };
@@ -33,12 +35,13 @@ declare type LableType = {
       Email: string;
     };
     QuickFilterPlaceHolder: string;
+    QuickFilterTooltip: string;
     EditorsPrefix: string;
     AuthorsPrefix: string;
   };
 };
 
-declare interface IUser {
+declare type IUser = {
   id: number;
   name: string;
   reading_name: string;
@@ -51,9 +54,9 @@ declare interface IUser {
   remember_token: string;
   created_at: string;
   updated_at: string;
-}
+};
 
-declare interface IBook {
+declare type IBook = {
   id: number;
   title: string;
   sub_title: string;
@@ -61,8 +64,8 @@ declare interface IBook {
   number_of_sections: number;
   created_at: string;
   updated_at: string;
-}
+};
 
-declare interface IBookUser extends IBook {
+declare type IBookUser = IBook & {
   user: IUser;
-}
+};

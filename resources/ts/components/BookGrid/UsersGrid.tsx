@@ -7,8 +7,8 @@ import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 //import "./styles.css";
-import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, GridOptions } from 'ag-grid-community';
-import { TextField } from '@mui/material';
+import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, GridOptions, IRowNode } from 'ag-grid-community';
+import { TextField, Tooltip } from '@mui/material';
 
 type Props = {
   type: 'editors' | 'authors';
@@ -53,7 +53,10 @@ const EditorGrid = (props: Props): JSX.Element => {
         //headerName: L.EditorGrid.Header.ID,
         //field: "id",
         filter: false,
-        checkboxSelection: true,
+        checkboxSelection: (params: CheckboxSelectionCallbackParams<IUser>) => {
+          return !!params.data && params.data.id !== userId;
+        },
+        showDisabledCheckboxes: true,
       },
       {
         headerName: L.UsersGrid.Header.Name,
@@ -75,29 +78,43 @@ const EditorGrid = (props: Props): JSX.Element => {
     ];
   }, []);
 
-  // カラム幅の調整
-  const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent) => {
+  // データの初回読み込み後の処理
+  const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent, gridRef: React.RefObject<AgGridReact<IUser>>, userId: number) => {
+    // ログインユーザーのIDと一致する行のチェックボックスをONにする
+    gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
+      if (node.data && node.data.id === userId) {
+        node.setSelected(true);
+      }
+    });
+
+    // カラム幅の調整
     gridRef.current!.columnApi.autoSizeAllColumns();
   }, []);
 
+  // 入力時のクイックフィルタ
   const handleFilterTextBoxChanged = useCallback((event: React.FormEvent<HTMLDivElement>, gridRef: React.RefObject<AgGridReact<IUser>>, type: string) => {
-    console.log('type', type);
     const element = document.getElementById(type + '-filter-text-box') as HTMLInputElement;
-    console.log(element);
     gridRef.current!.api.setQuickFilter(element.value);
+  }, []);
+
+  // クイックフィルタのマッチ判定を行う関数
+  const quickFilterMatcher = useCallback((quickFilterParts: string[], rowQuickFilterAggregateText: string) => {
+    return quickFilterParts.every((part) => rowQuickFilterAggregateText.match(part));
   }, []);
 
   return (
     <>
       <div style={containerStyle}>
-        <TextField
-          id={type + '-filter-text-box'}
-          label={prefix + L.UsersGrid.QuickFilterPlaceHolder}
-          variant='outlined'
-          sx={{ width: '50%', marginBottom: '5px' }}
-          size='small'
-          onInput={(event) => handleFilterTextBoxChanged(event, gridRef, type)}
-        />
+        <Tooltip title={L.UsersGrid.QuickFilterTooltip}>
+          <TextField
+            id={type + '-filter-text-box'}
+            label={prefix + L.UsersGrid.QuickFilterPlaceHolder}
+            variant='outlined'
+            sx={{ width: '40%', marginBottom: '5px' }}
+            size='small'
+            onInput={(event) => handleFilterTextBoxChanged(event, gridRef, type)}
+          />
+        </Tooltip>
         <div style={gridStyle} className='ag-theme-alpine'>
           <AgGridReact<any>
             ref={gridRef}
@@ -107,9 +124,11 @@ const EditorGrid = (props: Props): JSX.Element => {
             rowSelection='multiple'
             // 行クリックでの行選択は無効にする（trueが無効）
             suppressRowClickSelection={true}
-            onFirstDataRendered={handleFirstDataRendered}
+            onFirstDataRendered={(event: FirstDataRenderedEvent<any, any>) => handleFirstDataRendered(event, gridRef, userId)}
             // データ自体は１万件を超えることはほぼないので、クイックフィルタのキャッシュ設定はオフ
             cacheQuickFilter={false}
+            // クイックフィルタのマッチ判定を行う関数登録
+            quickFilterMatcher={quickFilterMatcher}
           />
         </div>
       </div>
