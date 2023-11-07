@@ -16,7 +16,8 @@ class BookController extends Controller
      */
     public function index()
     {
-        return view('book');
+        $id = Auth::id();
+        return view('book', ['id' => $id]);
     }
 
     /**
