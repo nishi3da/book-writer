@@ -12,7 +12,8 @@ use App\Models\Book;
 class BookController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * 書籍一覧画面の表示
+     * ログインユーザーIDは登録時に必要
      */
     public function index()
     {
@@ -21,35 +22,14 @@ class BookController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * 書籍登録用
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+        dd($request);
     }
 
     /**

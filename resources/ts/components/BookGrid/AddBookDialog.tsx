@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -12,6 +13,7 @@ import UsersGrid from './UsersGrid';
 import { AgGridReact } from 'ag-grid-react';
 import { TransitionProps } from '@mui/material/transitions';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { LineAxisOutlined } from '@mui/icons-material';
 
 type AddBookDialogProps = {
   userId: number;
@@ -59,7 +61,17 @@ export default function AddBookDialog(props: AddBookDialogProps) {
     setValue,
     formState: { errors },
   } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+    console.log(data);
+    await axios
+      .post('/books', { bookData: data })
+      .then((res) => {
+        location.href = '/books';
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   // データの取得
   useEffect(() => {
