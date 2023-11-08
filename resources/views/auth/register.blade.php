@@ -1,6 +1,6 @@
 @php
     $targetRole = \Route::currentRouteName();
-    echo $targetRole;
+    // echo $targetRole;
 @endphp
 
 @extends('layouts.app')
