@@ -24,6 +24,12 @@ declare type LableType = {
     DeleteBook: {
       ButtonLabel: string;
     };
+    Validation: {
+        Required: string;
+        MaxLength: string;
+        InvalideCharacter: string;
+    }
+
   };
   UsersGrid: {
     Header: {

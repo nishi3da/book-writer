@@ -4,10 +4,10 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
+//import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { L } from '../../labels';
-import { InputBase, InputLabel, Slide, alpha, styled } from '@mui/material';
+import { Alert, InputBase, InputLabel, Slide, alpha, styled } from '@mui/material';
 import UsersGrid from './UsersGrid';
 import { AgGridReact } from 'ag-grid-react';
 import { TransitionProps } from '@mui/material/transitions';
@@ -53,7 +53,12 @@ export default function AddBookDialog(props: AddBookDialogProps) {
   const authorsGridRef = useRef<AgGridReact<IUser>>(null);
 
   // フォーム関係
-  const { register, handleSubmit, setValue } = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
 
   // データの取得
@@ -128,13 +133,35 @@ export default function AddBookDialog(props: AddBookDialogProps) {
             <StyledInputLable shrink htmlFor='title'>
               {L.BookGrid.AddBook.Dialog.BookTitle}
             </StyledInputLable>
-            <StyledInput id='title' placeholder={L.BookGrid.AddBook.Dialog.BookTitle} {...register('title')} />
+            <StyledInput
+              id='title'
+              placeholder={L.BookGrid.AddBook.Dialog.BookTitle}
+              {...register('title', {
+                required: L.BookGrid.Validation.Required,
+                maxLength: {
+                  value: 255,
+                  message: L.BookGrid.Validation.MaxLength,
+                },
+              })}
+            />
+            {errors.title?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
+            {errors.title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
             {/* サブタイトル */}
             <StyledInputLable shrink htmlFor='sub_title'>
               {L.BookGrid.AddBook.Dialog.BookSubTitle}
             </StyledInputLable>
-            <StyledInput id='sub_title' placeholder={L.BookGrid.AddBook.Dialog.BookSubTitle} {...register('sub_title')} />
+            <StyledInput
+              id='sub_title'
+              placeholder={L.BookGrid.AddBook.Dialog.BookSubTitle}
+              {...register('sub_title', {
+                maxLength: {
+                  value: 255,
+                  message: L.BookGrid.Validation.MaxLength,
+                },
+              })}
+            />
+            {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
             {/* 記事数 */}
             <StyledInputLable shrink htmlFor='number_of_articles'>
@@ -149,8 +176,15 @@ export default function AddBookDialog(props: AddBookDialogProps) {
                 pattern: '[0-9]*',
               }}
               placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-              {...register('number_of_articles')}
+              {...register('number_of_articles', {
+                required: L.BookGrid.Validation.Required,
+                min: 1,
+                max: 500,
+                pattern: /^[0-9]+$/,
+              })}
             />
+            {errors.number_of_articles?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
+            {errors.number_of_articles?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
 
             {/* セクション数 */}
             <StyledInputLable shrink htmlFor='number_of_sections'>
@@ -164,7 +198,12 @@ export default function AddBookDialog(props: AddBookDialogProps) {
                 max: 500,
               }}
               placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-              {...register('number_of_sections')}
+              {...register('number_of_sections', {
+                required: L.BookGrid.Validation.Required,
+                min: 1,
+                max: 500,
+                pattern: /^[0-9]+$/,
+              })}
             />
 
             {/* 編集者 */}
@@ -176,10 +215,10 @@ export default function AddBookDialog(props: AddBookDialogProps) {
             <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} />
           </DialogContent>
           <DialogActions>
+            {/* キャンセル */}
             <Button onClick={handleClose}>{L.BookGrid.AddBook.Dialog.Cancel}</Button>
-            <Button type='submit' onClick={handleClose}>
-              {L.BookGrid.AddBook.Dialog.Ok}
-            </Button>
+            {/* 書籍の追加 */}
+            <Button type='submit'>{L.BookGrid.AddBook.Dialog.Ok}</Button>
           </DialogActions>
         </form>
       </Dialog>

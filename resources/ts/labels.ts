@@ -24,6 +24,11 @@ export const L: LableType = {
     DeleteBook: {
       ButtonLabel: '書籍を削除',
     },
+    Validation: {
+      Required: '入力必須項目です。',
+      MaxLength: '最大文字数は255文字です。',
+      InvalideCharacter: '半角数字を入力して下さい。',
+    },
   },
   UsersGrid: {
     Header: {
