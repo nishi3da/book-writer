@@ -9,6 +9,8 @@ import '@ag-grid-community/styles/ag-theme-alpine.css';
 //import "./styles.css";
 import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, GridOptions, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
 import { TextField, Tooltip } from '@mui/material';
+import { UseFormSetValue } from 'react-hook-form';
+import { FormValues } from './AddBookDialog';
 
 type Props = {
   type: 'editors' | 'authors';
@@ -16,12 +18,12 @@ type Props = {
   rowData: IUser[];
   setRowData: (rowData: IUser[]) => void;
   gridRef: React.RefObject<AgGridReact<IUser>>;
-  setSelectedUsers: (userIds: number[]) => void;
+  setValue: UseFormSetValue<FormValues>;
 };
 
 const EditorGrid = (props: Props): JSX.Element => {
   // データの展開
-  const { type, userId, rowData, setRowData, gridRef, setSelectedUsers } = props;
+  const { type, gridRef, rowData, userId } = props;
 
   const prefix = useMemo(() => {
     if (type === 'editors') {
@@ -80,24 +82,22 @@ const EditorGrid = (props: Props): JSX.Element => {
   }, []);
 
   // データの初回読み込み後の処理
-  const handleFirstDataRendered = useCallback(
-    (event: FirstDataRenderedEvent, gridRef: React.RefObject<AgGridReact<IUser>>, userId: number, setSelectedUsers: (userIds: number[]) => void) => {
-      const userIds: number[] = [];
-      // ログインユーザーのIDと一致する行のチェックボックスをONにする
-      gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
-        if (node.data && node.data.id === userId) {
-          node.setSelected(true);
-        }
-        if (node.data && node.isSelected()) {
-          userIds.push(node.data.id);
-        }
-        setSelectedUsers(userIds);
-      });
-      // カラム幅の調整
-      gridRef.current!.columnApi.autoSizeAllColumns();
-    },
-    [],
-  );
+  const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent, props: Props) => {
+    const { gridRef, userId, setValue, type } = props;
+    const userIds: number[] = [];
+    // ログインユーザーのIDと一致する行のチェックボックスをONにする
+    gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
+      if (node.data && node.data.id === userId) {
+        node.setSelected(true);
+      }
+      if (node.data && node.isSelected()) {
+        userIds.push(node.data.id);
+      }
+      setValue(type, userIds.join(','));
+    });
+    // カラム幅の調整
+    gridRef.current!.columnApi.autoSizeAllColumns();
+  }, []);
 
   // 入力時のクイックフィルタ
   const handleFilterTextBoxChanged = useCallback((event: React.FormEvent<HTMLDivElement>, gridRef: React.RefObject<AgGridReact<IUser>>, type: string) => {
@@ -111,13 +111,14 @@ const EditorGrid = (props: Props): JSX.Element => {
   }, []);
 
   // チェックボックスの変更時のイベント関数
-  const handleSelectionChanged = useCallback((event: SelectionChangedEvent, gridRef: React.RefObject<AgGridReact<IUser>>, setSelectedUsers: (userIds: number[]) => void) => {
+  const handleSelectionChanged = useCallback((event: SelectionChangedEvent, props: Props) => {
+    const { gridRef, userId, setValue, type } = props;
     const userIds: number[] = [];
     gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
       if (node.data && node.isSelected()) {
         userIds.push(node.data.id);
       }
-      setSelectedUsers(userIds);
+      setValue(type, userIds.join(','));
     });
   }, []);
 
@@ -143,13 +144,13 @@ const EditorGrid = (props: Props): JSX.Element => {
             rowSelection='multiple'
             // 行クリックでの行選択は無効にする（trueが無効）
             suppressRowClickSelection={true}
-            onFirstDataRendered={(event: FirstDataRenderedEvent<any, any>) => handleFirstDataRendered(event, gridRef, userId, setSelectedUsers)}
+            onFirstDataRendered={(event: FirstDataRenderedEvent<any, any>) => handleFirstDataRendered(event, props)}
             // データ自体は１万件を超えることはほぼないので、クイックフィルタのキャッシュ設定はオフ
             cacheQuickFilter={false}
             // クイックフィルタのマッチ判定を行う関数登録
             quickFilterMatcher={quickFilterMatcher}
             // チェックボックスの変更時のイベント関数登録
-            onSelectionChanged={(event) => handleSelectionChanged(event, gridRef, setSelectedUsers)}
+            onSelectionChanged={(event) => handleSelectionChanged(event, props)}
           />
         </div>
       </div>

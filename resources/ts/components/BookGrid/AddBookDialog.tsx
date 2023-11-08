@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -18,7 +18,7 @@ type AddBookDialogProps = {
 };
 
 // 送信データ型
-type FormValues = {
+export type FormValues = {
   title: string;
   sub_title: string;
   number_of_articles: number;
@@ -41,22 +41,20 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function AddBookDialog(props: AddBookDialogProps) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const userId = props.userId;
 
-  const [editors, setEditors] = React.useState<IUser[]>([]);
-  const [authors, setAuthors] = React.useState<IUser[]>([]);
+  // 編集者・執筆者一覧データ
+  const [editors, setEditors] = useState<IUser[]>([]);
+  const [authors, setAuthors] = useState<IUser[]>([]);
 
   // DOM参照
   const editorsGridRef = useRef<AgGridReact<IUser>>(null);
   const authorsGridRef = useRef<AgGridReact<IUser>>(null);
 
   // フォーム関係
-  const { register, handleSubmit } = useForm<FormValues>();
+  const { register, handleSubmit, setValue } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
-  // 編集者・執筆者の選択データ配列
-  const [selectedEditors, setSelectedEditors] = React.useState<number[]>([]);
-  const [selectedAuthors, setSelectedAuthors] = React.useState<number[]>([]);
 
   // データの取得
   useEffect(() => {
@@ -171,13 +169,11 @@ export default function AddBookDialog(props: AddBookDialogProps) {
 
             {/* 編集者 */}
             <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Editors}</StyledInputLable>
-            <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setSelectedUsers={setSelectedEditors} />
-            <input type='text' hidden id='editors' value={selectedEditors.join(',')} {...register('editors')} />
+            <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setValue={setValue} />
 
             {/* 執筆者 */}
             <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Authors}</StyledInputLable>
-            <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setSelectedUsers={setSelectedAuthors} />
-            <input type='text' hidden id='authors' value={selectedAuthors.join(',')} {...register('authors')} />
+            <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>{L.BookGrid.AddBook.Dialog.Cancel}</Button>
