@@ -23,12 +23,12 @@ type FormValues = {
   sub_title: string;
   number_of_articles: number;
   number_of_sections: number;
-  editors: IUser[];
-  authors: IUser[];
+  editors: string;
+  authors: string;
 };
 
 // 処理待ち
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // アニメーション
 const Transition = React.forwardRef(function Transition(
@@ -54,6 +54,9 @@ export default function AddBookDialog(props: AddBookDialogProps) {
   // フォーム関係
   const { register, handleSubmit } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = (data) => console.log(data);
+  // 編集者・執筆者の選択データ配列
+  const [selectedEditors, setSelectedEditors] = React.useState<number[]>([]);
+  const [selectedAuthors, setSelectedAuthors] = React.useState<number[]>([]);
 
   // データの取得
   useEffect(() => {
@@ -168,11 +171,13 @@ export default function AddBookDialog(props: AddBookDialogProps) {
 
             {/* 編集者 */}
             <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Editors}</StyledInputLable>
-            <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} />
+            <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setSelectedUsers={setSelectedEditors} />
+            <input type='text' hidden id='editors' value={selectedEditors.join(',')} {...register('editors')} />
 
             {/* 執筆者 */}
             <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Authors}</StyledInputLable>
-            <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} />
+            <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setSelectedUsers={setSelectedAuthors} />
+            <input type='text' hidden id='authors' value={selectedAuthors.join(',')} {...register('authors')} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>{L.BookGrid.AddBook.Dialog.Cancel}</Button>
