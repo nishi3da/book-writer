@@ -44,7 +44,7 @@ const EditorGrid = (props: Props): JSX.Element => {
     return {
       editable: false,
       //sortable: true,
-      filter: 'agMultiColumnFilter',
+      //filter: 'agMultiColumnFilter',
       resizable: true,
     };
   }, []);

@@ -40,7 +40,7 @@ export const L: LableType = {
       AffiliationReadingName: '所属読み',
       Email: 'メールアドレス',
     },
-    QuickFilterPlaceHolder: '簡易検索',
+    QuickFilterPlaceHolder: ' 簡易検索',
     QuickFilterTooltip: '正規表現に対応しています。「|」（半角パイプ）で区切ることで、OR検索ができます。',
     EditorsPrefix: '編集者',
     AuthorsPrefix: '執筆者',
