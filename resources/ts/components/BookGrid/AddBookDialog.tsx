@@ -59,17 +59,18 @@ export default function AddBookDialog(props: AddBookDialogProps) {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
     console.log(data);
-    await axios
+    axios
       .post('/books', { bookData: data })
       .then((res) => {
-        location.href = '/books';
+        //location.href = '/books';
       })
       .catch((error) => {
-        console.log(error);
+        console.log('post - error', error);
       });
   };
 
@@ -215,8 +216,18 @@ export default function AddBookDialog(props: AddBookDialogProps) {
                 min: 1,
                 max: 500,
                 pattern: /^[0-9]+$/,
+                validate: (value: number) => {
+                  const number_of_articles = Number(getValues('number_of_articles'));
+                  if (number_of_articles < value) {
+                    return L.BookGrid.Validation.OverNumberOfArticles;
+                  }
+                  return true;
+                },
               })}
             />
+            {errors.number_of_sections?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
+            {errors.number_of_sections?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
+            {errors.number_of_sections?.type === 'validate' && <Alert severity='error'>{L.BookGrid.Validation.OverNumberOfArticles}</Alert>}
 
             {/* 編集者 */}
             <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Editors}</StyledInputLable>

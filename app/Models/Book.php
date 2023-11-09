@@ -10,7 +10,7 @@ class Book extends Model
     use HasFactory;
 
     public function users() {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot('role')->as('role')->withTimestamps();
     }
 
 }

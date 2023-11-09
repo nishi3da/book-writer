@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\Book;
+use App\Models\User;
+
 
 class BookController extends Controller
 {
@@ -26,10 +28,31 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        if (!auth()->check()) {
-            return redirect()->route('login');
-        }
-        dd($request);
+        $bookData = $request->input("bookData");
+        $title = $bookData["title"];
+        $subTitle = $bookData["sub_title"];
+        $numberOfArticles = intval($bookData["number_of_articles"]);
+        $numberOfSections = intval($bookData["number_of_sections"]);
+        $editorIds = explode(",", $bookData["editors"]);
+        $authorIds = explode(",", $bookData["authors"]);
+
+        $book = new Book();
+        $book->title = $title;
+        $book->sub_title = $subTitle;
+        $book->number_of_articles = $numberOfArticles;
+        $book->number_of_sections = $numberOfSections;
+
+        $book->save();
+
+        $editors = User::whereIn('id', $editorIds)->get();
+        $book->users()->attach($editors, ['role' => 'editor']);
+
+        $authors = User::whereIn('id', $authorIds)->get();
+        $book->users()->attach($authors, ['role' => 'author']);
+
+        // foreach ($authors as $author) {
+        //     $book->users()->syncWithoutDetaching([$authors => ['role' => 'author']]);
+        // }
     }
 
     /**
@@ -50,7 +73,11 @@ class BookController extends Controller
 
     public function book_list() {
         $id = Auth::id();
-        $books = Book::with('users')->where('users.id', '=', $id)->first();
+        $query = Book::whereHas('users', function ($query) use ($id) {
+            $query->where('user_id', $id);
+        });
+        $books = $query->get();
+
         return response()->json($books);
     }
 }

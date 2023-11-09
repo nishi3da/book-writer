@@ -28,6 +28,7 @@ export const L: LableType = {
       Required: '入力必須項目です。',
       MaxLength: '最大文字数は255文字です。',
       InvalideCharacter: '半角数字を入力して下さい。',
+      OverNumberOfArticles: '記事数以上のセクションは設定できません。',
     },
   },
   UsersGrid: {

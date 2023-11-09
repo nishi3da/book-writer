@@ -3,6 +3,9 @@
 
 あまりルールは無い
 
+# 質問内容
+## 中間テーブル
+Book::with('users')->get();
 
 # 開発手順の参考
 https://qiita.com/takahirocook/items/3cfa6585e74effafe5da

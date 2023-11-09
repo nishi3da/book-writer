@@ -28,6 +28,7 @@ declare type LableType = {
         Required: string;
         MaxLength: string;
         InvalideCharacter: string;
+        OverNumberOfArticles: string;
     }
 
   };
