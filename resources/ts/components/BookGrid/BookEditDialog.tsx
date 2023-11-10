@@ -52,7 +52,7 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
   // リクエストURL
   const requestUrl = useMemo(() => {
     if (bookId) {
-      return `/books/${bookId}/edit`;
+      return `/books/${bookId}`;
     } else {
       return '/books';
     }
@@ -62,7 +62,7 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
   const [editors, setEditors] = useState<IUser[]>([]);
   const [authors, setAuthors] = useState<IUser[]>([]);
 
-  // 編集者・執筆者の選択データ
+  // 編集者・執筆者の選択状態データ
   const [selectedEditorIds, setSelectedEditorIds] = useState<number[]>([userId]);
   const [selectedAuthorIds, setSelectedAuthorIds] = useState<number[]>([]);
 
@@ -130,8 +130,8 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
       setDialogTitle(L.BookGrid.EditBook.Dialog.AddTitle);
       setValue('title', '');
       setValue('sub_title', '');
-      setValue('number_of_articles', '');
-      setValue('number_of_sections', '');
+      setValue('number_of_articles', "");
+      setValue('number_of_sections', "");
       setValue('editors', String(userId));
       setValue('authors', '');
     }
@@ -153,6 +153,7 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
       });
   }, []);
 
+  // ダイアログを閉じる
   const handleClose = useCallback(() => {
     setOpen(false);
   }, []);
