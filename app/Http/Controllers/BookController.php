@@ -49,10 +49,26 @@ class BookController extends Controller
 
         $authors = User::whereIn('id', $authorIds)->get();
         $book->users()->attach($authors, ['role' => 'author']);
+    }
 
-        // foreach ($authors as $author) {
-        //     $book->users()->syncWithoutDetaching([$authors => ['role' => 'author']]);
-        // }
+    public function edit(string $bookId) {
+        // 書籍1件取得
+        $book = Book::find($bookId);
+        // 中間テーブルの編集者のみ取得
+        $editors = $book->users()->withPivot('role')->where('users.role', '=', 'editor')->pluck('user_id');
+        // 中間テーブルの執筆者のみ取得
+        $authors = $book->users()->withPivot('role')->where('users.role', '=', 'author')->pluck('user_id');
+        // 配列を,区切りで文字列化
+        $editorIds = $editors->implode(",");
+        $authorIds = $authors->implode(",");
+
+        // JSON化
+        $result = json_decode($book->toJson(), true);
+        // 配列に追加
+        $result = array_merge($result, ["editors" => $editorIds]);
+        $result = array_merge($result, ["authors" => $authorIds]);
+        // レスポンス
+        return response($result, 200);
     }
 
     /**
@@ -80,4 +96,5 @@ class BookController extends Controller
 
         return response()->json($books);
     }
+
 }

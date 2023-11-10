@@ -10,7 +10,7 @@ import '@ag-grid-community/styles/ag-theme-alpine.css';
 import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, GridOptions, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
 import { TextField, Tooltip } from '@mui/material';
 import { UseFormSetValue } from 'react-hook-form';
-import { FormValues } from './AddBookDialog';
+import { FormValues } from './BookEditDialog';
 
 type Props = {
   type: 'editors' | 'authors';

@@ -7,10 +7,11 @@ declare type LableType = {
       Edit: string;
       Delete: string;
     };
-    AddBook: {
+    EditBook: {
       ButtonLabel: string;
       Dialog: {
-        Title: string;
+        AddTitle: string;
+        EditTitle: string;
         BookTitle: string;
         BookSubTitle: string;
         BookNumberOfArticles: string;
@@ -25,12 +26,11 @@ declare type LableType = {
       ButtonLabel: string;
     };
     Validation: {
-        Required: string;
-        MaxLength: string;
-        InvalideCharacter: string;
-        OverNumberOfArticles: string;
-    }
-
+      Required: string;
+      MaxLength: string;
+      InvalideCharacter: string;
+      OverNumberOfArticles: string;
+    };
   };
   UsersGrid: {
     Header: {
