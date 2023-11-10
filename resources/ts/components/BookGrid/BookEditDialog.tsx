@@ -62,6 +62,10 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
   const [editors, setEditors] = useState<IUser[]>([]);
   const [authors, setAuthors] = useState<IUser[]>([]);
 
+  // 編集者・執筆者の選択データ
+  const [selectedEditorIds, setSelectedEditorIds] = useState<number[]>([userId]);
+  const [selectedAuthorIds, setSelectedAuthorIds] = useState<number[]>([]);
+
   // DOM参照
   const editorsGridRef = useRef<AgGridReact<IUser>>(null);
   const authorsGridRef = useRef<AgGridReact<IUser>>(null);
@@ -108,22 +112,28 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
         .then((response: any) => {
           const data = response.data;
           console.log(data);
-
+          // フォームデータのセット
           setValue('title', data.title);
           setValue('sub_title', data.sub_title);
           setValue('number_of_articles', data.number_of_articles);
           setValue('number_of_sections', data.number_of_sections);
           setValue('editors', data.editors);
           setValue('authors', data.authors);
-
-          console.log('editorIds', data.editors);
-          console.log('authorIds', data.authors);
+          // UserGrid側でチェックを入れるためのデータをセット
+          setSelectedEditorIds(data.editors.split(',').map((id: string) => Number(id)));
+          setSelectedAuthorIds(data.authors.split(',').map((id: string) => Number(id)));
         })
         .catch((error: any) => {
           console.log(error);
         });
     } else {
       setDialogTitle(L.BookGrid.EditBook.Dialog.AddTitle);
+      setValue('title', '');
+      setValue('sub_title', '');
+      setValue('number_of_articles', '');
+      setValue('number_of_sections', '');
+      setValue('editors', String(userId));
+      setValue('authors', '');
     }
   }, [open]);
 
@@ -277,11 +287,11 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
 
             {/* 編集者 */}
             <StyledInputLable shrink>{L.BookGrid.EditBook.Dialog.Editors}</StyledInputLable>
-            <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setValue={setValue} />
+            <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setValue={setValue} selectedUserIds={selectedEditorIds} />
 
             {/* 執筆者 */}
             <StyledInputLable shrink>{L.BookGrid.EditBook.Dialog.Authors}</StyledInputLable>
-            <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} />
+            <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} selectedUserIds={selectedAuthorIds} />
           </DialogContent>
           <DialogActions>
             {/* キャンセル */}

@@ -7,7 +7,7 @@ import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 //import "./styles.css";
-import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, GridOptions, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
+import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
 import { TextField, Tooltip } from '@mui/material';
 import { UseFormSetValue } from 'react-hook-form';
 import { FormValues } from './BookEditDialog';
@@ -19,6 +19,7 @@ type Props = {
   setRowData: (rowData: IUser[]) => void;
   gridRef: React.RefObject<AgGridReact<IUser>>;
   setValue: UseFormSetValue<FormValues>;
+  selectedUserIds: number[];
 };
 
 const EditorGrid = (props: Props): JSX.Element => {
@@ -43,8 +44,6 @@ const EditorGrid = (props: Props): JSX.Element => {
   const defaultColDef = useMemo<ColDef>(() => {
     return {
       editable: false,
-      //sortable: true,
-      //filter: 'agMultiColumnFilter',
       resizable: true,
     };
   }, []);
@@ -83,11 +82,11 @@ const EditorGrid = (props: Props): JSX.Element => {
 
   // データの初回読み込み後の処理
   const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent, props: Props) => {
-    const { gridRef, userId, setValue, type } = props;
+    const { gridRef, userId, setValue, type, selectedUserIds } = props;
     const userIds: number[] = [];
     // ログインユーザーのIDと一致する行のチェックボックスをONにする
     gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
-      if (node.data && node.data.id === userId) {
+      if (node.data && selectedUserIds.includes(node.data.id)) {
         node.setSelected(true);
       }
       if (node.data && node.isSelected()) {
