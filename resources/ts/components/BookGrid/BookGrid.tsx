@@ -2,16 +2,17 @@
 
 import { L } from '../../labels';
 
-import { useMemo, useRef, useState, useEffect, useCallback } from 'react';
+import { useMemo, useRef, useState, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 //import "./styles.css";
-import { ColDef, FirstDataRenderedEvent } from 'ag-grid-community';
+import { ColDef, FirstDataRenderedEvent, GridReadyEvent } from 'ag-grid-community';
 import { Button } from '@mui/material';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BookEditDialog from './BookEditDialog';
+import axios, { Axios } from 'axios';
 
 type BookGridProps = {
   userId: number;
@@ -32,15 +33,6 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false);
   // 書籍ID、
   const [bookId, setBookId] = useState<number | null>(null);
-
-  useEffect(() => {
-    console.log('mounted');
-    fetch('/book_list')
-      .then((response: Response) => response.json())
-      .then((data: IBook[]) => {
-        setRowData(data);
-      });
-  }, []);
 
   // カラムの設定（列毎）
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
@@ -82,6 +74,14 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
     },
   ]);
 
+  // 各種のAPIが使用可能になったタイミング
+  const handleGridReady = useCallback((params: GridReadyEvent) => {
+    axios.get('/book_list')
+      .then((response) => {
+        setRowData(response.data);
+      })
+  }, [])
+
   // カラム幅の調整
   const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent) => {
     gridRef.current!.columnApi.autoSizeAllColumns();
@@ -112,7 +112,7 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
           <BookEditDialog userId={userId} open={open} setOpen={setOpen} bookId={bookId} />
         </div>
         <div style={gridStyle} className='ag-theme-alpine'>
-          <AgGridReact<any> ref={gridRef} rowData={rowData} columnDefs={columnDefs} onFirstDataRendered={handleFirstDataRendered} />
+          <AgGridReact<any> ref={gridRef} rowData={rowData} columnDefs={columnDefs} onFirstDataRendered={handleFirstDataRendered} onGridReady={handleGridReady} />
         </div>
       </div>
     </div>
