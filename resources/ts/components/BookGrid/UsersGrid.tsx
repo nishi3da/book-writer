@@ -82,7 +82,7 @@ const EditorGrid = (props: Props): JSX.Element => {
 
   // データの初回読み込み後の処理
   const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent, props: Props) => {
-    const { gridRef, userId, setValue, type, selectedUserIds } = props;
+    const { gridRef, setValue, type, selectedUserIds } = props;
     const userIds: number[] = [];
     // ログインユーザーのIDと一致する行のチェックボックスをONにする
     gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
@@ -111,7 +111,7 @@ const EditorGrid = (props: Props): JSX.Element => {
 
   // チェックボックスの変更時のイベント関数
   const handleSelectionChanged = useCallback((event: SelectionChangedEvent, props: Props) => {
-    const { gridRef, userId, setValue, type } = props;
+    const { gridRef, setValue, type } = props;
     const userIds: number[] = [];
     gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
       if (node.data && node.isSelected()) {
