@@ -13,6 +13,13 @@ use App\Models\User;
 
 class BookController extends Controller
 {
+    protected $fillable = [
+        'title',
+        'sub_title',
+        'number_of_articles',
+        'number_of_sections',
+    ];
+
     /**
      * 書籍一覧画面の表示
      * ログインユーザーIDは登録時に必要
@@ -28,6 +35,7 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        Log::debug("store");
         $bookData = $request->input("bookData");
         $title = $bookData["title"];
         $subTitle = $bookData["sub_title"];
@@ -74,9 +82,11 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $bookId)
     {
+        Log::debug("update");
         $bookData = $request->input("bookData");
+
         $title = $bookData["title"];
         $subTitle = $bookData["sub_title"];
         $numberOfArticles = intval($bookData["number_of_articles"]);
@@ -84,19 +94,22 @@ class BookController extends Controller
         $editorIds = explode(",", $bookData["editors"]);
         $authorIds = explode(",", $bookData["authors"]);
 
-        $book = Book::find($id);
+        $book = Book::find($bookId);
+
         $book->title = $title;
         $book->sub_title = $subTitle;
         $book->number_of_articles = $numberOfArticles;
         $book->number_of_sections = $numberOfSections;
-
         $book->save();
 
+        // 書籍に紐づいたユーザーは一旦削除
+        $book->users()->detach();
+        // 編集者・執筆者の取得
         $editors = User::whereIn('id', $editorIds)->get();
-        $book->users()->sync($editors, ['role' => 'editor']);
-
         $authors = User::whereIn('id', $authorIds)->get();
-        $book->users()->sync($authors, ['role' => 'author']);
+        // 今回のリクエストの内容で再登録
+        $book->users()->attach($editors, ['role' => 'editor']);
+        $book->users()->attach($authors, ['role' => 'author']);
     }
 
     /**

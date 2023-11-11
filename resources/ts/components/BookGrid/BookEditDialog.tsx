@@ -49,15 +49,6 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
   // ダイアログタイトル
   const [dialogTitle, setDialogTitle] = useState<string>('');
 
-  // リクエストURL
-  const requestUrl = useMemo(() => {
-    if (bookId) {
-      return `/books/${bookId}`;
-    } else {
-      return '/books';
-    }
-  }, []);
-
   // 編集者・執筆者一覧データ
   const [editors, setEditors] = useState<IUser[]>([]);
   const [authors, setAuthors] = useState<IUser[]>([]);
@@ -79,11 +70,14 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
     formState: { errors },
   } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    console.log(data);
+    console.log('send - userId', userId);
+    console.log('send - bookId', bookId);
+    console.log('send - data', data);
     if (bookId) {
       // 更新の場合
+      console.log('patch', '/books/${bookId}');
       axios
-        .patch(requestUrl, { bookData: data })
+        .patch(`/books/${bookId}`, { bookData: data })
         .then((res) => {
           location.href = '/books';
         })
@@ -91,9 +85,10 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
           console.log('patch - error', error);
         });
     } else {
+      console.log('store');
       // 登録の場合
       axios
-        .post(requestUrl, { bookData: data })
+        .post('/books', { bookData: data })
         .then((res) => {
           location.href = '/books';
         })
@@ -130,10 +125,12 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
       setDialogTitle(L.BookGrid.EditBook.Dialog.AddTitle);
       setValue('title', '');
       setValue('sub_title', '');
-      setValue('number_of_articles', "");
-      setValue('number_of_sections', "");
+      setValue('number_of_articles', '');
+      setValue('number_of_sections', '');
       setValue('editors', String(userId));
       setValue('authors', '');
+      setSelectedEditorIds([userId]);
+      setSelectedAuthorIds([]);
     }
   }, [open]);
 

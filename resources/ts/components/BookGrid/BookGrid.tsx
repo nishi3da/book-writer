@@ -51,9 +51,7 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
             variant='contained'
             color='primary'
             startIcon={<ModeEditOutlineIcon />}
-            onClick={() => {
-              handleEditBookClickOpen(params.data.id);
-            }}
+            onClick={() => handleEditBookClickOpen(params.data.id)}
             size='small'
             sx={{ marginTop: '5px' }}
           >
@@ -66,7 +64,7 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
       headerName: L.BookGrid.Header.Delete,
       cellRenderer: (params: any) => {
         return (
-          <Button variant='contained' color='error' startIcon={<DeleteIcon />} onClick={() => console.log(params)} size='small' sx={{ marginTop: '5px' }}>
+          <Button variant='contained' color='error' startIcon={<DeleteIcon />} onClick={() => handleDeleteBookClickOpen(params.data.id)} size='small' sx={{ marginTop: '5px' }}>
             {L.BookGrid.Header.Delete}
           </Button>
         );
@@ -76,11 +74,15 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
 
   // 各種のAPIが使用可能になったタイミング
   const handleGridReady = useCallback((params: GridReadyEvent) => {
-    axios.get('/book_list')
+    axios
+      .get('/book_list')
       .then((response) => {
         setRowData(response.data);
       })
-  }, [])
+      .catch((error) => {
+        console.log('get - error', error);
+      });
+  }, []);
 
   // カラム幅の調整
   const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent) => {
@@ -89,14 +91,22 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
 
   // 新規登録ボタンクリック時の関数
   const handleAddBookClickOpen = useCallback(() => {
-    console.log('Add');
+    console.log('AddBook');
     setBookId(null);
     setOpen(true);
   }, []);
 
+  // 書籍削除ボタンクリック時の関数
+
+  const handleDeleteBookClickOpen = useCallback((id: number) => {
+    console.log('DeleteBook', id);
+    setBookId(id);
+    setOpen(true);
+  }, [])
+
   // 編集ボタンクリック時の関数
   const handleEditBookClickOpen = useCallback((id: number) => {
-    console.log('edit', id);
+    console.log('EditBook', id);
     setBookId(id);
     setOpen(true);
   }, []);

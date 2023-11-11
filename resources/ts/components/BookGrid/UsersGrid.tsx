@@ -2,7 +2,7 @@
 
 import { L } from '../../labels';
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
@@ -24,7 +24,7 @@ type Props = {
 
 const EditorGrid = (props: Props): JSX.Element => {
   // データの展開
-  const { type, gridRef, rowData, userId } = props;
+  const { type, gridRef, rowData, userId, selectedUserIds } = props;
 
   const prefix = useMemo(() => {
     if (type === 'editors') {
@@ -108,6 +108,19 @@ const EditorGrid = (props: Props): JSX.Element => {
   const quickFilterMatcher = useCallback((quickFilterParts: string[], rowQuickFilterAggregateText: string) => {
     return quickFilterParts.every((part) => rowQuickFilterAggregateText.match(part));
   }, []);
+
+  useEffect(() => {
+    // ログインユーザーのIDと一致する行のチェックボックスをONにする
+    console.log('selectedIds', selectedUserIds);
+    console.log('gridRef', gridRef);
+    if (gridRef && gridRef.current && gridRef.current.api) {
+      gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
+        if (node.data && selectedUserIds.includes(node.data.id)) {
+          node.setSelected(true);
+        }
+      });
+    }
+  }, [selectedUserIds]);
 
   // チェックボックスの変更時のイベント関数
   const handleSelectionChanged = useCallback((event: SelectionChangedEvent, props: Props) => {

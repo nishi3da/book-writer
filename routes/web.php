@@ -28,17 +28,11 @@ Auth::routes();
 // 権限別に登録URLを設定
 Route::get('admin_register', [RegisterController::class, 'showRegistrationForm'])->name('admin_register');
 Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'])->name('editor_register');
-
 // 作業者権限は検討中
 //Route::get('operator_register', [RegisterController::class, 'showRegistrationForm'])->name('operator_register');
 
 // 書籍一覧のルート
-Route::resource('/books', BookController::class)->only('index', 'store', 'edit', 'update')->middleware('auth');
-
-// Reactの動作確認
-// Route::get('/', function () {
-//     return view('index');
-// });
+Route::resource('/books', BookController::class)->only('index', 'store', 'edit', 'update', 'destroy')->middleware('auth');
 
 // API用
 Route::get('/book_list', [BookController::class, 'book_list'])->middleware('auth');
