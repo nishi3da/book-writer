@@ -117,7 +117,10 @@ class BookController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $book = Book::find($id);
+        // 書籍に紐づいたユーザーは削除
+        $book->users()->detach();
+        $book->delete();
     }
 
     public function book_list() {

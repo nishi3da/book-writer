@@ -16,8 +16,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 type BookEditDialogProps = {
   userId: number;
   bookId: number | null;
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  editDialogOpen: boolean;
+  setEditDialogOpen: (open: boolean) => void;
 };
 
 // 送信データ型
@@ -44,10 +44,7 @@ const Transition = forwardRef(function Transition(
 });
 
 const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
-  const { userId, open, setOpen, bookId } = props;
-
-  // ダイアログタイトル
-  const [dialogTitle, setDialogTitle] = useState<string>('');
+  const { userId, editDialogOpen, setEditDialogOpen, bookId } = props;
 
   // 編集者・執筆者一覧データ
   const [editors, setEditors] = useState<IUser[]>([]);
@@ -101,7 +98,6 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
   // 書籍の編集をしたいときのデータ取得
   useEffect(() => {
     if (bookId !== null) {
-      setDialogTitle(L.BookGrid.EditBook.Dialog.EditTitle);
       axios
         .get(`/books/${bookId}/edit`)
         .then((response: any) => {
@@ -122,7 +118,6 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
           console.log(error);
         });
     } else {
-      setDialogTitle(L.BookGrid.EditBook.Dialog.AddTitle);
       setValue('title', '');
       setValue('sub_title', '');
       setValue('number_of_articles', '');
@@ -132,27 +127,34 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
       setSelectedEditorIds([userId]);
       setSelectedAuthorIds([]);
     }
-  }, [open]);
+  }, [editDialogOpen]);
 
   // データの取得
+  // 編集者・執筆者の一覧は、初回のみでOK（別窓で登録したとしても）
   useEffect(() => {
-    fetch('/editors')
-      .then((response: Response) => response.json())
-      .then((data: IUser[]) => {
-        setEditors(data);
+    // 編集者
+    axios
+      .get('/editors')
+      .then((response) => {
+        setEditors(response.data);
+      })
+      .catch((error) => {
+        console.log('get editors - error', error);
       });
-  }, []);
-  useEffect(() => {
-    fetch('/authors')
-      .then((response: Response) => response.json())
-      .then((data: IUser[]) => {
-        setAuthors(data);
+    // 執筆者
+    axios
+      .get('/authors')
+      .then((response) => {
+        setAuthors(response.data);
+      })
+      .catch((error) => {
+        console.log('get authors - error', error);
       });
   }, []);
 
   // ダイアログを閉じる
-  const handleClose = useCallback(() => {
-    setOpen(false);
+  const handleEditDialogClose = useCallback(() => {
+    setEditDialogOpen(false);
   }, []);
 
   // スタイル適用済みの入力コンポーネント
@@ -191,10 +193,18 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
 
   return (
     <Fragment>
-      <Dialog open={open} onClose={handleClose} fullScreen sx={{ marginLeft: '0%', marginRight: '0%' }} TransitionComponent={Transition}>
+      <Dialog open={editDialogOpen} onClose={handleEditDialogClose} fullScreen sx={{ marginLeft: '0%', marginRight: '0%' }} TransitionComponent={Transition}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogTitle sx={{ backgroundColor: '#ccc' }}>{dialogTitle}</DialogTitle>
-          <DialogContent>
+          <DialogTitle sx={{ backgroundColor: '#ddd', position: 'fixed', top: 0, zIndex: 10000, height: '100px', width: '100%' }}>
+            {bookId ? L.BookGrid.EditBook.Dialog.EditTitle : L.BookGrid.EditBook.Dialog.AddTitle}
+            <DialogActions>
+              {/* キャンセル */}
+              <Button onClick={handleEditDialogClose}>{L.BookGrid.EditBook.Dialog.Cancel}</Button>
+              {/* 書籍の追加 */}
+              <Button type='submit'>{L.BookGrid.EditBook.Dialog.Ok}</Button>
+            </DialogActions>
+          </DialogTitle>
+          <DialogContent sx={{ marginTop: '100px' }}>
             {/* <DialogContentText></DialogContentText> */}
             {/* タイトル */}
             <StyledInputLable shrink htmlFor='title'>
@@ -291,12 +301,6 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
             <StyledInputLable shrink>{L.BookGrid.EditBook.Dialog.Authors}</StyledInputLable>
             <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} selectedUserIds={selectedAuthorIds} />
           </DialogContent>
-          <DialogActions>
-            {/* キャンセル */}
-            <Button onClick={handleClose}>{L.BookGrid.EditBook.Dialog.Cancel}</Button>
-            {/* 書籍の追加 */}
-            <Button type='submit'>{L.BookGrid.EditBook.Dialog.Ok}</Button>
-          </DialogActions>
         </form>
       </Dialog>
     </Fragment>

@@ -24,7 +24,11 @@ export const L: LableType = {
     },
     DeleteBook: {
       ButtonLabel: '書籍を削除',
-    },
+      DeleteTitle: '書籍の削除確認',
+      DeleteMessage: 'この操作は元に戻せません、本当に削除しますか？',
+      Ok: '削除',
+      Cancel: 'キャンセル',
+  },
     Validation: {
       Required: '入力必須項目です。',
       MaxLength: '最大文字数は255文字です。',

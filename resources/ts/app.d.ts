@@ -24,6 +24,10 @@ declare type LableType = {
     };
     DeleteBook: {
       ButtonLabel: string;
+      DeleteTitle: string;
+      DeleteMessage: string;
+      Ok: string;
+      Cancel: string;
     };
     Validation: {
       Required: string;
