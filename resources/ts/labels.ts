@@ -10,7 +10,7 @@ export const L: LableType = {
     EditBook: {
       ButtonLabel: '新規書籍',
       Dialog: {
-        AddTitle: '新規書籍の追加',
+        AddTitle: '書籍の新規作成',
         EditTitle: '書籍の編集',
         BookTitle: '書籍タイトル',
         BookSubTitle: '書籍サブタイトル',
@@ -18,7 +18,7 @@ export const L: LableType = {
         BookNumberOfSections: 'セクション数',
         Editors: '編集者',
         Authors: '執筆者',
-        Ok: '書籍の追加',
+        Ok: '書籍の保存',
         Cancel: 'キャンセル',
       },
     },
