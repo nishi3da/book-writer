@@ -14,4 +14,8 @@ class Book extends Model
         return $this->belongsToMany(User::class)->withPivot('role')->as('role')->withTimestamps();
     }
 
+    public function articles() {
+        return $this->belongsToMany(Article::class)->withPivot('role')->as('role')->withTimestamps();
+    }
+
 }
