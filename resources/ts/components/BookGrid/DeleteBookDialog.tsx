@@ -9,18 +9,17 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import { L } from '../../labels';
 import { InputBase, InputLabel } from '@mui/material';
-import { RowDragFeature } from 'ag-grid-community/dist/lib/gridBodyComp/rowDragFeature';
 import axios from 'axios';
 
-type BookDeleteDialogProps = {
+type DeleteBookDialogProps = {
   bookId: number | null;
   rowData: IBook[];
-  deleteDialogOpen: boolean;
-  setDeleteDialogOpen: (open: boolean) => void;
+  deleteBookDialogOpen: boolean;
+  setDeleteBookDialogOpen: (open: boolean) => void;
 };
 
-const BookDeleteDialog = (propr: BookDeleteDialogProps) => {
-  const { bookId, deleteDialogOpen, setDeleteDialogOpen, rowData } = propr;
+const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
+  const { bookId, deleteBookDialogOpen: deleteDialogOpen, setDeleteBookDialogOpen: setDeleteDialogOpen, rowData } = propr;
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [bookData, setBookData] = useState<IBook | null>(null);
@@ -97,25 +96,25 @@ const BookDeleteDialog = (propr: BookDeleteDialogProps) => {
         <DialogContent>
           <DialogContentText>{L.BookGrid.DeleteBook.DeleteMessage}</DialogContentText>
           <StyledInputLable shrink htmlFor='title'>
-            {L.BookGrid.EditBook.Dialog.BookTitle}
+            {L.BookGrid.AddBook.Dialog.BookTitle}
           </StyledInputLable>
           <StyledInput id='title' value={bookData?.title} disabled />
 
           {/* サブタイトル */}
           <StyledInputLable shrink htmlFor='sub_title'>
-            {L.BookGrid.EditBook.Dialog.BookSubTitle}
+            {L.BookGrid.AddBook.Dialog.BookSubTitle}
           </StyledInputLable>
           <StyledInput id='sub_title' value={bookData?.sub_title} disabled />
 
           {/* 記事数 */}
           <StyledInputLable shrink htmlFor='number_of_articles'>
-            {L.BookGrid.EditBook.Dialog.BookNumberOfArticles}
+            {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
           </StyledInputLable>
           <StyledInput id='number_of_articles' type='number' value={bookData?.number_of_articles} disabled />
 
           {/* セクション数 */}
           <StyledInputLable shrink htmlFor='number_of_sections'>
-            {L.BookGrid.EditBook.Dialog.BookNumberOfSections}
+            {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
           </StyledInputLable>
           <StyledInput id='number_of_sections' type='number' value={bookData?.number_of_sections} disabled />
         </DialogContent>
@@ -131,4 +130,4 @@ const BookDeleteDialog = (propr: BookDeleteDialogProps) => {
     </Fragment>
   );
 };
-export default BookDeleteDialog;
+export default DeleteBookDialog;

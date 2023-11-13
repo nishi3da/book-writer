@@ -8,12 +8,12 @@ import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 //import "./styles.css";
 import { ColDef, FirstDataRenderedEvent, GridReadyEvent } from 'ag-grid-community';
-import { Button } from '@mui/material';
+import { Button, TextField, Tooltip } from '@mui/material';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteIcon from '@mui/icons-material/Delete';
-import BookEditDialog from './BookEditDialog';
-import BookDeleteDialog from './BookDeleteDialog';
-import axios, { Axios } from 'axios';
+import AddBookDialog from './AddBookDialog';
+import DeleteBookDialog from './DeleteBookDialog';
+import axios from 'axios';
 
 type BookGridProps = {
   userId: number;
@@ -31,9 +31,9 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
   // 行データ
   const [rowData, setRowData] = useState<IBook[]>([]);
   // 書籍登録・更新ダイアログの開閉フラグ、初期値は閉じている
-  const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
+  const [addBookDialogOpen, setAddBookDialogOpen] = useState<boolean>(false);
   // 書籍削除確認ダイアログの開閉フラグ、初期値は閉じている
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
+  const [deleteBookDialogOpen, setDeleteBookDialogOpen] = useState<boolean>(false);
 
   // 書籍ID、データ
   const [bookId, setBookId] = useState<number | null>(null);
@@ -45,20 +45,11 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
       field: 'id',
       checkboxSelection: true,
     },
-    { headerName: L.BookGrid.Header.Title, field: 'title' },
-    { headerName: L.BookGrid.Header.SubTitle, field: 'sub_title' },
     {
       headerName: L.BookGrid.Header.Edit,
       cellRenderer: (params: any) => {
         return (
-          <Button
-            variant='contained'
-            color='primary'
-            startIcon={<ModeEditOutlineIcon />}
-            onClick={() => handleEditBookClickOpen(params.data.id)}
-            size='small'
-            sx={{ marginTop: '5px' }}
-          >
+          <Button variant='contained' color='primary' startIcon={<ModeEditOutlineIcon />} onClick={() => console.log('')} size='small' sx={{ marginTop: '5px' }}>
             {L.BookGrid.Header.Edit}
           </Button>
         );
@@ -68,12 +59,14 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
       headerName: L.BookGrid.Header.Delete,
       cellRenderer: (params: any) => {
         return (
-          <Button variant='contained' color='error' startIcon={<DeleteIcon />} onClick={() => handleDeleteDialogOpen(params.data.id)} size='small' sx={{ marginTop: '5px' }}>
+          <Button variant='contained' color='error' startIcon={<DeleteIcon />} onClick={() => handleDeleteBookDialogOpen(params.data.id)} size='small' sx={{ marginTop: '5px' }}>
             {L.BookGrid.Header.Delete}
           </Button>
         );
       },
     },
+    { headerName: L.BookGrid.Header.Title, field: 'title' },
+    { headerName: L.BookGrid.Header.SubTitle, field: 'sub_title' },
   ]);
 
   // 各種のAPIが使用可能になったタイミングで書籍一覧を取得する
@@ -94,40 +87,61 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
     gridRef.current!.columnApi.autoSizeAllColumns();
   }, []);
 
-  // 新規登録/更新ボタンクリック時の関数
-  const handleEditDialogOpen = useCallback(() => {
+  // 新規登録ボタンクリック時の関数
+  const handleAddBookDialogOpen = useCallback(() => {
     console.log('AddBook');
     setBookId(null);
-    setEditDialogOpen(true);
-  }, []);
-
-  // 編集ボタンクリック時の関数
-  const handleEditBookClickOpen = useCallback((id: number) => {
-    console.log('EditBook', id);
-    setBookId(id);
-    setEditDialogOpen(true);
+    setAddBookDialogOpen(true);
   }, []);
 
   // 書籍削除ボタンクリック時の関数
-  const handleDeleteDialogOpen = useCallback((id: number) => {
+  const handleDeleteBookDialogOpen = useCallback((id: number) => {
     console.log('DeleteBook', id);
     setBookId(id);
-    setDeleteDialogOpen(true);
+    setDeleteBookDialogOpen(true);
+  }, []);
+
+  // 入力時のクイックフィルタ
+  const handleFilterTextBoxChanged = useCallback((event: React.FormEvent<HTMLDivElement>, gridRef: React.RefObject<AgGridReact<IBook>>) => {
+    const element = document.getElementById('book-filter-text-box') as HTMLInputElement;
+    gridRef.current!.api.setQuickFilter(element.value);
+  }, []);
+
+  // クイックフィルタのマッチ判定を行う関数
+  const quickFilterMatcher = useCallback((quickFilterParts: string[], rowQuickFilterAggregateText: string) => {
+    return quickFilterParts.every((part) => rowQuickFilterAggregateText.match(part));
   }, []);
 
   return (
     <div style={containerStyle}>
       <div className='container'>
         <div style={{ marginBottom: '8px' }}>
-          <Button variant='contained' onClick={handleEditDialogOpen}>
-            {L.BookGrid.EditBook.ButtonLabel}
+          <Button variant='contained' onClick={handleAddBookDialogOpen} sx={{ marginRight: '10px' }}>
+            {L.BookGrid.AddBook.ButtonLabel}
           </Button>
+          <Tooltip title={L.UsersGrid.QuickFilterTooltip}>
+            <TextField
+              id={'book-filter-text-box'}
+              label={L.BookGrid.QuickFilterPlaceHolder}
+              variant='outlined'
+              sx={{ width: '40%', marginBottom: '5px' }}
+              size='small'
+              onInput={(event) => handleFilterTextBoxChanged(event, gridRef)}
+            />
+          </Tooltip>
           {/* 書籍の登録・編集用ダイアログ（共通） */}
-          <BookEditDialog userId={userId} editDialogOpen={editDialogOpen} setEditDialogOpen={setEditDialogOpen} bookId={bookId} />
-          <BookDeleteDialog deleteDialogOpen={deleteDialogOpen} setDeleteDialogOpen={setDeleteDialogOpen} bookId={bookId} rowData={rowData} />
+          <AddBookDialog userId={userId} addBookDialogOpen={addBookDialogOpen} setAddBookDialogOpen={setAddBookDialogOpen} />
+          <DeleteBookDialog deleteBookDialogOpen={deleteBookDialogOpen} setDeleteBookDialogOpen={setDeleteBookDialogOpen} bookId={bookId} rowData={rowData} />
         </div>
         <div style={gridStyle} className='ag-theme-alpine'>
-          <AgGridReact<any> ref={gridRef} rowData={rowData} columnDefs={columnDefs} onFirstDataRendered={handleFirstDataRendered} onGridReady={handleGridReady} />
+          <AgGridReact<any>
+            ref={gridRef}
+            rowData={rowData}
+            columnDefs={columnDefs}
+            onFirstDataRendered={handleFirstDataRendered}
+            onGridReady={handleGridReady}
+            quickFilterMatcher={quickFilterMatcher}
+          />
         </div>
       </div>
     </div>

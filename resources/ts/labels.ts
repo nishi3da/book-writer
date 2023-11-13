@@ -7,11 +7,11 @@ export const L: LableType = {
       Edit: '編集',
       Delete: '削除',
     },
-    EditBook: {
+    QuickFilterPlaceHolder: '書籍 簡易検索',
+    AddBook: {
       ButtonLabel: '新規書籍',
       Dialog: {
-        AddTitle: '書籍の新規作成',
-        EditTitle: '書籍の編集',
+        Title: '書籍の新規作成',
         BookTitle: '書籍タイトル',
         BookSubTitle: '書籍サブタイトル',
         BookNumberOfArticles: '記事数',
@@ -28,7 +28,7 @@ export const L: LableType = {
       DeleteMessage: 'この操作は元に戻せません、本当に削除しますか？',
       Ok: '削除',
       Cancel: 'キャンセル',
-  },
+    },
     Validation: {
       Required: '入力必須項目です。',
       MaxLength: '最大文字数は255文字です。',

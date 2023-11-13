@@ -7,11 +7,11 @@ declare type LableType = {
       Edit: string;
       Delete: string;
     };
-    EditBook: {
+    QuickFilterPlaceHolder: string;
+    AddBook: {
       ButtonLabel: string;
       Dialog: {
-        AddTitle: string;
-        EditTitle: string;
+        Title: string;
         BookTitle: string;
         BookSubTitle: string;
         BookNumberOfArticles: string;

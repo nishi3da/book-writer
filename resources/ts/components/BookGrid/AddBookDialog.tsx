@@ -13,11 +13,10 @@ import { AgGridReact } from 'ag-grid-react';
 import { TransitionProps } from '@mui/material/transitions';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-type BookEditDialogProps = {
+type AddBookDialogProps = {
   userId: number;
-  bookId: number | null;
-  editDialogOpen: boolean;
-  setEditDialogOpen: (open: boolean) => void;
+  addBookDialogOpen: boolean;
+  setAddBookDialogOpen: (open: boolean) => void;
 };
 
 // 送信データ型
@@ -43,8 +42,8 @@ const Transition = forwardRef(function Transition(
   return <Slide direction='up' ref={ref} {...props} />;
 });
 
-const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
-  const { userId, editDialogOpen, setEditDialogOpen, bookId } = props;
+const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
+  const { userId, addBookDialogOpen, setAddBookDialogOpen } = props;
 
   // 編集者・執筆者一覧データ
   const [editors, setEditors] = useState<IUser[]>([]);
@@ -67,67 +66,16 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
     formState: { errors },
   } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-    console.log('send - userId', userId);
-    console.log('send - bookId', bookId);
-    console.log('send - data', data);
-    if (bookId) {
-      // 更新の場合
-      console.log('patch', '/books/${bookId}');
-      axios
-        .patch(`/books/${bookId}`, { bookData: data })
-        .then((res) => {
-          location.href = '/books';
-        })
-        .catch((error) => {
-          console.log('patch - error', error);
-        });
-    } else {
-      console.log('store');
-      // 登録の場合
-      axios
-        .post('/books', { bookData: data })
-        .then((res) => {
-          location.href = '/books';
-        })
-        .catch((error) => {
-          console.log('post - error', error);
-        });
-    }
+    // 登録の場合
+    axios
+      .post('/books', { bookData: data })
+      .then((res) => {
+        location.href = '/books';
+      })
+      .catch((error) => {
+        console.log('post - error', error);
+      });
   };
-
-  // 書籍の編集をしたいときのデータ取得
-  useEffect(() => {
-    if (bookId !== null) {
-      axios
-        .get(`/books/${bookId}/edit`)
-        .then((response: any) => {
-          const data = response.data;
-          console.log(data);
-          // フォームデータのセット
-          setValue('title', data.title);
-          setValue('sub_title', data.sub_title);
-          setValue('number_of_articles', data.number_of_articles);
-          setValue('number_of_sections', data.number_of_sections);
-          setValue('editors', data.editors);
-          setValue('authors', data.authors);
-          // UserGrid側でチェックを入れるためのデータをセット
-          setSelectedEditorIds(data.editors.split(',').map((id: string) => Number(id)));
-          setSelectedAuthorIds(data.authors.split(',').map((id: string) => Number(id)));
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    } else {
-      setValue('title', '');
-      setValue('sub_title', '');
-      setValue('number_of_articles', '');
-      setValue('number_of_sections', '');
-      setValue('editors', String(userId));
-      setValue('authors', '');
-      setSelectedEditorIds([userId]);
-      setSelectedAuthorIds([]);
-    }
-  }, [editDialogOpen]);
 
   // データの取得
   // 編集者・執筆者の一覧は、初回のみでOK（別窓で登録したとしても）
@@ -153,8 +101,8 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
   }, []);
 
   // ダイアログを閉じる
-  const handleEditDialogClose = useCallback(() => {
-    setEditDialogOpen(false);
+  const handleAddBookDialogClose = useCallback(() => {
+    setAddBookDialogOpen(false);
   }, []);
 
   // スタイル適用済みの入力コンポーネント
@@ -193,26 +141,26 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
 
   return (
     <Fragment>
-      <Dialog open={editDialogOpen} onClose={handleEditDialogClose} fullScreen sx={{ marginLeft: '0%', marginRight: '0%' }} TransitionComponent={Transition}>
+      <Dialog open={addBookDialogOpen} onClose={handleAddBookDialogClose} fullScreen sx={{ marginLeft: '0%', marginRight: '0%' }} TransitionComponent={Transition}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogTitle sx={{ backgroundColor: '#ddd', position: 'fixed', top: 0, zIndex: 10000, height: '100px', width: '100%' }}>
-            {bookId ? L.BookGrid.EditBook.Dialog.EditTitle : L.BookGrid.EditBook.Dialog.AddTitle}
+            {L.BookGrid.AddBook.Dialog.Title}
             <DialogActions>
               {/* キャンセル */}
-              <Button onClick={handleEditDialogClose}>{L.BookGrid.EditBook.Dialog.Cancel}</Button>
+              <Button onClick={handleAddBookDialogClose}>{L.BookGrid.AddBook.Dialog.Cancel}</Button>
               {/* 書籍の追加 */}
-              <Button type='submit'>{L.BookGrid.EditBook.Dialog.Ok}</Button>
+              <Button type='submit'>{L.BookGrid.AddBook.Dialog.Ok}</Button>
             </DialogActions>
           </DialogTitle>
           <DialogContent sx={{ marginTop: '100px' }}>
             {/* <DialogContentText></DialogContentText> */}
             {/* タイトル */}
             <StyledInputLable shrink htmlFor='title'>
-              {L.BookGrid.EditBook.Dialog.BookTitle}
+              {L.BookGrid.AddBook.Dialog.BookTitle}
             </StyledInputLable>
             <StyledInput
               id='title'
-              placeholder={L.BookGrid.EditBook.Dialog.BookTitle}
+              placeholder={L.BookGrid.AddBook.Dialog.BookTitle}
               {...register('title', {
                 required: L.BookGrid.Validation.Required,
                 maxLength: {
@@ -226,11 +174,11 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
 
             {/* サブタイトル */}
             <StyledInputLable shrink htmlFor='sub_title'>
-              {L.BookGrid.EditBook.Dialog.BookSubTitle}
+              {L.BookGrid.AddBook.Dialog.BookSubTitle}
             </StyledInputLable>
             <StyledInput
               id='sub_title'
-              placeholder={L.BookGrid.EditBook.Dialog.BookSubTitle}
+              placeholder={L.BookGrid.AddBook.Dialog.BookSubTitle}
               {...register('sub_title', {
                 maxLength: {
                   value: 255,
@@ -242,7 +190,7 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
 
             {/* 記事数 */}
             <StyledInputLable shrink htmlFor='number_of_articles'>
-              {L.BookGrid.EditBook.Dialog.BookNumberOfArticles}
+              {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
             </StyledInputLable>
             <StyledInput
               id='number_of_articles'
@@ -252,7 +200,7 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
                 max: 500,
                 pattern: '[0-9]*',
               }}
-              placeholder={L.BookGrid.EditBook.Dialog.BookNumberOfArticles}
+              placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
               {...register('number_of_articles', {
                 required: L.BookGrid.Validation.Required,
                 min: 1,
@@ -265,7 +213,7 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
 
             {/* セクション数 */}
             <StyledInputLable shrink htmlFor='number_of_sections'>
-              {L.BookGrid.EditBook.Dialog.BookNumberOfSections}
+              {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
             </StyledInputLable>
             <StyledInput
               id='number_of_sections'
@@ -274,7 +222,7 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
                 min: 1,
                 max: 500,
               }}
-              placeholder={L.BookGrid.EditBook.Dialog.BookNumberOfSections}
+              placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
               {...register('number_of_sections', {
                 required: L.BookGrid.Validation.Required,
                 min: 1,
@@ -294,11 +242,11 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
             {errors.number_of_sections?.type === 'validate' && <Alert severity='error'>{L.BookGrid.Validation.OverNumberOfArticles}</Alert>}
 
             {/* 編集者 */}
-            <StyledInputLable shrink>{L.BookGrid.EditBook.Dialog.Editors}</StyledInputLable>
+            <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Editors}</StyledInputLable>
             <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setValue={setValue} selectedUserIds={selectedEditorIds} />
 
             {/* 執筆者 */}
-            <StyledInputLable shrink>{L.BookGrid.EditBook.Dialog.Authors}</StyledInputLable>
+            <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Authors}</StyledInputLable>
             <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} selectedUserIds={selectedAuthorIds} />
           </DialogContent>
         </form>
@@ -306,4 +254,4 @@ const BookEditDialog = (props: BookEditDialogProps): JSX.Element => {
     </Fragment>
   );
 };
-export default BookEditDialog;
+export default AddBookDialog;
