@@ -49,7 +49,14 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
       headerName: L.BookGrid.Header.Edit,
       cellRenderer: (params: any) => {
         return (
-          <Button variant='contained' color='primary' startIcon={<ModeEditOutlineIcon />} onClick={() => console.log('')} size='small' sx={{ marginTop: '5px' }}>
+          <Button
+            variant='contained'
+            color='primary'
+            startIcon={<ModeEditOutlineIcon />}
+            onClick={() => handleEditButtonClick(params.data.id)}
+            size='small'
+            sx={{ marginTop: '5px' }}
+          >
             {L.BookGrid.Header.Edit}
           </Button>
         );
@@ -87,7 +94,13 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
     gridRef.current!.columnApi.autoSizeAllColumns();
   }, []);
 
-  // 新規登録ボタンクリック時の関数
+  // 編集ボタンのクリック時に呼び出される関数
+  const handleEditButtonClick = useCallback((bookId: number) => {
+    console.log(`/books/${bookId}/edit`);
+    location.href = `/books/${bookId}/edit`;
+  }, []);
+
+  // 新規登録ボタンクリック時に呼び出される関数
   const handleAddBookDialogOpen = useCallback(() => {
     console.log('AddBook');
     setBookId(null);
@@ -95,9 +108,9 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
   }, []);
 
   // 書籍削除ボタンクリック時の関数
-  const handleDeleteBookDialogOpen = useCallback((id: number) => {
-    console.log('DeleteBook', id);
-    setBookId(id);
+  const handleDeleteBookDialogOpen = useCallback((bookId: number) => {
+    console.log('DeleteBook', bookId);
+    setBookId(bookId);
     setDeleteBookDialogOpen(true);
   }, []);
 

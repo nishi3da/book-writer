@@ -76,7 +76,7 @@ class BookController extends Controller
         $result = array_merge($result, ["editors" => $editorIds]);
         $result = array_merge($result, ["authors" => $authorIds]);
         // レスポンス
-        return response($result, 200);
+        return view("editbook", ['bookId' => $bookId, 'userId' => Auth::id()]);
     }
 
     /**

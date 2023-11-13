@@ -7,7 +7,9 @@
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
 
-.book-grid-title {
+.book-grid-title, .edit-book-title {
+    font-size: 4vh;
     text-align: center;
     border-bottom: solid 2px;
+    padding-bottom: 5px;
 }
