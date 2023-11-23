@@ -22,7 +22,7 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["vite.config.ts"],
+  "include": ["vite.config.ts", "resources/ts/@types/*"],
   // "references": [{ "path": "./tsconfig.node.json" }],
   "lib": ["WebWorker"],
   "files": ["resources/ts/app.d.ts", "resources/ts/bookGridMount.tsx"]

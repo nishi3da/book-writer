@@ -59,7 +59,6 @@ declare type IUser = {
   email: string;
   email_verified_at: string;
   password: string;
-  role: string;
   affiliation_name: string;
   affiliation_reading_name: string;
   remember_token: string;
