@@ -39,6 +39,7 @@ Route::resource('/books', BookController::class)->only('index', 'store', 'edit',
 // API用
 // 書籍一覧（ログインユーザーが担当している書籍一覧）
 Route::get('/books_list', [BookController::class, 'books_list'])->middleware('auth');
+
 // 編集者一覧（担当書籍ではなく、単純に編集者一覧）
 Route::get('/editors_list', [UserController::class, 'editors_list'])->middleware('auth');
 // 執筆者一覧（担当書籍ではなく、短銃に執筆者一覧）

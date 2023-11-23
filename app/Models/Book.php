@@ -18,6 +18,17 @@ final class Book extends Model
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
+    public function authors()
+    {
+        return $this->belongsToMany(User::class)->where('role', 'author')->withTimestamps();
+    }
+
+    public function editors()
+    {
+        return $this->belongsToMany(User::class)->where('role', 'editor')->withTimestamps();
+    }
+
+    // サンプルコード
     // public function book_users() {
     //     return $this->hasMany(BookUser::class, "book_id", "id");
     // }
@@ -41,13 +52,6 @@ final class Book extends Model
     //     return $this->getBookUsersWithRole("author")->pluck("id");
     // }
 
-    public function authors()
-    {
-        return $this->belongsToMany(User::class)->where('role', 'author')->withTimestamps();
-    }
 
-    public function editors()
-    {
-        return $this->belongsToMany(User::class)->where('role', 'editor')->withTimestamps();
-    }
+
 }

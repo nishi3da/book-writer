@@ -53,15 +53,22 @@ class BookController extends Controller
         $book->users()->attach($authors);
     }
 
-    public function book_info(string $bookId) {
-        $book = Book::where("id", $bookId)->first();
-        return response->json($book);
-    }
-
     public function edit(string $bookId)
     {
+        /*
+            {
+                id: integer,
+                title: string,
+                sub_title: string,
+                number_of_articles: integer,
+                number_of_sections: integer,
 
-        // \DB::enableQueryLog();
+                userId: integer,
+                book_editors: string[],
+                book_authors: string[],
+            }
+        */
+
         // 書籍1件取得
         $book = Book::find($bookId);
 
@@ -69,13 +76,14 @@ class BookController extends Controller
         $authorIds = $book->authors()->get()->pluck('id')->implode(',');
 
         // JSON化
-        $result = json_decode($book->toJson(), true);
+        $results = json_decode($book->toJson(), true);
         // 配列に追加
-        $result = array_merge($result, ['editors' => $editorIds]);
-        $result = array_merge($result, ['authors' => $authorIds]);
+        $results = array_merge($results, ['editorIds' => $editorIds]);
+        $results = array_merge($results, ['authorIds' => $authorIds]);
+        $results = array_merge($results, ['userId' => Auth::id()]);
 
         // レスポンス
-        return view('editbook', ['bookId' => $bookId, 'userId' => Auth::id()]);
+        return view('editbook', ["edit_book_props" =>$results]);
     }
 
     /**
