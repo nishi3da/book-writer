@@ -8,7 +8,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import { L } from '../../labels';
-import { InputBase, InputLabel } from '@mui/material';
+import StyledInput from '../StyledComponents/StyledInput';
+import StyledInputLabel from '../StyledComponents/StyledInputLabel';
 import axios from 'axios';
 
 type DeleteBookDialogProps = {
@@ -27,40 +28,6 @@ const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
   const handleClose = () => {
     setDeleteDialogOpen(false);
   };
-
-  // スタイル適用済みの入力コンポーネント
-  const StyledInput = styled(InputBase)(({ theme }) => ({
-    '&': {
-      width: '100%',
-      maxWidth: '100%',
-    },
-    '& .MuiInputBase-input': {
-      borderRadius: 4,
-      position: 'relative',
-      backgroundColor: theme.palette.mode === 'light' ? '#fcfcfb' : '#2b2b2b',
-      border: '1px solid #ced4da',
-      fontSize: 12,
-      width: '100%',
-      padding: '10px 12px',
-      marginBottom: '10px',
-      transition: theme.transitions.create(['border-color', 'background-color', 'box-shadow']),
-      // Use the system font instead of the default Roboto font.
-      fontFamily: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"'].join(','),
-      '&S:focus': {
-        boxShadow: `${alpha(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
-        borderColor: theme.palette.primary.main,
-      },
-    },
-  }));
-
-  // スタイル適用済みのラベルコンポーネント
-  const StyledInputLable = styled(InputLabel)(({ theme }) => ({
-    '&': {
-      fontSize: '20px',
-      marginTop: '20px',
-      color: 'black',
-    },
-  }));
 
   // 書籍データの更新
   useEffect(() => {
@@ -95,28 +62,28 @@ const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
         <DialogTitle id='responsive-dialog-title'>{L.BookGrid.DeleteBook.DeleteTitle}</DialogTitle>
         <DialogContent>
           <DialogContentText>{L.BookGrid.DeleteBook.DeleteMessage}</DialogContentText>
-          <StyledInputLable shrink htmlFor='title'>
+          <StyledInputLabel shrink htmlFor='title' theme={theme}>
             {L.BookGrid.AddBook.Dialog.BookTitle}
-          </StyledInputLable>
-          <StyledInput id='title' value={bookData?.title} disabled />
+          </StyledInputLabel>
+          <StyledInput id='title' value={bookData?.title} disabled theme={theme} />
 
           {/* サブタイトル */}
-          <StyledInputLable shrink htmlFor='sub_title'>
+          <StyledInputLabel shrink htmlFor='sub_title' theme={theme}>
             {L.BookGrid.AddBook.Dialog.BookSubTitle}
-          </StyledInputLable>
-          <StyledInput id='sub_title' value={bookData?.sub_title} disabled />
+          </StyledInputLabel>
+          <StyledInput id='sub_title' value={bookData?.sub_title} disabled theme={theme} />
 
           {/* 記事数 */}
-          <StyledInputLable shrink htmlFor='number_of_articles'>
+          <StyledInputLabel shrink htmlFor='number_of_articles' theme={theme}>
             {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-          </StyledInputLable>
-          <StyledInput id='number_of_articles' type='number' value={bookData?.number_of_articles} disabled />
+          </StyledInputLabel>
+          <StyledInput id='number_of_articles' type='number' value={bookData?.number_of_articles} disabled theme={theme} />
 
           {/* セクション数 */}
-          <StyledInputLable shrink htmlFor='number_of_sections'>
+          <StyledInputLabel shrink htmlFor='number_of_sections' theme={theme}>
             {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-          </StyledInputLable>
-          <StyledInput id='number_of_sections' type='number' value={bookData?.number_of_sections} disabled />
+          </StyledInputLabel>
+          <StyledInput id='number_of_sections' type='number' value={bookData?.number_of_sections} disabled theme={theme} />
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
