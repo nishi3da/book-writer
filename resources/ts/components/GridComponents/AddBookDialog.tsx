@@ -27,8 +27,8 @@ export type FormValues = {
   sub_title: string;
   number_of_articles: number;
   number_of_sections: number;
-  editors: string;
-  authors: string;
+  editorsIds: string;
+  authorsIds: string;
 };
 
 // 処理待ち

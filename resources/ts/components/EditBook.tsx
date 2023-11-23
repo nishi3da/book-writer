@@ -1,14 +1,14 @@
 import { L } from '../labels';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import StyledInput from './StyledComponents/StyledInput';
 import StyledInputLabel from './StyledComponents/StyledInputLabel';
 import axios from 'axios';
-import { Alert, Button, DialogActions, DialogTitle, useTheme } from '@mui/material';
+import { Alert, useTheme } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import UsersGrid from './GridComponents/UsersGrid';
 
-type EditBookProps = {
+export type EditBookProps = {
   userId: number;
   id: number;
   title: string;
