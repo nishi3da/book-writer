@@ -1,0 +1,18 @@
+{
+    "extends": [],
+    "plugins": [],
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "env": { "browser": true },
+    "globals": {},
+    "rules": {
+        "max-len": ["error", { "code": 180 }]
+        //"no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": true }],
+        //"object-curly-spacing": "off",
+        //"camelcase": "off",
+        //"indent": "off",
+        //"require-jsdoc": "off"
+        //"@typescript-eslint/no-unused-vars": ["warn"]
+    }
+}
