@@ -19,16 +19,6 @@ export type EditBookProps = {
   authorIds: number[];
 };
 
-// 送信データ型
-export type FormValues = {
-  title: string;
-  sub_title: string;
-  number_of_articles: number;
-  number_of_sections: number;
-  editorIds: string[];
-  authorIds: string[];
-};
-
 export const EditBook = (props: EditBookProps) => {
   // Props展開
   const { userId, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
@@ -55,8 +45,8 @@ export const EditBook = (props: EditBookProps) => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
+  } = useForm<BookFormValues>();
+  const onSubmit: SubmitHandler<BookFormValues> = (data: BookFormValues) => {
     // 登録の場合
     axios
       .post('/books', { bookData: data })
