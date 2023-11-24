@@ -52,6 +52,8 @@ declare type LableType = {
   };
 };
 
+declare type Roles = 'editor' | 'author' | 'admin';
+
 declare type IUser = {
   id: number;
   name: string;
@@ -59,7 +61,6 @@ declare type IUser = {
   email: string;
   email_verified_at: string;
   password: string;
-  role: string;
   affiliation_name: string;
   affiliation_reading_name: string;
   remember_token: string;
@@ -79,4 +80,14 @@ declare type IBook = {
 
 declare type IBookUser = IBook & {
   user: IUser;
+};
+
+// 書籍の送信データ型
+declare type BookFormValues = {
+  title: string;
+  sub_title: string;
+  number_of_articles: number;
+  number_of_sections: number;
+  editorIds: string[];
+  authorIds: string[];
 };

@@ -10,19 +10,18 @@ import '@ag-grid-community/styles/ag-theme-alpine.css';
 import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
 import { TextField, Tooltip } from '@mui/material';
 import { UseFormSetValue } from 'react-hook-form';
-import { FormValues } from './AddBookDialog';
 
-type Props = {
+type UsersGridProps = {
   type: 'editors' | 'authors';
   userId: number;
   rowData: IUser[];
   setRowData: (rowData: IUser[]) => void;
   gridRef: React.RefObject<AgGridReact<IUser>>;
-  setValue: UseFormSetValue<FormValues>;
+  setValue: UseFormSetValue<BookFormValues>;
   selectedUserIds: number[];
 };
 
-const EditorGrid = (props: Props): JSX.Element => {
+const UsersGrid = (props: UsersGridProps): JSX.Element => {
   // データの展開
   const { type, gridRef, rowData, userId, selectedUserIds } = props;
 
@@ -81,7 +80,7 @@ const EditorGrid = (props: Props): JSX.Element => {
   }, []);
 
   // データの初回読み込み後の処理
-  const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent, props: Props) => {
+  const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent, props: UsersGridProps) => {
     const { gridRef, setValue, type, selectedUserIds } = props;
     const userIds: number[] = [];
     // ログインユーザーのIDと一致する行のチェックボックスをONにする
@@ -123,7 +122,7 @@ const EditorGrid = (props: Props): JSX.Element => {
   }, [selectedUserIds]);
 
   // チェックボックスの変更時のイベント関数
-  const handleSelectionChanged = useCallback((event: SelectionChangedEvent, props: Props) => {
+  const handleSelectionChanged = useCallback((event: SelectionChangedEvent, props: UsersGridProps) => {
     const { gridRef, setValue, type } = props;
     const userIds: number[] = [];
     gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
@@ -169,4 +168,4 @@ const EditorGrid = (props: Props): JSX.Element => {
     </>
   );
 };
-export default EditorGrid;
+export default UsersGrid;

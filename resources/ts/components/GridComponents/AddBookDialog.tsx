@@ -1,32 +1,23 @@
-import { Fragment, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-//import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { L } from '../../labels';
-import { Alert, InputBase, InputLabel, Slide, alpha, styled } from '@mui/material';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Alert, Slide, useTheme } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
 import UsersGrid from './UsersGrid';
 import { AgGridReact } from 'ag-grid-react';
-import { TransitionProps } from '@mui/material/transitions';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import StyledInput from '../StyledComponents/StyledInput';
+import StyledInputLabel from '../StyledComponents/StyledInputLabel';
 
 type AddBookDialogProps = {
   userId: number;
   addBookDialogOpen: boolean;
   setAddBookDialogOpen: (open: boolean) => void;
-};
-
-// 送信データ型
-export type FormValues = {
-  title: string;
-  sub_title: string;
-  number_of_articles: number;
-  number_of_sections: number;
-  editors: string;
-  authors: string;
 };
 
 // 処理待ち
@@ -44,6 +35,9 @@ const Transition = forwardRef(function Transition(
 
 const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
   const { userId, addBookDialogOpen, setAddBookDialogOpen } = props;
+
+  // テーマ
+  const theme = useTheme();
 
   // 編集者・執筆者一覧データ
   const [editors, setEditors] = useState<IUser[]>([]);
@@ -64,8 +58,8 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
+  } = useForm<BookFormValues>();
+  const onSubmit: SubmitHandler<BookFormValues> = (data: BookFormValues) => {
     // 登録の場合
     axios
       .post('/books', { bookData: data })
@@ -105,40 +99,6 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
     setAddBookDialogOpen(false);
   }, []);
 
-  // スタイル適用済みの入力コンポーネント
-  const StyledInput = styled(InputBase)(({ theme }) => ({
-    '&': {
-      width: '100%',
-      maxWidth: '100%',
-    },
-    '& .MuiInputBase-input': {
-      borderRadius: 4,
-      position: 'relative',
-      backgroundColor: theme.palette.mode === 'light' ? '#fcfcfb' : '#2b2b2b',
-      border: '1px solid #ced4da',
-      fontSize: 12,
-      width: '100%',
-      padding: '10px 12px',
-      marginBottom: '10px',
-      transition: theme.transitions.create(['border-color', 'background-color', 'box-shadow']),
-      // Use the system font instead of the default Roboto font.
-      fontFamily: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"'].join(','),
-      '&S:focus': {
-        boxShadow: `${alpha(theme.palette.primary.main, 0.25)} 0 0 0 0.2rem`,
-        borderColor: theme.palette.primary.main,
-      },
-    },
-  }));
-
-  // スタイル適用済みのラベルコンポーネント
-  const StyledInputLable = styled(InputLabel)(({ theme }) => ({
-    '&': {
-      fontSize: '20px',
-      marginTop: '20px',
-      color: 'black',
-    },
-  }));
-
   return (
     <Fragment>
       <Dialog open={addBookDialogOpen} onClose={handleAddBookDialogClose} fullScreen sx={{ marginLeft: '0%', marginRight: '0%' }} TransitionComponent={Transition}>
@@ -155,12 +115,13 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
           <DialogContent sx={{ marginTop: '100px' }}>
             {/* <DialogContentText></DialogContentText> */}
             {/* タイトル */}
-            <StyledInputLable shrink htmlFor='title'>
+            <StyledInputLabel shrink htmlFor='title' theme={theme}>
               {L.BookGrid.AddBook.Dialog.BookTitle}
-            </StyledInputLable>
+            </StyledInputLabel>
             <StyledInput
               id='title'
               placeholder={L.BookGrid.AddBook.Dialog.BookTitle}
+              theme={theme}
               {...register('title', {
                 required: L.BookGrid.Validation.Required,
                 maxLength: {
@@ -173,12 +134,13 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
             {errors.title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
             {/* サブタイトル */}
-            <StyledInputLable shrink htmlFor='sub_title'>
+            <StyledInputLabel shrink htmlFor='sub_title' theme={theme}>
               {L.BookGrid.AddBook.Dialog.BookSubTitle}
-            </StyledInputLable>
+            </StyledInputLabel>
             <StyledInput
               id='sub_title'
               placeholder={L.BookGrid.AddBook.Dialog.BookSubTitle}
+              theme={theme}
               {...register('sub_title', {
                 maxLength: {
                   value: 255,
@@ -189,9 +151,9 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
             {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
             {/* 記事数 */}
-            <StyledInputLable shrink htmlFor='number_of_articles'>
+            <StyledInputLabel shrink htmlFor='number_of_articles' theme={theme}>
               {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-            </StyledInputLable>
+            </StyledInputLabel>
             <StyledInput
               id='number_of_articles'
               type='number'
@@ -201,6 +163,7 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
                 pattern: '[0-9]*',
               }}
               placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
+              theme={theme}
               {...register('number_of_articles', {
                 required: L.BookGrid.Validation.Required,
                 min: 1,
@@ -212,9 +175,9 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
             {errors.number_of_articles?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
 
             {/* セクション数 */}
-            <StyledInputLable shrink htmlFor='number_of_sections'>
+            <StyledInputLabel shrink htmlFor='number_of_sections' theme={theme}>
               {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-            </StyledInputLable>
+            </StyledInputLabel>
             <StyledInput
               id='number_of_sections'
               type='number'
@@ -222,6 +185,7 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
                 min: 1,
                 max: 500,
               }}
+              theme={theme}
               placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
               {...register('number_of_sections', {
                 required: L.BookGrid.Validation.Required,
@@ -242,11 +206,15 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
             {errors.number_of_sections?.type === 'validate' && <Alert severity='error'>{L.BookGrid.Validation.OverNumberOfArticles}</Alert>}
 
             {/* 編集者 */}
-            <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Editors}</StyledInputLable>
+            <StyledInputLabel shrink theme={theme}>
+              {L.BookGrid.AddBook.Dialog.Editors}
+            </StyledInputLabel>
             <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setValue={setValue} selectedUserIds={selectedEditorIds} />
 
             {/* 執筆者 */}
-            <StyledInputLable shrink>{L.BookGrid.AddBook.Dialog.Authors}</StyledInputLable>
+            <StyledInputLabel shrink theme={theme}>
+              {L.BookGrid.AddBook.Dialog.Authors}
+            </StyledInputLabel>
             <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} selectedUserIds={selectedAuthorIds} />
           </DialogContent>
         </form>
