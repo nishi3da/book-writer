@@ -79,3 +79,13 @@ declare type IBook = {
 declare type IBookUser = IBook & {
   user: IUser;
 };
+
+// 書籍の送信データ型
+declare type BookFormValues = {
+  title: string;
+  sub_title: string;
+  number_of_articles: number;
+  number_of_sections: number;
+  editorIds: string[];
+  authorIds: string[];
+};
