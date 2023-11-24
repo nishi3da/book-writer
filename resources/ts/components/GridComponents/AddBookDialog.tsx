@@ -1,16 +1,15 @@
-import { Fragment, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-//import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
 import { L } from '../../labels';
-import { Alert, InputBase, InputLabel, Slide, alpha, styled, useTheme } from '@mui/material';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Alert, Slide, useTheme } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
 import UsersGrid from './UsersGrid';
 import { AgGridReact } from 'ag-grid-react';
-import { TransitionProps } from '@mui/material/transitions';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import StyledInput from '../StyledComponents/StyledInput';
 import StyledInputLabel from '../StyledComponents/StyledInputLabel';
@@ -19,16 +18,6 @@ type AddBookDialogProps = {
   userId: number;
   addBookDialogOpen: boolean;
   setAddBookDialogOpen: (open: boolean) => void;
-};
-
-// 送信データ型
-export type FormValues = {
-  title: string;
-  sub_title: string;
-  number_of_articles: number;
-  number_of_sections: number;
-  editorsIds: string;
-  authorsIds: string;
 };
 
 // 処理待ち
@@ -69,8 +58,8 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm<FormValues>();
-  const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
+  } = useForm<BookFormValues>();
+  const onSubmit: SubmitHandler<BookFormValues> = (data: BookFormValues) => {
     // 登録の場合
     axios
       .post('/books', { bookData: data })
@@ -192,11 +181,11 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
             <StyledInput
               id='number_of_sections'
               type='number'
-              theme={theme}
               inputProps={{
                 min: 1,
                 max: 500,
               }}
+              theme={theme}
               placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
               {...register('number_of_sections', {
                 required: L.BookGrid.Validation.Required,
