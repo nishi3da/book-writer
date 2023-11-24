@@ -52,6 +52,8 @@ declare type LableType = {
   };
 };
 
+declare type Roles = 'editor' | 'author' | 'admin';
+
 declare type IUser = {
   id: number;
   name: string;

@@ -10,6 +10,7 @@ import UsersGrid from './GridComponents/UsersGrid';
 
 export type EditBookProps = {
   userId: number;
+  userRole: Roles;
   id: number;
   title: string;
   sub_title: string;
@@ -21,7 +22,7 @@ export type EditBookProps = {
 
 export const EditBook = (props: EditBookProps) => {
   // Props展開
-  const { userId, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
+  const { userId, userRole, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
 
   // テーマ
   const theme = useTheme();
@@ -69,6 +70,7 @@ export const EditBook = (props: EditBookProps) => {
         <StyledInput
           id='title'
           placeholder={L.BookGrid.AddBook.Dialog.BookTitle}
+          value={title}
           theme={theme}
           {...register('title', {
             required: L.BookGrid.Validation.Required,
@@ -88,6 +90,7 @@ export const EditBook = (props: EditBookProps) => {
         <StyledInput
           id='sub_title'
           placeholder={L.BookGrid.AddBook.Dialog.BookSubTitle}
+          value={sub_title}
           theme={theme}
           {...register('sub_title', {
             maxLength: {
@@ -111,6 +114,7 @@ export const EditBook = (props: EditBookProps) => {
             pattern: '[0-9]*',
           }}
           placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
+          value={number_of_articles}
           theme={theme}
           {...register('number_of_articles', {
             required: L.BookGrid.Validation.Required,
@@ -135,6 +139,7 @@ export const EditBook = (props: EditBookProps) => {
             max: 500,
           }}
           placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
+          value={number_of_sections}
           {...register('number_of_sections', {
             required: L.BookGrid.Validation.Required,
             min: 1,

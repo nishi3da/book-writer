@@ -81,6 +81,7 @@ class BookController extends Controller
         $results = array_merge($results, ['editorIds' => $editorIds]);
         $results = array_merge($results, ['authorIds' => $authorIds]);
         $results = array_merge($results, ['userId' => Auth::id()]);
+        $results = array_merge($results, ['userRole' => Auth::user()->role]);
 
         // レスポンス
         return view('editbook', ["edit_book_props" =>$results]);

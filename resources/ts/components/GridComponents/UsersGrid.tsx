@@ -10,7 +10,6 @@ import '@ag-grid-community/styles/ag-theme-alpine.css';
 import { CheckboxSelectionCallbackParams, ColDef, FirstDataRenderedEvent, IRowNode, SelectionChangedEvent } from 'ag-grid-community';
 import { TextField, Tooltip } from '@mui/material';
 import { UseFormSetValue } from 'react-hook-form';
-import { FormValues } from './AddBookDialog';
 
 type UsersGridProps = {
   type: 'editors' | 'authors';
@@ -18,7 +17,7 @@ type UsersGridProps = {
   rowData: IUser[];
   setRowData: (rowData: IUser[]) => void;
   gridRef: React.RefObject<AgGridReact<IUser>>;
-  setValue: UseFormSetValue<FormValues>;
+  setValue: UseFormSetValue<BookFormValues>;
   selectedUserIds: number[];
 };
 
