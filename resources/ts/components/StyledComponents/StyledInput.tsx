@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { InputBase, InputBaseProps, Theme, alpha } from '@mui/material';
+import { forwardRef } from 'react';
 
 interface StyledInputProps extends InputBaseProps {
   theme: Theme;
@@ -32,7 +33,8 @@ const ExtendInput = styled(InputBase)((props: StyledInputProps) => {
   };
 });
 
-const StyledInput = (props: StyledInputProps): JSX.Element => {
-  return <ExtendInput {...props} />;
-};
+const StyledInput = forwardRef<HTMLInputElement, StyledInputProps>((props, ref) => {
+  const { theme, ...rest } = props;
+  return <ExtendInput {...rest} ref={ref} theme={theme} />;
+});
 export default StyledInput;
