@@ -91,7 +91,11 @@ const UsersGrid = (props: UsersGridProps): JSX.Element => {
       if (node.data && node.isSelected()) {
         userIds.push(node.data.id);
       }
-      setValue(type, userIds.join(','));
+      if (type === 'editors') {
+        setValue('editorIds', userIds.join(','));
+      } else {
+        setValue('authorIds', userIds.join(','));
+      }
     });
     // カラム幅の調整
     gridRef.current!.columnApi.autoSizeAllColumns();
@@ -129,7 +133,11 @@ const UsersGrid = (props: UsersGridProps): JSX.Element => {
       if (node.data && node.isSelected()) {
         userIds.push(node.data.id);
       }
-      setValue(type, userIds.join(','));
+      if (type === 'editors') {
+        setValue('editorIds', userIds.join(','));
+      } else {
+        setValue('authorIds', userIds.join(','));
+      }
     });
   }, []);
 

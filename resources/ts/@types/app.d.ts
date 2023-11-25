@@ -88,6 +88,6 @@ declare type BookFormValues = {
   sub_title: string;
   number_of_articles: number;
   number_of_sections: number;
-  editorIds: string[];
-  authorIds: string[];
+  editorIds: string;
+  authorIds: string;
 };
