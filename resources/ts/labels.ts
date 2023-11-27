@@ -36,6 +36,19 @@ export const L: LableType = {
       OverNumberOfArticles: '記事数以上のセクションは設定できません。',
     },
   },
+  EditBook: {
+    Accordion: {
+      Summary: '書籍情報変更',
+      BookTitle: '書籍タイトル',
+      BookSubTitle: '書籍サブタイトル',
+      BookNumberOfArticles: '記事数',
+      BookNumberOfSections: 'セクション数',
+      Editors: '編集者',
+      Authors: '執筆者',
+      Ok: '書籍の保存',
+      Cancel: 'キャンセル',
+    },
+  },
   UsersGrid: {
     Header: {
       ID: 'ID',
