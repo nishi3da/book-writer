@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -50,7 +51,11 @@ Route::get('/book_editors', [BookController::class, 'editors'])->middleware('aut
 // 書籍の担当執筆者一覧
 Route::get('/book_authors', [BookController::class, 'authors'])->middleware('auth');
 
+// 記事の一覧の取得
+Route::get('/articles/{bookId}', [ArticleController::class, 'articles_list'])->middleware('auth');
+
 // ギャラリーサンプル
 Route::get("/gallery", [GalleryController::class, "index"]);
 Route::post("/gallery", [GalleryController::class, "store"]);
 Route::get("/gallery/preview/{id}", [GalleryController::class, "preview"]);
+
