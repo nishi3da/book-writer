@@ -84,15 +84,6 @@ export const EditBook = (props: EditBookProps) => {
       .catch((error) => {
         console.log('get authors - error', error);
       });
-    // 記事一覧
-    axios
-      .get(`/articles/${bookId}`)
-      .then((response) => {
-        console.log('response.data', response.data);
-      })
-      .catch((error) => {
-        console.log('get articles - error', error);
-      });
 
     // フォームデータの初期化
     setValue('title', title);

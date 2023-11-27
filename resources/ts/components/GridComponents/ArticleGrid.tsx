@@ -6,7 +6,7 @@ import { useMemo, useRef, useState, useCallback, useEffect } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
-import { ColDef, FirstDataRenderedEvent, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, FirstDataRenderedEvent, GridReadyEvent, RowDragEndEvent } from 'ag-grid-community';
 import axios from 'axios';
 
 type ArticleGridProps = {
@@ -19,8 +19,6 @@ type ArticleGridProps = {
 const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   // props展開
   const { userId, bookId, numberOfArticles, articleGridRef } = props;
-  // DOM参照
-  const gridRef = useRef<AgGridReact<IArticle>>(null);
   // 格納する要素（親）のスタイル
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
   // 格納される要素（子）のスタイル
@@ -28,11 +26,21 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   // 行データ
   const [rowData, setRowData] = useState<IArticle[]>([]);
 
+  // カラムの設定（共通）
+  const defaultColDef = useMemo<ColDef>(() => {
+    return {
+      sortable: false,
+      filter: false,
+      resizable: false,
+    };
+  }, []);
+
   // カラムの設定（列毎）
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
     {
       field: 'article_number',
       headerName: L.ArticleGrid.Header.Number,
+      rowDrag: true,
     },
     {
       field: 'article_type',
@@ -101,14 +109,32 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   // データが読み込まれレンダリングされたタイミングで実行される関数
   const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent) => {
     // カラム幅の調整
-    gridRef.current!.columnApi.autoSizeAllColumns();
+    articleGridRef.current!.columnApi.autoSizeAllColumns();
+  }, []);
+
+  // ドラッグアンドドロップの終了時のイベント処理
+  const handleRowDragEnd = useCallback((event: RowDragEndEvent) => {
+    event.api.forEachNodeAfterFilterAndSort((node) => {
+      console.log(node.data);
+      // 更新処理
+    });
   }, []);
 
   return (
     <div style={containerStyle}>
       <div className='container'>
         <div style={gridStyle} className='ag-theme-alpine'>
-          <AgGridReact<any> ref={articleGridRef} rowData={rowData} columnDefs={columnDefs} onFirstDataRendered={handleFirstDataRendered} onGridReady={handleGridReady} />
+          <AgGridReact<any>
+            ref={articleGridRef}
+            defaultColDef={defaultColDef}
+            rowData={rowData}
+            columnDefs={columnDefs}
+            onFirstDataRendered={handleFirstDataRendered}
+            onGridReady={handleGridReady}
+            rowDragManaged={true}
+            animateRows={true}
+            onRowDragEnd={handleRowDragEnd}
+          />
         </div>
       </div>
     </div>
