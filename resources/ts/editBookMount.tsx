@@ -7,14 +7,15 @@ const root = createRoot(rootElement!);
 
 const scriptData = document.getElementById('edit_book_props');
 let props: EditBookProps = {
-    userId: 0,
-    id: 0,
-    title: '',
-    sub_title: '',
-    number_of_articles: 0,
-    number_of_sections: 0,
-    editorIds: [],
-    authorIds: [],
+  userId: 0,
+  userRole: 'author',
+  id: 0,
+  title: '',
+  sub_title: '',
+  number_of_articles: 0,
+  number_of_sections: 0,
+  editorIds: [],
+  authorIds: [],
 };
 
 if (scriptData) {
