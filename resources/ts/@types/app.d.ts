@@ -62,17 +62,17 @@ declare type LableType = {
   };
   ArticleGrid: {
     Title: string;
-      Header: {
-        Number: string;
-        Type: string;
-        Title: string;
-        SubTitle: string;
-        LeadSentence: string;
-        ArticleData: string;
-        CreatedAt: string;
-        UpdatedAt: string;
-      }
-  }
+    Header: {
+      Number: string;
+      Type: string;
+      Title: string;
+      SubTitle: string;
+      LeadSentence: string;
+      ArticleData: string;
+      CreatedAt: string;
+      UpdatedAt: string;
+    };
+  };
 };
 
 declare type Roles = 'editor' | 'author' | 'admin';
@@ -114,14 +114,14 @@ declare type BookFormValues = {
 };
 
 declare type IArticle = {
-    id: number;
-    book_id: number;
-    article_number: number;
-    article_type: string;
-    title: string;
-    sub_title: string;
-    lead_sentence: string;
-    article_data: string;
-    created_at: string;
-    updated_at: string;
-}
+  id: number;
+  book_id: number;
+  article_number: number;
+  article_type: string;
+  title: string;
+  sub_title: string;
+  lead_sentence: string;
+  article_data: string;
+  created_at: string;
+  updated_at: string;
+};
