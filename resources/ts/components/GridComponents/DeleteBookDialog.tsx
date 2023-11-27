@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { alpha, styled, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { L } from '../../labels';
 import StyledInput from '../StyledComponents/StyledInput';
 import StyledInputLabel from '../StyledComponents/StyledInputLabel';
@@ -79,11 +79,6 @@ const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
           </StyledInputLabel>
           <StyledInput id='number_of_articles' type='number' value={bookData?.number_of_articles} disabled theme={theme} />
 
-          {/* セクション数 */}
-          <StyledInputLabel shrink htmlFor='number_of_sections' theme={theme}>
-            {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-          </StyledInputLabel>
-          <StyledInput id='number_of_sections' type='number' value={bookData?.number_of_sections} disabled theme={theme} />
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>

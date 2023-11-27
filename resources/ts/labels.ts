@@ -15,7 +15,6 @@ export const L: LableType = {
         BookTitle: '書籍タイトル',
         BookSubTitle: '書籍サブタイトル',
         BookNumberOfArticles: '記事数',
-        BookNumberOfSections: 'セクション数',
         Editors: '編集者',
         Authors: '執筆者',
         Ok: '書籍の保存',
@@ -33,7 +32,6 @@ export const L: LableType = {
       Required: '入力必須項目です。',
       MaxLength: '最大文字数は255文字です。',
       InvalideCharacter: '半角数字を入力して下さい。',
-      OverNumberOfArticles: '記事数以上のセクションは設定できません。',
     },
   },
   EditBook: {
@@ -42,7 +40,6 @@ export const L: LableType = {
       BookTitle: '書籍タイトル',
       BookSubTitle: '書籍サブタイトル',
       BookNumberOfArticles: '記事数',
-      BookNumberOfSections: 'セクション数',
       Editors: '編集者',
       Authors: '執筆者',
       Ok: '書籍の保存',

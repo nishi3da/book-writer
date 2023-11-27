@@ -34,18 +34,13 @@ class BookController extends Controller
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
         $numberOfArticles = intval($bookData['number_of_articles']);
-        $numberOfSections = intval($bookData['number_of_sections']);
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
-
-        Log::debug("e", $editorIds);
-        Log::debug("a", $authorIds);
 
         $book = new Book();
         $book->title = $title;
         $book->sub_title = $subTitle;
         $book->number_of_articles = $numberOfArticles;
-        $book->number_of_sections = $numberOfSections;
 
         $book->save();
 
@@ -65,8 +60,6 @@ class BookController extends Controller
                 title: string,
                 sub_title: string,
                 number_of_articles: integer,
-                number_of_sections: integer,
-
                 userId: integer,
                 book_editors: string[],
                 book_authors: string[],
@@ -102,7 +95,6 @@ class BookController extends Controller
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
         $numberOfArticles = $bookData['number_of_articles'];
-        $numberOfSections = $bookData['number_of_sections'];
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
@@ -111,7 +103,6 @@ class BookController extends Controller
         $book->title = $title;
         $book->sub_title = $subTitle;
         $book->number_of_articles = $numberOfArticles;
-        $book->number_of_sections = $numberOfSections;
         $book->save();
 
         // 書籍に紐づいたユーザーは一旦削除

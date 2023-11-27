@@ -15,7 +15,6 @@ declare type LableType = {
         BookTitle: string;
         BookSubTitle: string;
         BookNumberOfArticles: string;
-        BookNumberOfSections: string;
         Editors: string;
         Authors: string;
         Ok: string;
@@ -33,7 +32,6 @@ declare type LableType = {
       Required: string;
       MaxLength: string;
       InvalideCharacter: string;
-      OverNumberOfArticles: string;
     };
   };
   EditBook: {
@@ -42,7 +40,6 @@ declare type LableType = {
       BookTitle: string;
       BookSubTitle: string;
       BookNumberOfArticles: string;
-      BookNumberOfSections: string;
       Editors: string;
       Authors: string;
       Ok: string;
@@ -99,7 +96,6 @@ declare type IBook = {
   title: string;
   sub_title: string;
   number_of_articles: number;
-  number_of_sections: number;
   created_at: string;
   updated_at: string;
 };
@@ -113,7 +109,6 @@ declare type BookFormValues = {
   title: string;
   sub_title: string;
   number_of_articles: number;
-  number_of_sections: number;
   editorIds: number[];
   authorIds: number[];
 };

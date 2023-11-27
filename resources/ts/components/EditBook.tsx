@@ -99,7 +99,6 @@ export const EditBook = (props: EditBookProps) => {
     setValue('title', title);
     setValue('sub_title', sub_title);
     setValue('number_of_articles', number_of_articles);
-    setValue('number_of_sections', number_of_sections);
     setValue('editorIds', selectedEditorIds);
     setValue('authorIds', selectedAuthorIds);
   }, []);
@@ -174,37 +173,6 @@ export const EditBook = (props: EditBookProps) => {
             />
             {errors.number_of_articles?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
             {errors.number_of_articles?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
-
-            {/* セクション数 */}
-            <StyledInputLabel shrink htmlFor='number_of_sections' theme={theme}>
-              {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-            </StyledInputLabel>
-            <StyledInput
-              id='number_of_sections'
-              type='number'
-              theme={theme}
-              inputProps={{
-                min: 1,
-                max: 500,
-              }}
-              placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-              {...register('number_of_sections', {
-                required: L.BookGrid.Validation.Required,
-                min: 1,
-                max: 500,
-                pattern: /^[0-9]+$/,
-                validate: (value: number) => {
-                  const number_of_articles = Number(getValues('number_of_articles'));
-                  if (number_of_articles < value) {
-                    return L.BookGrid.Validation.OverNumberOfArticles;
-                  }
-                  return true;
-                },
-              })}
-            />
-            {errors.number_of_sections?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
-            {errors.number_of_sections?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
-            {errors.number_of_sections?.type === 'validate' && <Alert severity='error'>{L.BookGrid.Validation.OverNumberOfArticles}</Alert>}
 
             {/* 編集者 */}
             <StyledInputLabel shrink theme={theme}>
