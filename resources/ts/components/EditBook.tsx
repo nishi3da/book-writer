@@ -1,9 +1,10 @@
 import { L } from '../labels';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StyledInput from './StyledComponents/StyledInput';
 import StyledInputLabel from './StyledComponents/StyledInputLabel';
 import axios from 'axios';
-import { Alert, Grid, useTheme } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Button, useTheme } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { AgGridReact } from 'ag-grid-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import UsersGrid from './GridComponents/UsersGrid';
@@ -21,6 +22,8 @@ export type EditBookProps = {
 };
 
 export const EditBook = (props: EditBookProps) => {
+  console.log('EditBook', props);
+
   // Props展開
   const { userId, userRole, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
 
@@ -60,7 +63,6 @@ export const EditBook = (props: EditBookProps) => {
   };
 
   // データの取得
-  // 編集者・執筆者の一覧は、初回のみでOK（別窓で登録したとしても）
   useEffect(() => {
     // 編集者
     axios
@@ -83,10 +85,16 @@ export const EditBook = (props: EditBookProps) => {
   }, []);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
+    <div style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+      <Accordion sx={{ backgroundColor: '#CCCCCC', alignItems: '' }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
+          {L.EditBook.Accordion.Summary}
+        </AccordionSummary>
+        <AccordionDetails>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Button type='submit' variant='contained' color='primary'>
+              {L.EditBook.Accordion.Ok}
+            </Button>
             {/* タイトル */}
             <StyledInputLabel shrink htmlFor='title' theme={theme}>
               {L.BookGrid.AddBook.Dialog.BookTitle}
@@ -124,11 +132,7 @@ export const EditBook = (props: EditBookProps) => {
               })}
             />
             {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
-          </Grid>
-        </Grid>
 
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
             {/* 記事数 */}
             <StyledInputLabel shrink htmlFor='number_of_articles' theme={theme}>
               {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
@@ -185,21 +189,21 @@ export const EditBook = (props: EditBookProps) => {
             {errors.number_of_sections?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
             {errors.number_of_sections?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
             {errors.number_of_sections?.type === 'validate' && <Alert severity='error'>{L.BookGrid.Validation.OverNumberOfArticles}</Alert>}
-          </Grid>
-        </Grid>
 
-        {/* 編集者 */}
-        <StyledInputLabel shrink theme={theme}>
-          {L.BookGrid.AddBook.Dialog.Editors}
-        </StyledInputLabel>
-        <UsersGrid type='editors' userId={userId} rowData={editors} setRowData={setEditors} gridRef={editorsGridRef} setValue={setValue} selectedUserIds={selectedEditorIds} />
+            {/* 編集者 */}
+            <StyledInputLabel shrink theme={theme}>
+              {L.BookGrid.AddBook.Dialog.Editors}
+            </StyledInputLabel>
+            <UsersGrid type='editors' userId={userId} rowData={editors} gridRef={editorsGridRef} setValue={setValue} selectedUserIds={selectedEditorIds} />
 
-        {/* 執筆者 */}
-        <StyledInputLabel shrink theme={theme}>
-          {L.BookGrid.AddBook.Dialog.Authors}
-        </StyledInputLabel>
-        <UsersGrid type='authors' userId={userId} rowData={authors} setRowData={setAuthors} gridRef={authorsGridRef} setValue={setValue} selectedUserIds={selectedAuthorIds} />
-      </form>
+            {/* 執筆者 */}
+            <StyledInputLabel shrink theme={theme}>
+              {L.BookGrid.AddBook.Dialog.Authors}
+            </StyledInputLabel>
+            <UsersGrid type='authors' userId={userId} rowData={authors} gridRef={authorsGridRef} setValue={setValue} selectedUserIds={selectedAuthorIds} />
+          </form>
+        </AccordionDetails>
+      </Accordion>
     </div>
   );
 };
