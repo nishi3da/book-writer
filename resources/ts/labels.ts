@@ -63,4 +63,17 @@ export const L: LableType = {
     EditorsPrefix: '編集者',
     AuthorsPrefix: '執筆者',
   },
+  ArticleGrid: {
+    Title: '掲載記事一覧',
+    Header: {
+      Number: '掲載番号',
+      Type: '記事種別',
+      Title: '記事タイトル',
+      SubTitle: '記事サブタイトル',
+      LeadSentence: '記事リード文',
+      ArticleData: '記事テキスト',
+      CreatedAt: '作成日',
+      UpdatedAt: '更新日',
+    },
+  },
 };
