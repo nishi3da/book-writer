@@ -14,4 +14,10 @@ class ArticleController extends Controller
         $articles = Article::where('book_id', '=', $bookId)->orderBy('number', 'asc')->get();
         return response()->json($articles);
     }
+
+    public function article_types_list() {
+        Log::debug('--- article_types_list ---');
+        $articleTypes = ArticleType::all();
+        return response()->json($articleTypes);
+    }
 }
