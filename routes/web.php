@@ -52,7 +52,7 @@ Route::get('/book_editors', [BookController::class, 'editors'])->middleware('aut
 Route::get('/book_authors', [BookController::class, 'authors'])->middleware('auth');
 
 // 記事の一覧の取得
-Route::get('/articles/{bookId}', [ArticleController::class, 'articles_list'])->middleware('auth');
+Route::get('/articles_list/{bookId}', [ArticleController::class, 'articles_list'])->middleware('auth');
 
 // ギャラリーサンプル
 Route::get("/gallery", [GalleryController::class, "index"]);
