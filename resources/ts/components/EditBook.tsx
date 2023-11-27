@@ -8,6 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { AgGridReact } from 'ag-grid-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import UsersGrid from './GridComponents/UsersGrid';
+import ArticleGrid from './GridComponents/ArticleGrid';
 
 export type EditBookProps = {
   userId: number;
@@ -24,6 +25,8 @@ export type EditBookProps = {
 export const EditBook = (props: EditBookProps) => {
   // Props展開
   const { userId, userRole, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
+  // 名前の付け替え
+  const bookId = id;
 
   // テーマ
   const theme = useTheme();
@@ -39,6 +42,7 @@ export const EditBook = (props: EditBookProps) => {
   // DOM参照
   const editorsGridRef = useRef<AgGridReact<IUser>>(null);
   const authorsGridRef = useRef<AgGridReact<IUser>>(null);
+  const articlesGridRef = useRef<AgGridReact<IArticle>>(null);
 
   // フォーム関係
   const {
@@ -52,9 +56,9 @@ export const EditBook = (props: EditBookProps) => {
     console.log('patch');
     // 登録の場合
     axios
-      .patch(`/books/${id}`, { bookData: data })
+      .patch(`/books/${bookId}`, { bookData: data })
       .then((res) => {
-        location.href = `/books/${id}/edit`;
+        location.href = `/books/${bookId}/edit`;
       })
       .catch((error) => {
         console.log('post - error', error);
@@ -81,6 +85,17 @@ export const EditBook = (props: EditBookProps) => {
       .catch((error) => {
         console.log('get authors - error', error);
       });
+    // 記事一覧
+    axios
+      .get(`/articles/${bookId}`)
+      .then((response) => {
+        console.log('response.data', response.data);
+      })
+      .catch((error) => {
+        console.log('get articles - error', error);
+      });
+
+    // フォームデータの初期化
     setValue('title', title);
     setValue('sub_title', sub_title);
     setValue('number_of_articles', number_of_articles);
@@ -91,7 +106,7 @@ export const EditBook = (props: EditBookProps) => {
 
   return (
     <div style={{ paddingLeft: '5%', paddingRight: '5%' }}>
-      <Accordion sx={{ backgroundColor: '#CCCCCC', alignItems: '' }}>
+      <Accordion sx={{ backgroundColor: '#CCCCCC', marginBottom: '30px' }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
           {L.EditBook.Accordion.Summary}
         </AccordionSummary>
@@ -221,6 +236,8 @@ export const EditBook = (props: EditBookProps) => {
           </form>
         </AccordionDetails>
       </Accordion>
+      <h2 style={{ textAlign: 'center' }}>{L.ArticleGrid.Title}</h2>
+      <ArticleGrid userId={userId} bookId={bookId} />
     </div>
   );
 };
