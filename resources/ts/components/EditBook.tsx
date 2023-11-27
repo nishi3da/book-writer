@@ -22,8 +22,6 @@ export type EditBookProps = {
 };
 
 export const EditBook = (props: EditBookProps) => {
-  console.log('EditBook', props);
-
   // Props展開
   const { userId, userRole, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
 
@@ -51,11 +49,12 @@ export const EditBook = (props: EditBookProps) => {
     formState: { errors },
   } = useForm<BookFormValues>();
   const onSubmit: SubmitHandler<BookFormValues> = (data: BookFormValues) => {
+    console.log('patch');
     // 登録の場合
     axios
-      .post('/books', { bookData: data })
+      .patch(`/books/${id}`, { bookData: data })
       .then((res) => {
-        location.href = '/books';
+        location.href = `/books/${id}/edit`;
       })
       .catch((error) => {
         console.log('post - error', error);
@@ -82,6 +81,12 @@ export const EditBook = (props: EditBookProps) => {
       .catch((error) => {
         console.log('get authors - error', error);
       });
+    setValue('title', title);
+    setValue('sub_title', sub_title);
+    setValue('number_of_articles', number_of_articles);
+    setValue('number_of_sections', number_of_sections);
+    setValue('editorIds', selectedEditorIds);
+    setValue('authorIds', selectedAuthorIds);
   }, []);
 
   return (
@@ -102,7 +107,6 @@ export const EditBook = (props: EditBookProps) => {
             <StyledInput
               id='title'
               placeholder={L.BookGrid.AddBook.Dialog.BookTitle}
-              value={title}
               theme={theme}
               {...register('title', {
                 required: L.BookGrid.Validation.Required,
@@ -122,7 +126,6 @@ export const EditBook = (props: EditBookProps) => {
             <StyledInput
               id='sub_title'
               placeholder={L.BookGrid.AddBook.Dialog.BookSubTitle}
-              value={sub_title}
               theme={theme}
               {...register('sub_title', {
                 maxLength: {
@@ -146,7 +149,6 @@ export const EditBook = (props: EditBookProps) => {
                 pattern: '[0-9]*',
               }}
               placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-              value={number_of_articles}
               theme={theme}
               {...register('number_of_articles', {
                 required: L.BookGrid.Validation.Required,
@@ -171,7 +173,6 @@ export const EditBook = (props: EditBookProps) => {
                 max: 500,
               }}
               placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-              value={number_of_sections}
               {...register('number_of_sections', {
                 required: L.BookGrid.Validation.Required,
                 min: 1,
@@ -194,13 +195,29 @@ export const EditBook = (props: EditBookProps) => {
             <StyledInputLabel shrink theme={theme}>
               {L.BookGrid.AddBook.Dialog.Editors}
             </StyledInputLabel>
-            <UsersGrid type='editors' userId={userId} rowData={editors} gridRef={editorsGridRef} setValue={setValue} selectedUserIds={selectedEditorIds} />
+            <UsersGrid
+              type='editors'
+              userId={userId}
+              rowData={editors}
+              gridRef={editorsGridRef}
+              setValue={setValue}
+              selectedUserIds={selectedEditorIds}
+              setSelectedUserIds={setSelectedEditorIds}
+            />
 
             {/* 執筆者 */}
             <StyledInputLabel shrink theme={theme}>
               {L.BookGrid.AddBook.Dialog.Authors}
             </StyledInputLabel>
-            <UsersGrid type='authors' userId={userId} rowData={authors} gridRef={authorsGridRef} setValue={setValue} selectedUserIds={selectedAuthorIds} />
+            <UsersGrid
+              type='authors'
+              userId={userId}
+              rowData={authors}
+              gridRef={authorsGridRef}
+              setValue={setValue}
+              selectedUserIds={selectedAuthorIds}
+              setSelectedUserIds={setSelectedAuthorIds}
+            />
           </form>
         </AccordionDetails>
       </Accordion>

@@ -19,9 +19,9 @@ class BookController extends Controller
     public function index()
     {
         Log::debug('--- book index ---');
-        $id = Auth::id();
+        $userId = Auth::id();
 
-        return view('book', ['id' => $id]);
+        return view('book', ['userId' => $userId]);
     }
 
     /**
@@ -102,10 +102,10 @@ class BookController extends Controller
 
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
-        $numberOfArticles = intval($bookData['number_of_articles']);
-        $numberOfSections = intval($bookData['number_of_sections']);
-        $editorIds = explode(',', $bookData['editors']);
-        $authorIds = explode(',', $bookData['authors']);
+        $numberOfArticles = $bookData['number_of_articles'];
+        $numberOfSections = $bookData['number_of_sections'];
+        $editorIds = $bookData['editorIds'];
+        $authorIds = $bookData['authorIds'];
 
         $book = Book::find($bookId);
 

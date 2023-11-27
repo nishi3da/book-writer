@@ -18,11 +18,12 @@ type UsersGridProps = {
   gridRef: React.RefObject<AgGridReact<IUser>>;
   setValue: UseFormSetValue<BookFormValues>;
   selectedUserIds: number[];
+  setSelectedUserIds: (selectedUserIds: number[]) => void;
 };
 
 const UsersGrid = (props: UsersGridProps): JSX.Element => {
   // データの展開
-  const { type, gridRef, rowData, userId } = props;
+  const { type, gridRef, rowData, userId, setValue, selectedUserIds, setSelectedUserIds } = props;
 
   const prefix = useMemo(() => {
     if (type === 'editors') {
@@ -78,25 +79,34 @@ const UsersGrid = (props: UsersGridProps): JSX.Element => {
     ];
   }, []);
 
-  // データの初回読み込み後の処理
+  // レンダリングにデータが間に合わなかった時の処理
+  useEffect(() => {
+    // ログインユーザーのIDと一致する行のチェックボックスをONにする
+    const userIds: number[] = [];
+    if (gridRef && gridRef.current && gridRef.current.api) {
+      gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
+        if (node.data && selectedUserIds.includes(node.data.id)) {
+          node.setSelected(true);
+          userIds.push(node.data.id);
+        }
+      });
+      type === 'editors' ? setValue('editorIds', userIds) : setValue('authorIds', userIds);
+    }
+  }, [selectedUserIds]);
+
+  // データの初回読み込み後に行う処理
   const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent, props: UsersGridProps) => {
-    console.log('handleFirstDataRendered: ', props);
-    const { gridRef, setValue, type, selectedUserIds } = props;
+    const { gridRef, setValue, type, selectedUserIds, setSelectedUserIds } = props;
     const userIds: number[] = [];
     // ログインユーザーのIDと一致する行のチェックボックスをONにする
     gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
       if (node.data && selectedUserIds.includes(node.data.id)) {
-        console.log('node', node);
-        console.log('selected -', node.data.id);
         node.setSelected(true);
         userIds.push(node.data.id);
       }
     });
-    if (type === 'editors') {
-      setValue('editorIds', userIds);
-    } else {
-      setValue('authorIds', userIds);
-    }
+    type === 'editors' ? setValue('editorIds', userIds) : setValue('authorIds', userIds);
+    setSelectedUserIds(userIds);
     // カラム幅の調整
     gridRef.current!.columnApi.autoSizeAllColumns();
   }, []);
@@ -114,18 +124,15 @@ const UsersGrid = (props: UsersGridProps): JSX.Element => {
 
   //   チェックボックスの変更時のイベント関数
   const handleSelectionChanged = useCallback((event: SelectionChangedEvent, props: UsersGridProps) => {
-    const { gridRef, setValue, type } = props;
+    const { gridRef, setValue, type, setSelectedUserIds } = props;
     const userIds: number[] = [];
     gridRef.current!.api.forEachNode((node: IRowNode<IUser>) => {
       if (node.data && node.isSelected()) {
         userIds.push(node.data.id);
       }
     });
-    if (type === 'editors') {
-      setValue('editorIds', userIds);
-    } else {
-      setValue('authorIds', userIds);
-    }
+    type === 'editors' ? setValue('editorIds', userIds) : setValue('authorIds', userIds);
+    setSelectedUserIds(userIds);
   }, []);
 
   return (
