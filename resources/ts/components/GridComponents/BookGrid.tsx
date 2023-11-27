@@ -78,6 +78,7 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
 
   // 各種のAPIが使用可能になったタイミングで書籍一覧を取得する
   const handleGridReady = useCallback((params: GridReadyEvent) => {
+    console.log('gete');
     axios
       .get('/books_list')
       .then((response) => {

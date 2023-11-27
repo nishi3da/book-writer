@@ -19,9 +19,9 @@ class BookController extends Controller
     public function index()
     {
         Log::debug('--- book index ---');
-        $id = Auth::id();
+        $userId = Auth::id();
 
-        return view('book', ['id' => $id]);
+        return view('book', ['userId' => $userId]);
     }
 
     /**
@@ -29,14 +29,17 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        Log::debug('--- book store ---');
+        Log::debug('--- book store ---', $request->all());
         $bookData = $request->input('bookData');
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
         $numberOfArticles = intval($bookData['number_of_articles']);
         $numberOfSections = intval($bookData['number_of_sections']);
-        $editorIds = explode(',', $bookData['editors']);
-        $authorIds = explode(',', $bookData['authors']);
+        $editorIds = $bookData['editorIds'];
+        $authorIds = $bookData['authorIds'];
+
+        Log::debug("e", $editorIds);
+        Log::debug("a", $authorIds);
 
         $book = new Book();
         $book->title = $title;
@@ -72,8 +75,8 @@ class BookController extends Controller
         // 書籍1件取得
         $book = Book::find($bookId);
 
-        $editorIds = $book->editors()->get()->pluck('id')->implode(',');
-        $authorIds = $book->authors()->get()->pluck('id')->implode(',');
+        $editorIds = $book->editors()->get()->pluck('id');
+        $authorIds = $book->authors()->get()->pluck('id');
 
         // JSON化
         $results = json_decode($book->toJson(), true);
@@ -82,6 +85,8 @@ class BookController extends Controller
         $results = array_merge($results, ['authorIds' => $authorIds]);
         $results = array_merge($results, ['userId' => Auth::id()]);
         $results = array_merge($results, ['userRole' => Auth::user()->role]);
+
+        Log::debug($results);
 
         // レスポンス
         return view('editbook', ["edit_book_props" =>$results]);
@@ -97,10 +102,10 @@ class BookController extends Controller
 
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
-        $numberOfArticles = intval($bookData['number_of_articles']);
-        $numberOfSections = intval($bookData['number_of_sections']);
-        $editorIds = explode(',', $bookData['editors']);
-        $authorIds = explode(',', $bookData['authors']);
+        $numberOfArticles = $bookData['number_of_articles'];
+        $numberOfSections = $bookData['number_of_sections'];
+        $editorIds = $bookData['editorIds'];
+        $authorIds = $bookData['authorIds'];
 
         $book = Book::find($bookId);
 

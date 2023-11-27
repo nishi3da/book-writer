@@ -36,6 +36,19 @@ declare type LableType = {
       OverNumberOfArticles: string;
     };
   };
+  EditBook: {
+    Accordion: {
+      Summary: string;
+      BookTitle: string;
+      BookSubTitle: string;
+      BookNumberOfArticles: string;
+      BookNumberOfSections: string;
+      Editors: string;
+      Authors: string;
+      Ok: string;
+      Cancel: string;
+    };
+  };
   UsersGrid: {
     Header: {
       ID: string;
@@ -88,6 +101,6 @@ declare type BookFormValues = {
   sub_title: string;
   number_of_articles: number;
   number_of_sections: number;
-  editorIds: string[];
-  authorIds: string[];
+  editorIds: number[];
+  authorIds: number[];
 };
