@@ -58,6 +58,7 @@ class BookController extends Controller
 
     public function edit(string $bookId)
     {
+        Log::debug('--- book edit ---');
         /*
             {
                 id: integer,
@@ -86,8 +87,6 @@ class BookController extends Controller
         $results = array_merge($results, ['userId' => Auth::id()]);
         $results = array_merge($results, ['userRole' => Auth::user()->role]);
 
-        Log::debug($results);
-
         // レスポンス
         return view('editbook', ["edit_book_props" =>$results]);
     }
@@ -97,7 +96,7 @@ class BookController extends Controller
      */
     public function update(Request $request, string $bookId)
     {
-        Log::debug('update');
+        Log::debug('--- book update ---');
         $bookData = $request->input('bookData');
 
         $title = $bookData['title'];
@@ -139,7 +138,7 @@ class BookController extends Controller
 
     public function books_list()
     {
-        Log::debug('--- books_list ---');
+        Log::debug('--- book books_list ---');
         // ユーザーが担当する書籍一覧を表示する
         $id = Auth::id();
         Log::debug($id);
@@ -152,6 +151,7 @@ class BookController extends Controller
 
     public function editors(string $bookId)
     {
+        Log::debug('--- book editors ---');
         $book = Book::find($bookId);
         $editorIds = $book->editors()->get()->pluck('id')->implode(',');
 
@@ -160,6 +160,7 @@ class BookController extends Controller
 
     public function authors(string $bookId)
     {
+        Log::debug('--- book authors ---');
         $book = Book::find($bookId);
         $authorIds = $book->authors()->get()->pluck('id')->implode(',');
 
