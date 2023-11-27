@@ -17,14 +17,13 @@ export type EditBookProps = {
   title: string;
   sub_title: string;
   number_of_articles: number;
-  number_of_sections: number;
   editorIds: number[];
   authorIds: number[];
 };
 
 export const EditBook = (props: EditBookProps) => {
   // Props展開
-  const { userId, userRole, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
+  const { userId, userRole, id, title, sub_title, number_of_articles, editorIds, authorIds } = props;
   // 名前の付け替え
   const bookId = id;
 
@@ -109,7 +108,7 @@ export const EditBook = (props: EditBookProps) => {
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
           {L.EditBook.Accordion.Summary}
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={{ borderTop: '2px solid #AAAAAA' }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Button type='submit' variant='contained' color='primary'>
               {L.EditBook.Accordion.Ok}
@@ -205,7 +204,7 @@ export const EditBook = (props: EditBookProps) => {
         </AccordionDetails>
       </Accordion>
       <h2 style={{ textAlign: 'center' }}>{L.ArticleGrid.Title}</h2>
-      <ArticleGrid userId={userId} bookId={bookId} />
+      <ArticleGrid userId={userId} bookId={bookId} numberOfArticles={number_of_articles} articleGridRef={articlesGridRef} />
     </div>
   );
 };
