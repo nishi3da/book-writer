@@ -150,30 +150,6 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
             />
             {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
-            {/* 記事数 */}
-            <StyledInputLabel shrink htmlFor='number_of_articles' theme={theme}>
-              {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-            </StyledInputLabel>
-            <StyledInput
-              id='number_of_articles'
-              type='number'
-              inputProps={{
-                min: 1,
-                max: 500,
-                pattern: '[0-9]*',
-              }}
-              placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-              theme={theme}
-              {...register('number_of_articles', {
-                required: L.BookGrid.Validation.Required,
-                min: 1,
-                max: 500,
-                pattern: /^[0-9]+$/,
-              })}
-            />
-            {errors.number_of_articles?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
-            {errors.number_of_articles?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
-
             {/* 編集者 */}
             <StyledInputLabel shrink theme={theme}>
               {L.BookGrid.AddBook.Dialog.Editors}
