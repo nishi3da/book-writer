@@ -76,6 +76,14 @@ declare type LableType = {
       UpdatedAt: string;
     };
   };
+  ArticleDialog: {
+    DialogTitle: string;
+    Title: string;
+    SubTitle: string;
+    LeadSentence: string;
+    Ok: string;
+    Cancel: string;
+  };
 };
 
 declare type Roles = 'editor' | 'author' | 'admin';
@@ -111,9 +119,19 @@ declare type IBookUser = IBook & {
 declare type BookFormValues = {
   title: string;
   sub_title: string;
-  number_of_articles: number;
   editorIds: number[];
   authorIds: number[];
+};
+
+// 記事の送信データ型
+declare type ArticleFormValues = {
+  book_id: number;
+  article_number: number;
+  article_type_id: number;
+  title: string;
+  sub_title: string;
+  lead_sentence: string;
+  article_data: string;
 };
 
 declare type IArticle = {

@@ -76,4 +76,12 @@ export const L: LableType = {
       UpdatedAt: '更新日',
     },
   },
+  ArticleDialog: {
+    DialogTitle: "記事の新規作成",
+    Title: '記事タイトル',
+    SubTitle: '記事サブタイトル',
+    LeadSentence: '記事リード文',
+    Ok: '記事を作成',
+    Cancel: 'キャンセル',
+  },
 };
