@@ -2,23 +2,28 @@
 
 import { L } from '../../labels';
 
-import { useMemo, useRef, useState, useCallback, useEffect } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 import { ColDef, FirstDataRenderedEvent, GridReadyEvent, RowDragEndEvent } from 'ag-grid-community';
 import axios from 'axios';
+import ArticleTypeRenderer from './CellRenderer.tsx/ArticleTypeRenderer';
+import ArticleTypeEditor from './CellEditor/ArticleTypeEditor';
+import { Button, IconButton, Stack } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type ArticleGridProps = {
   userId: number;
   bookId: number;
-  numberOfArticles: number;
   articleGridRef: React.RefObject<AgGridReact<IArticle>>;
+  articleTypes: { [key: number]: string };
 };
 
 const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   // props展開
-  const { userId, bookId, numberOfArticles, articleGridRef } = props;
+  const { bookId, articleGridRef, articleTypes } = props;
   // 格納する要素（親）のスタイル
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
   // 格納される要素（子）のスタイル
@@ -32,6 +37,7 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
       sortable: false,
       filter: false,
       resizable: false,
+      editable: true,
     };
   }, []);
 
@@ -41,10 +47,43 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
       field: 'article_number',
       headerName: L.ArticleGrid.Header.Number,
       rowDrag: true,
+      editable: false,
+      checkboxSelection: true,
     },
     {
-      field: 'article_type',
+      headerName: L.ArticleGrid.Header.Edit,
+      editable: false,
+      cellRenderer: (params) => {
+        return (
+          <IconButton aria-label='edit' color='primary'>
+            <EditIcon />
+          </IconButton>
+        );
+      },
+    },
+    {
+      headerName: L.ArticleGrid.Header.Delete,
+      editable: false,
+      cellRenderer: (params) => {
+        return (
+          <IconButton aria-label='delete' color='error'>
+            <DeleteIcon />
+          </IconButton>
+        );
+      },
+    },
+    {
+      field: 'article_type_id',
       headerName: L.ArticleGrid.Header.Type,
+      cellRenderer: ArticleTypeRenderer,
+      cellRendererParams: { articleTypes: articleTypes },
+      cellEditor: ArticleTypeEditor,
+      cellEditorParams: {
+        articleTypes: articleTypes,
+        articleGridRef: articleGridRef,
+        setRowData: setRowData,
+      },
+      cellEditorPopup: true,
     },
     {
       field: 'title',
@@ -65,10 +104,12 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
     {
       field: 'created_at',
       headerName: L.ArticleGrid.Header.CreatedAt,
+      editable: false,
     },
     {
       field: 'updated_at',
       headerName: L.ArticleGrid.Header.UpdatedAt,
+      editable: false,
     },
   ]);
 
@@ -79,27 +120,7 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
     axios
       .get(`/articles_list/${bookId}`)
       .then((response) => {
-        if (response.data.length === 0) {
-          console.log('no articles');
-          const initArticles: IArticle[] = [];
-          for (let i = 0; i < numberOfArticles; i++) {
-            initArticles.push({
-              id: 0,
-              book_id: bookId,
-              article_number: i + 1,
-              article_type: '本文',
-              title: '',
-              sub_title: '',
-              lead_sentence: '',
-              article_data: '',
-              created_at: '',
-              updated_at: '',
-            });
-          }
-          setRowData(initArticles);
-        } else {
-          setRowData(response.data);
-        }
+        setRowData(response.data);
       })
       .catch((error) => {
         console.log('get - articles - error', error);
@@ -114,15 +135,38 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
 
   // ドラッグアンドドロップの終了時のイベント処理
   const handleRowDragEnd = useCallback((event: RowDragEndEvent) => {
+    console.log('DD', event);
+    let newRowData: IArticle[] = [];
+    let cnt = 1;
     event.api.forEachNodeAfterFilterAndSort((node) => {
-      console.log(node.data);
-      // 更新処理
+      if (node && node.data) {
+        let newRow: IArticle = { ...node.data };
+        newRow.article_number = cnt++;
+        newRowData.push(newRow);
+      }
     });
+    setRowData([...newRowData]);
+  }, []);
+
+  const handleAddArticleClick = useCallback(() => {
+    console.log('add article');
+  }, []);
+
+  const handleDeleteArticleClick = useCallback(() => {
+    console.log('delete article');
   }, []);
 
   return (
     <div style={containerStyle}>
       <div className='container'>
+        <Stack direction='row' spacing={2} sx={{ marginBottom: '10px' }}>
+          <Button variant='contained' color='primary' onClick={handleAddArticleClick}>
+            {L.ArticleGrid.AddArticle}
+          </Button>
+          <Button variant='contained' color='error' onClick={handleDeleteArticleClick}>
+            {L.ArticleGrid.DeleteArticle}
+          </Button>
+        </Stack>
         <div style={gridStyle} className='ag-theme-alpine'>
           <AgGridReact<any>
             ref={articleGridRef}
