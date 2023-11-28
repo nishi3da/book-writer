@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Article;
+use App\Models\ArticleType;
 
 class ArticleController extends Controller
 {
