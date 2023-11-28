@@ -41,11 +41,6 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
   // カラムの設定（列毎）
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
     {
-      headerName: '',
-      field: 'id',
-      checkboxSelection: true,
-    },
-    {
       headerName: L.BookGrid.Header.Edit,
       cellRenderer: (params: any) => {
         return (
