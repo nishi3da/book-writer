@@ -14,7 +14,6 @@ declare type LableType = {
         Title: string;
         BookTitle: string;
         BookSubTitle: string;
-        BookNumberOfArticles: string;
         Editors: string;
         Authors: string;
         Ok: string;
@@ -62,8 +61,12 @@ declare type LableType = {
   };
   ArticleGrid: {
     Title: string;
+    AddArticle: string;
+    DeleteArticle: string;
     Header: {
       Number: string;
+      Edit: string;
+      Delete: string;
       Type: string;
       Title: string;
       SubTitle: string;
@@ -117,7 +120,7 @@ declare type IArticle = {
   id: number;
   book_id: number;
   article_number: number;
-  article_type: string;
+  article_type_id: number;
   title: string;
   sub_title: string;
   lead_sentence: string;

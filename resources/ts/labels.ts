@@ -14,7 +14,6 @@ export const L: LableType = {
         Title: '書籍の新規作成',
         BookTitle: '書籍タイトル',
         BookSubTitle: '書籍サブタイトル',
-        BookNumberOfArticles: '記事数',
         Editors: '編集者',
         Authors: '執筆者',
         Ok: '書籍の保存',
@@ -62,8 +61,12 @@ export const L: LableType = {
   },
   ArticleGrid: {
     Title: '掲載記事一覧',
+    AddArticle: '記事の新規作成',
+    DeleteArticle: '記事の削除',
     Header: {
       Number: '掲載番号',
+      Edit: '記事編集',
+      Delete: '記事削除',
       Type: '記事種別',
       Title: '記事タイトル',
       SubTitle: '記事サブタイトル',
