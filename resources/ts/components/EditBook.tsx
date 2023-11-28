@@ -16,14 +16,14 @@ export type EditBookProps = {
   id: number;
   title: string;
   sub_title: string;
-  number_of_articles: number;
   editorIds: number[];
   authorIds: number[];
+  articleTypes: {[key: number]: string};
 };
 
 export const EditBook = (props: EditBookProps) => {
   // Props展開
-  const { userId, userRole, id, title, sub_title, number_of_articles, editorIds, authorIds } = props;
+  const { userId, userRole, id, title, sub_title, editorIds, authorIds, articleTypes } = props;
   // 名前の付け替え
   const bookId = id;
 
@@ -88,7 +88,6 @@ export const EditBook = (props: EditBookProps) => {
     // フォームデータの初期化
     setValue('title', title);
     setValue('sub_title', sub_title);
-    setValue('number_of_articles', number_of_articles);
     setValue('editorIds', selectedEditorIds);
     setValue('authorIds', selectedAuthorIds);
   }, []);
@@ -140,30 +139,6 @@ export const EditBook = (props: EditBookProps) => {
             />
             {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
-            {/* 記事数 */}
-            <StyledInputLabel shrink htmlFor='number_of_articles' theme={theme}>
-              {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-            </StyledInputLabel>
-            <StyledInput
-              id='number_of_articles'
-              type='number'
-              inputProps={{
-                min: 1,
-                max: 500,
-                pattern: '[0-9]*',
-              }}
-              placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-              theme={theme}
-              {...register('number_of_articles', {
-                required: L.BookGrid.Validation.Required,
-                min: 1,
-                max: 500,
-                pattern: /^[0-9]+$/,
-              })}
-            />
-            {errors.number_of_articles?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
-            {errors.number_of_articles?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
-
             {/* 編集者 */}
             <StyledInputLabel shrink theme={theme}>
               {L.BookGrid.AddBook.Dialog.Editors}
@@ -195,7 +170,7 @@ export const EditBook = (props: EditBookProps) => {
         </AccordionDetails>
       </Accordion>
       <h2 style={{ textAlign: 'center' }}>{L.ArticleGrid.Title}</h2>
-      <ArticleGrid userId={userId} bookId={bookId} numberOfArticles={number_of_articles} articleGridRef={articlesGridRef} />
+      <ArticleGrid userId={userId} bookId={bookId} articleGridRef={articlesGridRef} articleTypes={articleTypes}/>
     </div>
   );
 };
