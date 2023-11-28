@@ -53,6 +53,8 @@ Route::get('/book_authors', [BookController::class, 'authors'])->middleware('aut
 
 // 記事の一覧の取得
 Route::get('/articles_list/{bookId}', [ArticleController::class, 'articles_list'])->middleware('auth');
+// 記事種別一覧の取得
+Route::get('/article_types_list', [ArticleController::class, 'article_types_list'])->middleware('auth');
 
 // ギャラリーサンプル
 Route::get("/gallery", [GalleryController::class, "index"]);
