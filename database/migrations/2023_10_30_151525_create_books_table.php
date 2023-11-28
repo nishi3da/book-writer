@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('sub_title')->nullable();
-            $table->integer('number_of_articles');
             $table->timestamps();
         });
     }

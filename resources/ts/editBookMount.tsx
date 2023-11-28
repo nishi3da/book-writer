@@ -12,10 +12,9 @@ let props: EditBookProps = {
   id: 0,
   title: '',
   sub_title: '',
-  number_of_articles: 0,
-  number_of_sections: 0,
   editorIds: [],
   authorIds: [],
+  articleTypes: {},
 };
 
 if (scriptData) {

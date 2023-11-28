@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Models\ArticleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -33,14 +34,12 @@ class BookController extends Controller
         $bookData = $request->input('bookData');
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
-        $numberOfArticles = intval($bookData['number_of_articles']);
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
         $book = new Book();
         $book->title = $title;
         $book->sub_title = $subTitle;
-        $book->number_of_articles = $numberOfArticles;
 
         $book->save();
 
@@ -59,10 +58,10 @@ class BookController extends Controller
                 id: integer,
                 title: string,
                 sub_title: string,
-                number_of_articles: integer,
                 userId: integer,
-                book_editors: string[],
-                book_authors: string[],
+                editorIds: string[],
+                authorIds: string[],
+                article_types: {}
             }
         */
 
@@ -72,6 +71,13 @@ class BookController extends Controller
         $editorIds = $book->editors()->get()->pluck('id');
         $authorIds = $book->authors()->get()->pluck('id');
 
+        // articleTypes取得
+        $articleTypesAll = ArticleType::all();
+        $articleTypes = [];
+        foreach ($articleTypesAll as $articleType) {
+            $articleTypes[$articleType->id] = $articleType->name;
+        }
+
         // JSON化
         $results = json_decode($book->toJson(), true);
         // 配列に追加
@@ -79,6 +85,7 @@ class BookController extends Controller
         $results = array_merge($results, ['authorIds' => $authorIds]);
         $results = array_merge($results, ['userId' => Auth::id()]);
         $results = array_merge($results, ['userRole' => Auth::user()->role]);
+        $results = array_merge($results, ['articleTypes' => $articleTypes]);
 
         // レスポンス
         return view('editbook', ["edit_book_props" =>$results]);
@@ -94,7 +101,6 @@ class BookController extends Controller
 
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
-        $numberOfArticles = $bookData['number_of_articles'];
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
@@ -102,7 +108,6 @@ class BookController extends Controller
 
         $book->title = $title;
         $book->sub_title = $subTitle;
-        $book->number_of_articles = $numberOfArticles;
         $book->save();
 
         // 書籍に紐づいたユーザーは一旦削除
