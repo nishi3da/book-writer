@@ -47,14 +47,16 @@ Route::get('/editors_list', [UserController::class, 'editors_list'])->middleware
 Route::get('/authors_list', [UserController::class, 'authors_list'])->middleware('auth');
 
 // 書籍の担当編集者一覧
-Route::get('/book_editors', [BookController::class, 'editors'])->middleware('auth');
+Route::get('/book_editors/{bookId}', [BookController::class, 'book_editors'])->middleware('auth');
 // 書籍の担当執筆者一覧
-Route::get('/book_authors', [BookController::class, 'authors'])->middleware('auth');
+Route::get('/book_authors/{bookId}', [BookController::class, 'book_authors'])->middleware('auth');
 
 // 記事の一覧の取得
 Route::get('/articles_list/{bookId}', [ArticleController::class, 'articles_list'])->middleware('auth');
 // 記事種別一覧の取得
 Route::get('/article_types_list', [ArticleController::class, 'article_types_list'])->middleware('auth');
+// 記事の登録
+Route::post('/articles', [ArticleController::class, 'store'])->middleware('auth');
 
 // ギャラリーサンプル
 Route::get("/gallery", [GalleryController::class, "index"]);
