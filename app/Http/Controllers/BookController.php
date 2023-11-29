@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\User;
+use App\Models\ArticleType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -33,19 +34,12 @@ class BookController extends Controller
         $bookData = $request->input('bookData');
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
-        $numberOfArticles = intval($bookData['number_of_articles']);
-        $numberOfSections = intval($bookData['number_of_sections']);
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
-
-        Log::debug("e", $editorIds);
-        Log::debug("a", $authorIds);
 
         $book = new Book();
         $book->title = $title;
         $book->sub_title = $subTitle;
-        $book->number_of_articles = $numberOfArticles;
-        $book->number_of_sections = $numberOfSections;
 
         $book->save();
 
@@ -58,17 +52,16 @@ class BookController extends Controller
 
     public function edit(string $bookId)
     {
+        Log::debug('--- book edit ---');
         /*
             {
                 id: integer,
                 title: string,
                 sub_title: string,
-                number_of_articles: integer,
-                number_of_sections: integer,
-
                 userId: integer,
-                book_editors: string[],
-                book_authors: string[],
+                editorIds: string[],
+                authorIds: string[],
+                article_types: {}
             }
         */
 
@@ -78,6 +71,13 @@ class BookController extends Controller
         $editorIds = $book->editors()->get()->pluck('id');
         $authorIds = $book->authors()->get()->pluck('id');
 
+        // articleTypes取得
+        $articleTypesAll = ArticleType::all();
+        $articleTypes = [];
+        foreach ($articleTypesAll as $articleType) {
+            $articleTypes[$articleType->id] = $articleType->name;
+        }
+
         // JSON化
         $results = json_decode($book->toJson(), true);
         // 配列に追加
@@ -85,8 +85,7 @@ class BookController extends Controller
         $results = array_merge($results, ['authorIds' => $authorIds]);
         $results = array_merge($results, ['userId' => Auth::id()]);
         $results = array_merge($results, ['userRole' => Auth::user()->role]);
-
-        Log::debug($results);
+        $results = array_merge($results, ['articleTypes' => $articleTypes]);
 
         // レスポンス
         return view('editbook', ["edit_book_props" =>$results]);
@@ -97,13 +96,11 @@ class BookController extends Controller
      */
     public function update(Request $request, string $bookId)
     {
-        Log::debug('update');
+        Log::debug('--- book update ---');
         $bookData = $request->input('bookData');
 
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
-        $numberOfArticles = $bookData['number_of_articles'];
-        $numberOfSections = $bookData['number_of_sections'];
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
@@ -111,8 +108,6 @@ class BookController extends Controller
 
         $book->title = $title;
         $book->sub_title = $subTitle;
-        $book->number_of_articles = $numberOfArticles;
-        $book->number_of_sections = $numberOfSections;
         $book->save();
 
         // 書籍に紐づいたユーザーは一旦削除
@@ -139,7 +134,7 @@ class BookController extends Controller
 
     public function books_list()
     {
-        Log::debug('--- books_list ---');
+        Log::debug('--- book books_list ---');
         // ユーザーが担当する書籍一覧を表示する
         $id = Auth::id();
         Log::debug($id);
@@ -152,6 +147,7 @@ class BookController extends Controller
 
     public function editors(string $bookId)
     {
+        Log::debug('--- book editors ---');
         $book = Book::find($bookId);
         $editorIds = $book->editors()->get()->pluck('id')->implode(',');
 
@@ -160,9 +156,26 @@ class BookController extends Controller
 
     public function authors(string $bookId)
     {
+        Log::debug('--- book authors ---');
         $book = Book::find($bookId);
         $authorIds = $book->authors()->get()->pluck('id')->implode(',');
 
         return resupons()->json($authorIds);
+    }
+
+    public function book_editors(string $bookId) {
+        Log::debug('--- book book_editors ---');
+        $book = Book::find($bookId);
+        $editors = $book->editors()->get();
+
+        return response()->json($editors);
+    }
+
+    public function book_authors(string $bookId) {
+        Log::debug('--- book book_authors ---');
+        $book = Book::find($bookId);
+        $authors = $book->authors()->get();
+
+        return response()->json($authors);
     }
 }

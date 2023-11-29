@@ -22,6 +22,8 @@ final class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call(UserTableSeeder::class);
-        //$this->call(BooksTableSeeder::class);
+        $this->call(ArticleTypesSeeder::class);
+        $this->call(BooksTableSeeder::class);
+        $this->call(BookUserTableSeeder::class);
     }
 }

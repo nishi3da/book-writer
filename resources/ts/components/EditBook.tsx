@@ -8,6 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { AgGridReact } from 'ag-grid-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import UsersGrid from './GridComponents/UsersGrid';
+import ArticleGrid from './GridComponents/ArticleGrid';
 
 export type EditBookProps = {
   userId: number;
@@ -15,15 +16,16 @@ export type EditBookProps = {
   id: number;
   title: string;
   sub_title: string;
-  number_of_articles: number;
-  number_of_sections: number;
   editorIds: number[];
   authorIds: number[];
+  articleTypes: { [key: number]: string };
 };
 
 export const EditBook = (props: EditBookProps) => {
   // Props展開
-  const { userId, userRole, id, title, sub_title, number_of_articles, number_of_sections, editorIds, authorIds } = props;
+  const { userId, userRole, id, title, sub_title, editorIds, authorIds, articleTypes } = props;
+  // 名前の付け替え
+  const bookId = id;
 
   // テーマ
   const theme = useTheme();
@@ -39,6 +41,7 @@ export const EditBook = (props: EditBookProps) => {
   // DOM参照
   const editorsGridRef = useRef<AgGridReact<IUser>>(null);
   const authorsGridRef = useRef<AgGridReact<IUser>>(null);
+  const articlesGridRef = useRef<AgGridReact<IArticle>>(null);
 
   // フォーム関係
   const {
@@ -52,9 +55,9 @@ export const EditBook = (props: EditBookProps) => {
     console.log('patch');
     // 登録の場合
     axios
-      .patch(`/books/${id}`, { bookData: data })
+      .patch(`/books/${bookId}`, { bookData: data })
       .then((res) => {
-        location.href = `/books/${id}/edit`;
+        location.href = `/books/${bookId}/edit`;
       })
       .catch((error) => {
         console.log('post - error', error);
@@ -81,21 +84,21 @@ export const EditBook = (props: EditBookProps) => {
       .catch((error) => {
         console.log('get authors - error', error);
       });
+
+    // フォームデータの初期化
     setValue('title', title);
     setValue('sub_title', sub_title);
-    setValue('number_of_articles', number_of_articles);
-    setValue('number_of_sections', number_of_sections);
     setValue('editorIds', selectedEditorIds);
     setValue('authorIds', selectedAuthorIds);
   }, []);
 
   return (
     <div style={{ paddingLeft: '5%', paddingRight: '5%' }}>
-      <Accordion sx={{ backgroundColor: '#CCCCCC', alignItems: '' }}>
+      <Accordion sx={{ backgroundColor: '#CCCCCC', marginBottom: '30px' }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls='panel1a-content' id='panel1a-header'>
           {L.EditBook.Accordion.Summary}
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={{ borderTop: '2px solid #AAAAAA' }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Button type='submit' variant='contained' color='primary'>
               {L.EditBook.Accordion.Ok}
@@ -136,61 +139,6 @@ export const EditBook = (props: EditBookProps) => {
             />
             {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
-            {/* 記事数 */}
-            <StyledInputLabel shrink htmlFor='number_of_articles' theme={theme}>
-              {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-            </StyledInputLabel>
-            <StyledInput
-              id='number_of_articles'
-              type='number'
-              inputProps={{
-                min: 1,
-                max: 500,
-                pattern: '[0-9]*',
-              }}
-              placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-              theme={theme}
-              {...register('number_of_articles', {
-                required: L.BookGrid.Validation.Required,
-                min: 1,
-                max: 500,
-                pattern: /^[0-9]+$/,
-              })}
-            />
-            {errors.number_of_articles?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
-            {errors.number_of_articles?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
-
-            {/* セクション数 */}
-            <StyledInputLabel shrink htmlFor='number_of_sections' theme={theme}>
-              {L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-            </StyledInputLabel>
-            <StyledInput
-              id='number_of_sections'
-              type='number'
-              theme={theme}
-              inputProps={{
-                min: 1,
-                max: 500,
-              }}
-              placeholder={L.BookGrid.AddBook.Dialog.BookNumberOfSections}
-              {...register('number_of_sections', {
-                required: L.BookGrid.Validation.Required,
-                min: 1,
-                max: 500,
-                pattern: /^[0-9]+$/,
-                validate: (value: number) => {
-                  const number_of_articles = Number(getValues('number_of_articles'));
-                  if (number_of_articles < value) {
-                    return L.BookGrid.Validation.OverNumberOfArticles;
-                  }
-                  return true;
-                },
-              })}
-            />
-            {errors.number_of_sections?.type === 'required' && <Alert severity='error'>{L.BookGrid.Validation.Required}</Alert>}
-            {errors.number_of_sections?.type === 'pattern' && <Alert severity='error'>{L.BookGrid.Validation.InvalideCharacter}</Alert>}
-            {errors.number_of_sections?.type === 'validate' && <Alert severity='error'>{L.BookGrid.Validation.OverNumberOfArticles}</Alert>}
-
             {/* 編集者 */}
             <StyledInputLabel shrink theme={theme}>
               {L.BookGrid.AddBook.Dialog.Editors}
@@ -200,9 +148,10 @@ export const EditBook = (props: EditBookProps) => {
               userId={userId}
               rowData={editors}
               gridRef={editorsGridRef}
-              setValue={setValue}
+              setValue={setValue as (key: string, value: number[]) => void}
               selectedUserIds={selectedEditorIds}
               setSelectedUserIds={setSelectedEditorIds}
+              enforcement={true}
             />
 
             {/* 執筆者 */}
@@ -214,13 +163,16 @@ export const EditBook = (props: EditBookProps) => {
               userId={userId}
               rowData={authors}
               gridRef={authorsGridRef}
-              setValue={setValue}
+              setValue={setValue as (key: string, value: number[]) => void}
               selectedUserIds={selectedAuthorIds}
               setSelectedUserIds={setSelectedAuthorIds}
+              enforcement={false}
             />
           </form>
         </AccordionDetails>
       </Accordion>
+      <h2 style={{ textAlign: 'center' }}>{L.ArticleGrid.Title}</h2>
+      <ArticleGrid userId={userId} bookId={bookId} articleGridRef={articlesGridRef} articleTypes={articleTypes} />
     </div>
   );
 };

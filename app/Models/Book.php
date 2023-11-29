@@ -28,6 +28,10 @@ final class Book extends Model
         return $this->belongsToMany(User::class)->where('role', 'editor')->withTimestamps();
     }
 
+    public function article() {
+        return $this->hasMany(Article::class)->order("number", "asc")->withTimestamps();
+    }
+
     // サンプルコード
     // public function book_users() {
     //     return $this->hasMany(BookUser::class, "book_id", "id");

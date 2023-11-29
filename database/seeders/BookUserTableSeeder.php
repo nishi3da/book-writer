@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\BookUser;
 
 final class BookUserTableSeeder extends Seeder
 {
@@ -13,17 +14,13 @@ final class BookUserTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $editors = \App\Models\User::where('role', 'editor')->get();
-        $authors = \App\Models\User::where('role', 'author')->get();
-        $books = \App\Models\Book::all();
-
-        for ($i = 0; $i <= 100; $i++) {
-            $editor = $editors->random();
-            $author = $authors->random();
-            $book = $books->random();
-
-            $editor->books()->attach($book);
-            $author->books()->attach($book);
+        for ($bookId = 1; $bookId < 3; $bookId++) {
+            for ($userId = 4; $userId < 10; $userId++) {
+                BookUser::create([
+                    'book_id' => $bookId,
+                    'user_id' => $userId,
+                ]);
+            }
         }
     }
 }

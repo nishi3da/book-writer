@@ -14,8 +14,6 @@ declare type LableType = {
         Title: string;
         BookTitle: string;
         BookSubTitle: string;
-        BookNumberOfArticles: string;
-        BookNumberOfSections: string;
         Editors: string;
         Authors: string;
         Ok: string;
@@ -33,7 +31,6 @@ declare type LableType = {
       Required: string;
       MaxLength: string;
       InvalideCharacter: string;
-      OverNumberOfArticles: string;
     };
   };
   EditBook: {
@@ -42,7 +39,6 @@ declare type LableType = {
       BookTitle: string;
       BookSubTitle: string;
       BookNumberOfArticles: string;
-      BookNumberOfSections: string;
       Editors: string;
       Authors: string;
       Ok: string;
@@ -62,6 +58,38 @@ declare type LableType = {
     QuickFilterTooltip: string;
     EditorsPrefix: string;
     AuthorsPrefix: string;
+  };
+  ArticleGrid: {
+    Title: string;
+    AddArticle: string;
+    DeleteArticle: string;
+    Header: {
+      Number: string;
+      Edit: string;
+      Delete: string;
+      Type: string;
+      Title: string;
+      SubTitle: string;
+      LeadSentence: string;
+      ArticleData: string;
+      CreatedAt: string;
+      UpdatedAt: string;
+    };
+  };
+  ArticleDialog: {
+    DialogTitle: string;
+    Title: string;
+    SubTitle: string;
+    LeadSentence: string;
+    ArticleType: string;
+    Ok: string;
+    Cancel: string;
+    Validation: {
+      Required: string;
+      MaxLength: string;
+      MaxLength1024: string;
+      InvalideCharacter: string;
+    };
   };
 };
 
@@ -86,7 +114,6 @@ declare type IBook = {
   title: string;
   sub_title: string;
   number_of_articles: number;
-  number_of_sections: number;
   created_at: string;
   updated_at: string;
 };
@@ -99,8 +126,32 @@ declare type IBookUser = IBook & {
 declare type BookFormValues = {
   title: string;
   sub_title: string;
-  number_of_articles: number;
-  number_of_sections: number;
   editorIds: number[];
   authorIds: number[];
+};
+
+// 記事の送信データ型
+declare type ArticleFormValues = {
+  book_id: number;
+  article_number: number;
+  article_type_id: number;
+  title: string;
+  sub_title: string;
+  lead_sentence: string;
+  article_data: string;
+  editorIds: number[];
+  authorIds: number[];
+};
+
+declare type IArticle = {
+  id: number;
+  book_id: number;
+  article_number: number;
+  article_type_id: number;
+  title: string;
+  sub_title: string;
+  lead_sentence: string;
+  article_data: string;
+  created_at: string;
+  updated_at: string;
 };
