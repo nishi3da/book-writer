@@ -18,7 +18,7 @@ export type EditBookProps = {
   sub_title: string;
   editorIds: number[];
   authorIds: number[];
-  articleTypes: {[key: number]: string};
+  articleTypes: { [key: number]: string };
 };
 
 export const EditBook = (props: EditBookProps) => {
@@ -148,9 +148,10 @@ export const EditBook = (props: EditBookProps) => {
               userId={userId}
               rowData={editors}
               gridRef={editorsGridRef}
-              setValue={setValue}
+              setValue={setValue as (key: string, value: number[]) => void}
               selectedUserIds={selectedEditorIds}
               setSelectedUserIds={setSelectedEditorIds}
+              enforcement={true}
             />
 
             {/* 執筆者 */}
@@ -162,15 +163,16 @@ export const EditBook = (props: EditBookProps) => {
               userId={userId}
               rowData={authors}
               gridRef={authorsGridRef}
-              setValue={setValue}
+              setValue={setValue as (key: string, value: number[]) => void}
               selectedUserIds={selectedAuthorIds}
               setSelectedUserIds={setSelectedAuthorIds}
+              enforcement={false}
             />
           </form>
         </AccordionDetails>
       </Accordion>
       <h2 style={{ textAlign: 'center' }}>{L.ArticleGrid.Title}</h2>
-      <ArticleGrid userId={userId} bookId={bookId} articleGridRef={articlesGridRef} articleTypes={articleTypes}/>
+      <ArticleGrid userId={userId} bookId={bookId} articleGridRef={articlesGridRef} articleTypes={articleTypes} />
     </div>
   );
 };

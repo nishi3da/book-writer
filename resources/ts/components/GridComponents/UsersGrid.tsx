@@ -16,14 +16,15 @@ type UsersGridProps = {
   userId: number;
   rowData: IUser[];
   gridRef: React.RefObject<AgGridReact<IUser>>;
-  setValue: UseFormSetValue<BookFormValues>;
+  setValue: (key: string, value: number[]) => void;
   selectedUserIds: number[];
   setSelectedUserIds: (selectedUserIds: number[]) => void;
+  enforcement: boolean;
 };
 
 const UsersGrid = (props: UsersGridProps): JSX.Element => {
   // データの展開
-  const { type, gridRef, rowData, userId, setValue, selectedUserIds, setSelectedUserIds } = props;
+  const { type, gridRef, rowData, userId, setValue, selectedUserIds, setSelectedUserIds, enforcement } = props;
 
   const prefix = useMemo(() => {
     if (type === 'editors') {
@@ -55,7 +56,11 @@ const UsersGrid = (props: UsersGridProps): JSX.Element => {
         //field: "id",
         filter: false,
         checkboxSelection: (params: CheckboxSelectionCallbackParams<IUser>) => {
-          return !!params.data && params.data.id !== userId;
+          if (enforcement) {
+            return !!params.data && params.data.id !== userId;
+          } else {
+            return true;
+          }
         },
         showDisabledCheckboxes: true,
       },

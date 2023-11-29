@@ -13,6 +13,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import StyledInput from '../StyledComponents/StyledInput';
 import StyledInputLabel from '../StyledComponents/StyledInputLabel';
+import { Grid } from '@mui/material';
 
 type AddBookDialogProps = {
   userId: number;
@@ -103,14 +104,20 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
     <Fragment>
       <Dialog open={addBookDialogOpen} onClose={handleAddBookDialogClose} fullScreen sx={{ marginLeft: '0%', marginRight: '0%' }} TransitionComponent={Transition}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogTitle sx={{ backgroundColor: '#ddd', position: 'fixed', top: 0, zIndex: 10000, height: '100px', width: '100%' }}>
-            {L.BookGrid.AddBook.Dialog.Title}
-            <DialogActions>
-              {/* キャンセル */}
-              <Button onClick={handleAddBookDialogClose}>{L.BookGrid.AddBook.Dialog.Cancel}</Button>
-              {/* 書籍の追加 */}
-              <Button type='submit'>{L.BookGrid.AddBook.Dialog.Ok}</Button>
-            </DialogActions>
+          <DialogTitle sx={{ backgroundColor: '#ddd', position: 'fixed', top: 0, zIndex: 10000, height: '80px', width: '100%' }}>
+            <Grid container alignItems='center' justifyContent='space-between'>
+              <Grid item>{L.BookGrid.AddBook.Dialog.Title}</Grid>
+              <Grid item>
+                <DialogActions>
+                  {/* キャンセル */}
+                  <Button onClick={handleAddBookDialogClose}>{L.BookGrid.AddBook.Dialog.Cancel}</Button>
+                  {/* 書籍の追加 */}
+                  <Button type='submit' variant='contained' color='primary'>
+                    {L.BookGrid.AddBook.Dialog.Ok}
+                  </Button>
+                </DialogActions>
+              </Grid>
+            </Grid>
           </DialogTitle>
           <DialogContent sx={{ marginTop: '100px' }}>
             {/* <DialogContentText></DialogContentText> */}
@@ -159,9 +166,10 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
               userId={userId}
               rowData={editors}
               gridRef={editorsGridRef}
-              setValue={setValue}
+              setValue={setValue as (key: string, value: number[]) => void}
               selectedUserIds={selectedEditorIds}
               setSelectedUserIds={setSelectedEditorIds}
+              enforcement={true}
             />
 
             {/* 執筆者 */}
@@ -173,9 +181,10 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
               userId={userId}
               rowData={authors}
               gridRef={authorsGridRef}
-              setValue={setValue}
+              setValue={setValue as (key: string, value: number[]) => void}
               selectedUserIds={selectedAuthorIds}
               setSelectedUserIds={setSelectedAuthorIds}
+              enforcement={false}
             />
           </DialogContent>
         </form>

@@ -6,13 +6,14 @@ import { useMemo, useState, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
-import { ColDef, FirstDataRenderedEvent, GridReadyEvent, RowDragEndEvent } from 'ag-grid-community';
+import { CellValueChangedEvent, ColDef, FirstDataRenderedEvent, GridReadyEvent, RowDragEndEvent } from 'ag-grid-community';
 import axios from 'axios';
 import ArticleTypeRenderer from './CellRenderer.tsx/ArticleTypeRenderer';
 import ArticleTypeEditor from './CellEditor/ArticleTypeEditor';
 import { Button, IconButton, Stack } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+// import AddArticleDialog from './AddArticleDialog';
 
 type ArticleGridProps = {
   userId: number;
@@ -21,15 +22,26 @@ type ArticleGridProps = {
   articleTypes: { [key: number]: string };
 };
 
+let baseArticleTypeId: number;
+
 const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   // props展開
-  const { bookId, articleGridRef, articleTypes } = props;
+  const { userId, bookId, articleGridRef, articleTypes } = props;
   // 格納する要素（親）のスタイル
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
   // 格納される要素（子）のスタイル
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
   // 行データ
   const [rowData, setRowData] = useState<IArticle[]>([]);
+  // Article追加ダイアログの開閉フラグ
+  //   const [addArticleDialogOpen, setAddArticleDialogOpen] = useState<boolean>(false);
+
+  // 基本の記事種別
+  Object.entries(articleTypes).forEach(([key, value]) => {
+    if (value.includes('本文')) {
+      baseArticleTypeId = Number(key);
+    }
+  });
 
   // カラムの設定（共通）
   const defaultColDef = useMemo<ColDef>(() => {
@@ -61,17 +73,17 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
         );
       },
     },
-    {
-      headerName: L.ArticleGrid.Header.Delete,
-      editable: false,
-      cellRenderer: (params) => {
-        return (
-          <IconButton aria-label='delete' color='error'>
-            <DeleteIcon />
-          </IconButton>
-        );
-      },
-    },
+    // {
+    //   headerName: L.ArticleGrid.Header.Delete,
+    //   editable: false,
+    //   cellRenderer: (params) => {
+    //     return (
+    //       <IconButton aria-label='delete' color='error'>
+    //         <DeleteIcon />
+    //       </IconButton>
+    //     );
+    //   },
+    // },
     {
       field: 'article_type_id',
       headerName: L.ArticleGrid.Header.Type,
@@ -114,8 +126,8 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   ]);
 
   // 各種のAPIが使用可能になったタイミングで書籍一覧を取得する
-  const handleGridReady = useCallback((params: GridReadyEvent) => {
-    console.log('get - articles -');
+  const handleGridReady = useCallback((params: GridReadyEvent, rowData: IArticle[]) => {
+    console.log('handleGridReady -', rowData.length);
     // 記事一覧の取得
     axios
       .get(`/articles_list/${bookId}`)
@@ -129,6 +141,13 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
 
   // データが読み込まれレンダリングされたタイミングで実行される関数
   const handleFirstDataRendered = useCallback((event: FirstDataRenderedEvent) => {
+    const newRowData: IArticle[] = [];
+    articleGridRef.current!.api.forEachNode((node) => {
+      if (node && node.data) {
+        newRowData.push(node.data);
+      }
+    });
+    setRowData([...newRowData]);
     // カラム幅の調整
     articleGridRef.current!.columnApi.autoSizeAllColumns();
   }, []);
@@ -145,13 +164,56 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
         newRowData.push(newRow);
       }
     });
+    // 表示データの更新
     setRowData([...newRowData]);
+    // DBの更新
+    axios.put('/articles', newRowData).catch((error) => {
+      console.log('put - articles - error', error);
+    });
   }, []);
 
-  const handleAddArticleClick = useCallback(() => {
+  const handleAddArticleClick = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>, rowData: IArticle[], baseArticleTypeId: number) => {
     console.log('add article');
+    // setAddArticleDialogOpen(true);
+    // 登録の場合
+    console.log('handleAddArticleClick -', baseArticleTypeId);
+    axios
+      .post('/articles', {
+        articleData: {
+          book_id: bookId,
+          article_number: rowData.length + 1,
+          article_type_id: baseArticleTypeId,
+          title: '',
+          sub_title: '',
+          lead_sentence: '',
+          article_data: '',
+          editorIds: [],
+          authorIds: [],
+        },
+      })
+      .then((res) => {
+        // location.href = `/books/${bookId}/edit`;
+        // 記事一覧の再取得
+        axios
+          .get(`/articles_list/${bookId}`)
+          .then((response) => {
+            setRowData(response.data);
+          })
+          .catch((error) => {
+            console.log('get re- articles - error', error);
+          });
+      })
+      .catch((error) => {
+        console.log('post re- error', error);
+      });
   }, []);
 
+  // 内容変更時のイベント処理
+  const handleCellValueChanged = useCallback((event: CellValueChangedEvent) => {
+    console.log('handleCellValueChanged', event);
+  }, []);
+
+  // 記事の削除処理
   const handleDeleteArticleClick = useCallback(() => {
     console.log('delete article');
   }, []);
@@ -160,7 +222,7 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
     <div style={containerStyle}>
       <div className='container'>
         <Stack direction='row' spacing={2} sx={{ marginBottom: '10px' }}>
-          <Button variant='contained' color='primary' onClick={handleAddArticleClick}>
+          <Button variant='contained' color='primary' onClick={(e) => handleAddArticleClick(e, rowData, baseArticleTypeId)}>
             {L.ArticleGrid.AddArticle}
           </Button>
           <Button variant='contained' color='error' onClick={handleDeleteArticleClick}>
@@ -174,13 +236,15 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
             rowData={rowData}
             columnDefs={columnDefs}
             onFirstDataRendered={handleFirstDataRendered}
-            onGridReady={handleGridReady}
+            onGridReady={(e) => handleGridReady(e, rowData)}
             rowDragManaged={true}
             animateRows={true}
             onRowDragEnd={handleRowDragEnd}
+            onCellValueChanged={handleCellValueChanged}
           />
         </div>
       </div>
+      {/* <AddArticleDialog userId={userId} bookId={bookId} addArticleDialogOpen={addArticleDialogOpen} setAddArticleDialogOpen={setAddArticleDialogOpen} articleTypes={articleTypes} articleCount={articleCount}/> */}
     </div>
   );
 };

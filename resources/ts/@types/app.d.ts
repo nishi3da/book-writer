@@ -81,8 +81,15 @@ declare type LableType = {
     Title: string;
     SubTitle: string;
     LeadSentence: string;
+    ArticleType: string;
     Ok: string;
     Cancel: string;
+    Validation: {
+      Required: string;
+      MaxLength: string;
+      MaxLength1024: string;
+      InvalideCharacter: string;
+    };
   };
 };
 
@@ -132,6 +139,8 @@ declare type ArticleFormValues = {
   sub_title: string;
   lead_sentence: string;
   article_data: string;
+  editorIds: number[];
+  authorIds: number[];
 };
 
 declare type IArticle = {

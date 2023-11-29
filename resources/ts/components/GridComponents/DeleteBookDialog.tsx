@@ -72,13 +72,6 @@ const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
             {L.BookGrid.AddBook.Dialog.BookSubTitle}
           </StyledInputLabel>
           <StyledInput id='sub_title' value={bookData?.sub_title} disabled theme={theme} />
-
-          {/* 記事数 */}
-          <StyledInputLabel shrink htmlFor='number_of_articles' theme={theme}>
-            {L.BookGrid.AddBook.Dialog.BookNumberOfArticles}
-          </StyledInputLabel>
-          <StyledInput id='number_of_articles' type='number' value={bookData?.number_of_articles} disabled theme={theme} />
-
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>

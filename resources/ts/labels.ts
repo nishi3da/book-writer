@@ -16,7 +16,7 @@ export const L: LableType = {
         BookSubTitle: '書籍サブタイトル',
         Editors: '編集者',
         Authors: '執筆者',
-        Ok: '書籍の保存',
+        Ok: '書籍の登録',
         Cancel: 'キャンセル',
       },
     },
@@ -77,11 +77,18 @@ export const L: LableType = {
     },
   },
   ArticleDialog: {
-    DialogTitle: "記事の新規作成",
+    DialogTitle: '記事の新規作成',
     Title: '記事タイトル',
     SubTitle: '記事サブタイトル',
     LeadSentence: '記事リード文',
+    ArticleType: '記事種別',
     Ok: '記事を作成',
     Cancel: 'キャンセル',
+    Validation: {
+      Required: '入力必須項目です。',
+      MaxLength: '最大文字数は255文字です。',
+      MaxLength1024: '最大文字数は1024',
+      InvalideCharacter: '半角数字を入力して下さい。',
+    },
   },
 };

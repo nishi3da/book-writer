@@ -162,4 +162,20 @@ class BookController extends Controller
 
         return resupons()->json($authorIds);
     }
+
+    public function book_editors(string $bookId) {
+        Log::debug('--- book book_editors ---');
+        $book = Book::find($bookId);
+        $editors = $book->editors()->get();
+
+        return response()->json($editors);
+    }
+
+    public function book_authors(string $bookId) {
+        Log::debug('--- book book_authors ---');
+        $book = Book::find($bookId);
+        $authors = $book->authors()->get();
+
+        return response()->json($authors);
+    }
 }

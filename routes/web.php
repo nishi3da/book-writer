@@ -58,7 +58,7 @@ Route::get('/article_types_list', [ArticleController::class, 'article_types_list
 // 記事の登録
 Route::post('/articles', [ArticleController::class, 'store'])->middleware('auth');
 // 記事の更新（ドラッグアンドドロップ）
-ROute::put('/articles_dd', [ArticleController::class, 'articles_dd_update'])->middleware('auth');
+ROute::put('/articles', [ArticleController::class, 'update'])->middleware('auth');
 
 // ギャラリーサンプル
 Route::get("/gallery", [GalleryController::class, "index"]);

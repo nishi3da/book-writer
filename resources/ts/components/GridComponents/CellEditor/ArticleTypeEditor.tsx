@@ -4,6 +4,7 @@ import { ICellEditorParams, RowAnimationCssClasses } from 'ag-grid-community';
 import ReactDOM from 'react-dom';
 import { List, ListItem, ListItemButton } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
+import axios from 'axios';
 
 interface ArticleEditorProps extends ICellEditorParams<any, any, any> {
   articleTypes: { [key: number]: string };
@@ -18,7 +19,7 @@ const ArticleEditor = memo(
     // props展開
     const { articleTypes } = props;
     // 選択した値
-    const [selectionArticleType, setSelectionArticleType] = useState(props.value);
+    const [articleType, setArticleType] = useState<number>(props.value);
 
     // 状態監視
     const [ready, setReady] = useState<boolean>(false);
@@ -38,8 +39,8 @@ const ArticleEditor = memo(
     useImperativeHandle(ref, () => {
       return {
         getValue: () => {
-          console.log('getValue', selectionArticleType, '=', articleTypes[selectionArticleType]);
-          return selectionArticleType;
+          console.log('getValue', articleType, '=', articleTypes[articleType]);
+          return articleType;
         },
         isCancelBeforeStart: () => {
           return false;
@@ -50,9 +51,14 @@ const ArticleEditor = memo(
       };
     });
 
-    const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, selection: number, props: ArticleEditorProps) => {
+    const handleListItemClick = (
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      selection: number,
+      props: ArticleEditorProps,
+      setArticleType: (selection: number) => void,
+    ) => {
       console.log('handleListItemClick', selection, '=', articleTypes[selection], props);
-      const { articleGridRef, setRowData } = props;
+      const { articleGridRef, setRowData, data } = props;
 
       const newRowData: IArticle[] = [];
 
@@ -67,7 +73,18 @@ const ArticleEditor = memo(
       });
 
       setRowData([...newRowData]);
-      setSelectionArticleType(selection);
+      setArticleType(selection);
+
+      // カスタムセルエディタで記事種別の選択が行われたら、DBも更新する
+      const newData: IArticle = { ...data };
+      newData.article_type_id = selection;
+
+      console.log('DB', newData);
+
+      axios.put('/articles', [newData]).catch((error) => {
+        console.log('put - articles - error', error);
+      });
+
       props.stopEditing();
       setDone(true);
       setReady(true);
@@ -78,7 +95,7 @@ const ArticleEditor = memo(
         <List>
           {Object.entries(articleTypes).map(([key, value]) => (
             <ListItem sx={{ padding: 0 }} key={key}>
-              <ListItemButton onClick={(event) => handleListItemClick(event, Number(key), props)}>{value}</ListItemButton>
+              <ListItemButton onClick={(event) => handleListItemClick(event, Number(key), props, setArticleType)}>{value}</ListItemButton>
             </ListItem>
           ))}
         </List>
