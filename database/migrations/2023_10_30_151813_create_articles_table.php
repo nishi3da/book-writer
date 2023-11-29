@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained();
             $table->integer('article_number');
             $table->foreignId('article_type_id')->constrained();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->string('sub_title')->nullable();
             $table->string('lead_sentence')->nullable();
             $table->string('article_data')->nullable();
