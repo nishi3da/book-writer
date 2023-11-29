@@ -77,7 +77,7 @@ const ArticleEditor = memo(
       <div ref={refContainer} style={{ minWidth: 500, maxHeight: 445, backgroundColor: 'white' }}>
         <List>
           {Object.entries(articleTypes).map(([key, value]) => (
-            <ListItem sx={{ padding: 0 }}>
+            <ListItem sx={{ padding: 0 }} key={key}>
               <ListItemButton onClick={(event) => handleListItemClick(event, Number(key), props)}>{value}</ListItemButton>
             </ListItem>
           ))}
