@@ -32,6 +32,10 @@ final class Book extends Model
         return $this->hasMany(Article::class)->order("number", "asc")->withTimestamps();
     }
 
+    public function bookStateType() {
+        return $this->belongsTo(BookStateType::class);
+    }
+
     // サンプルコード
     // public function book_users() {
     //     return $this->hasMany(BookUser::class, "book_id", "id");

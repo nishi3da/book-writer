@@ -29,4 +29,8 @@ final class Article extends Model
     public function book() {
         return $this->belongsTo(Book::class);
     }
+
+    public function articleStateType() {
+        return $this->belongsTo(ArticleStateType::class);
+    }
 }

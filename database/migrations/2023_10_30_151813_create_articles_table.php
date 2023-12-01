@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('book_id')->constrained();
-            $table->integer('article_number');
             $table->foreignId('article_type_id')->constrained();
-            $table->string('title')->nullable();
-            $table->string('sub_title')->nullable();
-            $table->string('lead_sentence')->nullable();
+            $table->integer('article_number');
+            $table->string('lable')->nullable();
             $table->string('article_data')->nullable();
             $table->timestamps();
         });

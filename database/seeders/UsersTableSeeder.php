@@ -15,7 +15,6 @@ final class UserTableSeeder extends Seeder
     public function run(): void
     {
         // 管理者レベル ----------------------------------------------------------------------------------------
-        $role = 'admin';
         User::create([
             'name' => 'test管理者',
             'reading_name' => 'testかんりしゃ',
@@ -23,7 +22,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testかんりしゃしょぞく',
             'email' => 'admin@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 0,
         ]);
         User::create([
             'name' => 'test管理者2',
@@ -32,7 +31,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testかんりしゃしょぞく2',
             'email' => 'admin2@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 0,
         ]);
         User::create([
             'name' => 'test管理者3',
@@ -41,11 +40,10 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testかんりしゃしょぞく3',
             'email' => 'admin1@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 0,
         ]);
 
         // 編集者レベル ----------------------------------------------------------------------------------------
-        $role = 'editor';
         User::create([
             'name' => 'test編集者',
             'reading_name' => 'testへんしゅうしゃ',
@@ -53,7 +51,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testへんしゅうしゃしょぞく',
             'email' => 'editor@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 1,
         ]);
         User::create([
             'name' => 'test編集者2',
@@ -62,7 +60,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testへんしゅうしゃしょぞく2',
             'email' => 'editor2@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 1,
         ]);
         User::create([
             'name' => 'test編集者3',
@@ -71,11 +69,10 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testへんしゅうしゃしょぞく3',
             'email' => 'editor3@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 1,
         ]);
 
         // 執筆者レベル ----------------------------------------------------------------------------------------
-        $role = 'author';
         User::create([
             'name' => 'test執筆者',
             'reading_name' => 'testしっぴつしゃ',
@@ -83,7 +80,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testしっぴつしゃしょぞく',
             'email' => 'author@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 2,
         ]);
         User::create([
             'name' => 'test執筆者2',
@@ -92,7 +89,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testしっぴつしゃしょぞく2',
             'email' => 'author2@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 2,
         ]);
         User::create([
             'name' => 'test執筆者3',
@@ -101,37 +98,36 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testしっぴつしゃしょぞく3',
             'email' => 'author3@example.com',
             'password' => bcrypt('password'),
-            'role' => $role,
+            'role_id' => 2,
         ]);
 
-        // // 執筆者レベル ----------------------------------------------------------------------------------------
-        // $role = "operator";
-        // User::create([
-        //     'name' => 'test作業者',
-        //     'reading_name' => 'testさぎょうしゃ',
-        //     'affiliation_name' => 'test作業者所属',
-        //     'affiliation_reading_name' => 'testさぎょうしゃしょぞく',
-        //     'email' => 'operator@example.com',
-        //     'password' => bcrypt('password'),
-        //     'role' => $role
-        // ]);
-        // User::create([
-        //     'name' => 'test作業者2',
-        //     'reading_name' => 'testさぎょうしゃ2',
-        //     'affiliation_name' => 'test作業者所属2',
-        //     'affiliation_reading_name' => 'testさぎょうしゃしょぞく1',
-        //     'email' => 'operator2@example.com',
-        //     'password' => bcrypt('password'),
-        //     'role' => $role
-        // ]);
-        // User::create([
-        //     'name' => 'test作業者3',
-        //     'reading_name' => 'testさぎょうしゃ3',
-        //     'affiliation_name' => 'test作業者所属3',
-        //     'affiliation_reading_name' => 'testさぎょうしゃしょぞく3',
-        //     'email' => 'operator3@example.com',
-        //     'password' => bcrypt('password'),
-        //     'role' => $role
-        // ]);
+        // 作業者レベル ----------------------------------------------------------------------------------------
+        User::create([
+            'name' => 'test作業者',
+            'reading_name' => 'testさぎょうしゃ',
+            'affiliation_name' => 'test作業者所属',
+            'affiliation_reading_name' => 'testさぎょうしゃしょぞく',
+            'email' => 'operator@example.com',
+            'password' => bcrypt('password'),
+            'role_id' => 3
+        ]);
+        User::create([
+            'name' => 'test作業者2',
+            'reading_name' => 'testさぎょうしゃ2',
+            'affiliation_name' => 'test作業者所属2',
+            'affiliation_reading_name' => 'testさぎょうしゃしょぞく1',
+            'email' => 'operator2@example.com',
+            'password' => bcrypt('password'),
+            'role_id' => 3
+        ]);
+        User::create([
+            'name' => 'test作業者3',
+            'reading_name' => 'testさぎょうしゃ3',
+            'affiliation_name' => 'test作業者所属3',
+            'affiliation_reading_name' => 'testさぎょうしゃしょぞく3',
+            'email' => 'operator3@example.com',
+            'password' => bcrypt('password'),
+            'role_id' => 3
+        ]);
     }
 }

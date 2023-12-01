@@ -95,6 +95,19 @@ declare type LableType = {
 
 declare type Roles = 'editor' | 'author' | 'admin';
 
+declare type IIndex = {
+  book_id: number;
+  articles: [
+    {
+      id: number;
+      article_type_id: number;
+      article_data: string;
+      created_at: string;
+      updated_at: string;
+    },
+  ];
+};
+
 declare type IUser = {
   id: number;
   name: string;
@@ -113,7 +126,6 @@ declare type IBook = {
   id: number;
   title: string;
   sub_title: string;
-  number_of_articles: number;
   created_at: string;
   updated_at: string;
 };
