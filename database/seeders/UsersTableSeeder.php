@@ -7,7 +7,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
-final class UserTableSeeder extends Seeder
+final class UsersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -22,7 +22,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testかんりしゃしょぞく',
             'email' => 'admin@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 0,
+            'role_id' => 1,
         ]);
         User::create([
             'name' => 'test管理者2',
@@ -31,7 +31,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testかんりしゃしょぞく2',
             'email' => 'admin2@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 0,
+            'role_id' => 1,
         ]);
         User::create([
             'name' => 'test管理者3',
@@ -40,7 +40,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testかんりしゃしょぞく3',
             'email' => 'admin1@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 0,
+            'role_id' => 1,
         ]);
 
         // 編集者レベル ----------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testへんしゅうしゃしょぞく',
             'email' => 'editor@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 1,
+            'role_id' => 2,
         ]);
         User::create([
             'name' => 'test編集者2',
@@ -60,7 +60,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testへんしゅうしゃしょぞく2',
             'email' => 'editor2@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 1,
+            'role_id' => 2,
         ]);
         User::create([
             'name' => 'test編集者3',
@@ -69,7 +69,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testへんしゅうしゃしょぞく3',
             'email' => 'editor3@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 1,
+            'role_id' => 2,
         ]);
 
         // 執筆者レベル ----------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testしっぴつしゃしょぞく',
             'email' => 'author@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 2,
+            'role_id' => 3,
         ]);
         User::create([
             'name' => 'test執筆者2',
@@ -89,7 +89,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testしっぴつしゃしょぞく2',
             'email' => 'author2@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 2,
+            'role_id' => 3,
         ]);
         User::create([
             'name' => 'test執筆者3',
@@ -98,7 +98,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testしっぴつしゃしょぞく3',
             'email' => 'author3@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 2,
+            'role_id' => 3,
         ]);
 
         // 作業者レベル ----------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testさぎょうしゃしょぞく',
             'email' => 'operator@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 3
+            'role_id' => 4
         ]);
         User::create([
             'name' => 'test作業者2',
@@ -118,7 +118,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testさぎょうしゃしょぞく1',
             'email' => 'operator2@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 3
+            'role_id' => 4
         ]);
         User::create([
             'name' => 'test作業者3',
@@ -127,7 +127,7 @@ final class UserTableSeeder extends Seeder
             'affiliation_reading_name' => 'testさぎょうしゃしょぞく3',
             'email' => 'operator3@example.com',
             'password' => bcrypt('password'),
-            'role_id' => 3
+            'role_id' => 4
         ]);
     }
 }

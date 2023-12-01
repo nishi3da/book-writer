@@ -14,10 +14,12 @@ class BookStateTypesTableSeeder extends Seeder
     public function run(): void
     {
         BookStateType::create([
+            'id' => 1,
             'name' => '進行中',
             'code' => 10,
         ]);
         BookStateType::create([
+            'id' => 2,
             'name' => '校了',
             'code' => 999,
         ]);
