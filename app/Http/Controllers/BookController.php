@@ -34,12 +34,14 @@ class BookController extends Controller
         $bookData = $request->input('bookData');
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
+        $bookStateTypeId = $bookData['book_state_type_id'];
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
         $book = new Book();
         $book->title = $title;
         $book->sub_title = $subTitle;
+        $book->book_state_type_id = $bookStateTypeId;
 
         $book->save();
 
