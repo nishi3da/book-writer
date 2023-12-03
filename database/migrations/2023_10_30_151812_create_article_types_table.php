@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained();
             $table->string('name')->unique();
             $table->integer('depth')->default(0);
-            $table->foreignId('template_id')->constrained();
+            $table->foreignId('template_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

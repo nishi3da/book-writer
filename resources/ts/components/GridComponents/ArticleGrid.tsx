@@ -33,8 +33,6 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
   // 行データ
   const [rowData, setRowData] = useState<IArticle[]>([]);
-  // Article追加ダイアログの開閉フラグ
-  //   const [addArticleDialogOpen, setAddArticleDialogOpen] = useState<boolean>(false);
 
   // 基本の記事種別
   Object.entries(articleTypes).forEach(([key, value]) => {
@@ -181,12 +179,11 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
       .post('/articles', {
         articleData: {
           book_id: bookId,
-          article_number: rowData.length + 1,
           article_type_id: baseArticleTypeId,
-          title: '',
-          sub_title: '',
-          lead_sentence: '',
+          article_number: rowData.length + 1,
+          label: '',
           article_data: '',
+          article_state_type_id: 1,
           editorIds: [],
           authorIds: [],
         },

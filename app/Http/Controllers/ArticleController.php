@@ -16,12 +16,11 @@ class ArticleController extends Controller
         $data = $request->input('articleData');
         // データ分解
         $bookId = $data['book_id'];
-        $articleNumber = $data['article_number'];
         $articleTypeId = $data['article_type_id'];
-        $title = $data['title'];
-        $subTitle = $data['sub_title'];
-        $leadSentence = $data['lead_sentence'];
+        $articleNumber = $data['article_number'];
+        $title = $data['label'];
         $articleData = $data['article_data'];
+        $articleStateTypeId = $data['article_state_type_id'];
         $editorIds = $data['editorIds'];
         $authorIds = $data['authorIds'];
 

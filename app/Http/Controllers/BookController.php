@@ -38,18 +38,28 @@ class BookController extends Controller
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
+        // 新規登録
         $book = new Book();
         $book->title = $title;
         $book->sub_title = $subTitle;
         $book->book_state_type_id = $bookStateTypeId;
-
         $book->save();
 
+        // 書籍に紐づく編集者の登録
         $editors = User::whereIn('id', $editorIds)->get();
         $book->users()->attach($editors);
-
+        // 書籍に紐づく執筆者の登録
         $authors = User::whereIn('id', $authorIds)->get();
         $book->users()->attach($authors);
+
+        // 決め打ちで「本文」の書籍種別を登録する
+        $articleType = new ArticleType();
+        $articleType->book_id = $book->id;
+        $articleType->name = '本文';
+        $articleType->depth = 1;
+        $articleType->template_id = null;
+        $articleType->save();
+        Log::debug('--- book store end ---');
     }
 
     public function edit(string $bookId)
@@ -103,6 +113,7 @@ class BookController extends Controller
 
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
+        $bookStateTypeId = $bookData['book_state_type_id'];
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
@@ -110,6 +121,7 @@ class BookController extends Controller
 
         $book->title = $title;
         $book->sub_title = $subTitle;
+        $book->book_state_type_id = $bookStateTypeId;
         $book->save();
 
         // 書籍に紐づいたユーザーは一旦削除
