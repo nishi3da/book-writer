@@ -15,6 +15,7 @@ class ArticleTypesSeeder extends Seeder
     {
         ArticleType::create([
             'name' => '本扉',
+
         ]);
         ArticleType::create([
             'name' => 'はじめに',

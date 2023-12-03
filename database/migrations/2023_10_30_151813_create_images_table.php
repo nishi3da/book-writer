@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('article_types', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('book_id')->constrained();
-            $table->string('name')->unique();
-            $table->integer('depth')->default(0);
-            $table->foreignId('template_id')->constrained();
+            $table->string('path')->nullable();
+            $table->foreignId('image_state_type_id');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('article_types');
+        Schema::dropIfExists('images');
     }
 };

@@ -62,17 +62,25 @@ const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
         <DialogTitle id='responsive-dialog-title'>{L.BookGrid.DeleteBook.DeleteTitle}</DialogTitle>
         <DialogContent>
           <DialogContentText>{L.BookGrid.DeleteBook.DeleteMessage}</DialogContentText>
+          {/* タイトル */}
           <StyledInputLabel shrink htmlFor='title' theme={theme}>
-            {L.BookGrid.AddBook.Dialog.BookTitle}
+            {L.BookGrid.DeleteBook.Title}
           </StyledInputLabel>
           <StyledInput id='title' value={bookData?.title} disabled theme={theme} />
 
           {/* サブタイトル */}
           <StyledInputLabel shrink htmlFor='sub_title' theme={theme}>
-            {L.BookGrid.AddBook.Dialog.BookSubTitle}
+            {L.BookGrid.DeleteBook.SubTitle}
           </StyledInputLabel>
           <StyledInput id='sub_title' value={bookData?.sub_title} disabled theme={theme} />
+
+          {/* 進行の状態 */}
+          <StyledInputLabel shrink htmlFor='book_state_type_id' theme={theme}>
+            {L.BookGrid.DeleteBook.BookState}
+          </StyledInputLabel>
+          <StyledInput id='sub_title' value={bookData?.book_state_type_id} disabled theme={theme} />
         </DialogContent>
+
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
             {L.BookGrid.DeleteBook.Cancel}

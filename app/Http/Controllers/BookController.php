@@ -132,7 +132,7 @@ class BookController extends Controller
         $book->delete();
     }
 
-    public function books_list()
+    public function booksList()
     {
         Log::debug('--- book books_list ---');
         // ユーザーが担当する書籍一覧を表示する
@@ -163,7 +163,7 @@ class BookController extends Controller
         return resupons()->json($authorIds);
     }
 
-    public function book_editors(string $bookId) {
+    public function bookEditors(string $bookId) {
         Log::debug('--- book book_editors ---');
         $book = Book::find($bookId);
         $editors = $book->editors()->get();
@@ -171,7 +171,7 @@ class BookController extends Controller
         return response()->json($editors);
     }
 
-    public function book_authors(string $bookId) {
+    public function bookAuthors(string $bookId) {
         Log::debug('--- book book_authors ---');
         $book = Book::find($bookId);
         $authors = $book->authors()->get();

@@ -26,7 +26,7 @@ final class User extends Authenticatable
         'reading_name',
         'affiliation_name',
         'affiliation_reading_name',
-        'role',
+        'role_id',
     ];
 
     /**
@@ -68,4 +68,9 @@ final class User extends Authenticatable
     {
         return $this->belongsToMany(Book::class)->where('role', 'author')->withTimestamps();
     }
+
+    public function role() {
+        return $this->belongsTo(Role::class);
+    }
+
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('reading_name'); // add
             $table->string('affiliation_name'); // add
             $table->string('affiliation_reading_name'); // add
-            $table->string('role')->enum(['admin', 'editor', 'author', 'operator']); // add
+            $table->foreignId('role_id')->constrained(); // add
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

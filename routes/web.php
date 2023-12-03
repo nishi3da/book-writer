@@ -39,22 +39,22 @@ Route::resource('/books', BookController::class)->only('index', 'store', 'edit',
 
 // API用
 // 書籍一覧（ログインユーザーが担当している書籍一覧）
-Route::get('/books_list', [BookController::class, 'books_list'])->middleware('auth');
+Route::get('/books_list', [BookController::class, 'booksList'])->middleware('auth');
 
 // 編集者一覧（担当書籍ではなく、単純に編集者一覧）
-Route::get('/editors_list', [UserController::class, 'editors_list'])->middleware('auth');
+Route::get('/editors_list', [UserController::class, 'editorsList'])->middleware('auth');
 // 執筆者一覧（担当書籍ではなく、短銃に執筆者一覧）
-Route::get('/authors_list', [UserController::class, 'authors_list'])->middleware('auth');
+Route::get('/authors_list', [UserController::class, 'authorsList'])->middleware('auth');
 
 // 書籍の担当編集者一覧
-Route::get('/book_editors/{bookId}', [BookController::class, 'book_editors'])->middleware('auth');
+Route::get('/book_editors/{bookId}', [BookController::class, 'bookEditors'])->middleware('auth');
 // 書籍の担当執筆者一覧
-Route::get('/book_authors/{bookId}', [BookController::class, 'book_authors'])->middleware('auth');
+Route::get('/book_authors/{bookId}', [BookController::class, 'bookAuthors'])->middleware('auth');
 
 // 記事の一覧の取得
-Route::get('/articles_list/{bookId}', [ArticleController::class, 'articles_list'])->middleware('auth');
+Route::get('/articles_list/{bookId}', [ArticleController::class, 'articlesList'])->middleware('auth');
 // 記事種別一覧の取得
-Route::get('/article_types_list', [ArticleController::class, 'article_types_list'])->middleware('auth');
+Route::get('/article_types_list', [ArticleController::class, 'articleTypesList'])->middleware('auth');
 // 記事の登録
 Route::post('/articles', [ArticleController::class, 'store'])->middleware('auth');
 // 記事の更新（ドラッグアンドドロップ）

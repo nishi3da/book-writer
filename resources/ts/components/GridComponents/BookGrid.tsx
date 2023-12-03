@@ -2,14 +2,14 @@
 
 import { L } from '../../labels';
 
-import { useMemo, useRef, useState, useCallback, useEffect } from 'react';
+import { useMemo, useRef, useState, useCallback } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 //import "./styles.css";
 import { ColDef, FirstDataRenderedEvent, GridReadyEvent } from 'ag-grid-community';
-import { Button, TextField, Tooltip } from '@mui/material';
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import { Button, IconButton, TextField, Tooltip } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddBookDialog from './AddBookDialog';
 import DeleteBookDialog from './DeleteBookDialog';
@@ -41,34 +41,23 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
   // カラムの設定（列毎）
   const [columnDefs, setColumnDefs] = useState<ColDef[]>([
     {
-      headerName: L.BookGrid.Header.Edit,
+      headerName: L.BookGrid.Header.Action,
       cellRenderer: (params: any) => {
         return (
-          <Button
-            variant='contained'
-            color='primary'
-            startIcon={<ModeEditOutlineIcon />}
-            onClick={() => handleEditButtonClick(params.data.id)}
-            size='small'
-            sx={{ marginTop: '5px' }}
-          >
-            {L.BookGrid.Header.Edit}
-          </Button>
-        );
-      },
-    },
-    {
-      headerName: L.BookGrid.Header.Delete,
-      cellRenderer: (params: any) => {
-        return (
-          <Button variant='contained' color='error' startIcon={<DeleteIcon />} onClick={() => handleDeleteBookDialogOpen(params.data.id)} size='small' sx={{ marginTop: '5px' }}>
-            {L.BookGrid.Header.Delete}
-          </Button>
+          <>
+            <IconButton aria-label='edit' color='primary' onClick={() => handleEditButtonClick(params.data.id)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton aria-label='edit' color='error' onClick={() => handleDeleteBookDialogOpen(params.data.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </>
         );
       },
     },
     { headerName: L.BookGrid.Header.Title, field: 'title' },
     { headerName: L.BookGrid.Header.SubTitle, field: 'sub_title' },
+    { headerName: L.BookGrid.Header.BookState, field: 'book_state_type_id' },
   ]);
 
   // 各種のAPIが使用可能になったタイミングで書籍一覧を取得する

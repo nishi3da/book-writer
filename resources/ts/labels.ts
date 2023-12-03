@@ -4,8 +4,8 @@ export const L: LableType = {
       ID: 'ID',
       Title: 'タイトル',
       SubTitle: 'サブタイトル',
-      Edit: '編集',
-      Delete: '削除',
+      BookState: '進行状態',
+      Action: '編集・削除',
     },
     QuickFilterPlaceHolder: '書籍 簡易検索',
     AddBook: {
@@ -23,6 +23,9 @@ export const L: LableType = {
     DeleteBook: {
       ButtonLabel: '書籍を削除',
       DeleteTitle: '書籍の削除確認',
+      Title: '書籍タイトル',
+      SubTitle: '書籍サブタイトル',
+      BookState: '進行の状態',
       DeleteMessage: 'この操作は元に戻せません、本当に削除しますか？',
       Ok: '削除',
       Cancel: 'キャンセル',
