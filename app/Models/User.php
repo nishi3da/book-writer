@@ -26,7 +26,7 @@ final class User extends Authenticatable
         'reading_name',
         'affiliation_name',
         'affiliation_reading_name',
-        'role',
+        'role_id',
     ];
 
     /**

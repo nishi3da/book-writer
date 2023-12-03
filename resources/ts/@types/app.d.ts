@@ -4,8 +4,8 @@ declare type LableType = {
       ID: string;
       Title: string;
       SubTitle: string;
-      Edit: string;
-      Delete: string;
+      BookState: string;
+      Action: string;
     };
     QuickFilterPlaceHolder: string;
     AddBook: {
@@ -24,6 +24,9 @@ declare type LableType = {
       ButtonLabel: string;
       DeleteTitle: string;
       DeleteMessage: string;
+      Title: string;
+      SubTitle: string;
+      BookState: string;
       Ok: string;
       Cancel: string;
     };
@@ -126,6 +129,7 @@ declare type IBook = {
   id: number;
   title: string;
   sub_title: string;
+  book_state_type_id: number;
   created_at: string;
   updated_at: string;
 };
@@ -138,6 +142,7 @@ declare type IBookUser = IBook & {
 declare type BookFormValues = {
   title: string;
   sub_title: string;
+  book_state_type_id: number;
   editorIds: number[];
   authorIds: number[];
 };

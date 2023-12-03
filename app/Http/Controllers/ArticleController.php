@@ -65,13 +65,13 @@ class ArticleController extends Controller
     }
 
 
-    public function articles_list(string $bookId) {
+    public function articlesList(string $bookId) {
         Log::debug('--- articles_list ---');
         $articles = Article::where('book_id', '=', $bookId)->orderBy('article_number', 'asc')->get();
         return response()->json($articles);
     }
 
-    public function article_types_list() {
+    public function articleTypesList() {
         Log::debug('--- article_types_list ---');
         $articleTypes = ArticleType::all();
         return response()->json($articleTypes);

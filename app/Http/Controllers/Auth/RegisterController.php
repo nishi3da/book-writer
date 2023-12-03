@@ -13,6 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Role;
+use Illuminate\Support\Facades\Log;
 
 final class RegisterController extends Controller
 {
@@ -67,13 +69,13 @@ final class RegisterController extends Controller
 
         // ロールを取得
         if ($request['target_role'] == 'admin_register') {
-            $role = 'admin';
+            $role = Role::where('name', '管理者')->first();
         } elseif ($request['target_role'] == 'editor_register') {
-            $role = 'editor';
+            $role = Role::where('name', '編集者')->first();
         } elseif ($request['target_role'] == 'operator_register') {
-            $role = 'operator';
+            $role = Role::where('name', '作業者')->first();
         } else {
-            $role = 'author';
+            $role = Role::where('name', '執筆者')->first();
         }
 
         event(new Registered($user = $this->create($request->all(), $role)));
@@ -113,6 +115,9 @@ final class RegisterController extends Controller
      */
     protected function create(array $data, $role)
     {
+        Log::debug('--- user create ---');
+        Log::debug($data);
+        Log::debug($role);
         return User::create([
             'name' => $data['name'],
             'reading_name' => $data['reading_name'],

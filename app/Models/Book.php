@@ -18,14 +18,18 @@ final class Book extends Model
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
-    public function authors()
-    {
-        return $this->belongsToMany(User::class)->where('role', 'author')->withTimestamps();
-    }
-
     public function editors()
     {
-        return $this->belongsToMany(User::class)->where('role', 'editor')->withTimestamps();
+        return $this->belongsToMany(User::class)->with('role')->whereHas('role', function ($query) {
+            $query->whereBetween('level', ["100","199"]);
+        })->withTimestamps();
+    }
+
+    public function authors()
+    {
+        return $this->belongsToMany(User::class)->with('role')->whereHas('role', function ($query) {
+            $query->whereBetween('level', ["200","299"]);
+        })->withTimestamps();
     }
 
     public function article() {
@@ -35,31 +39,5 @@ final class Book extends Model
     public function bookStateType() {
         return $this->belongsTo(BookStateType::class);
     }
-
-    // サンプルコード
-    // public function book_users() {
-    //     return $this->hasMany(BookUser::class, "book_id", "id");
-    // }
-
-    // public function articles() {
-    //     return $this->belongsToMany(Article::class)->withPivot('role')->as('role')->withTimestamps();
-    // }
-
-    // public function getBookUsersWithRole($role){
-    //     $users = $this->users;
-    //     return $users->filter(function($user) use($role){
-    //         return $user->role == $role;
-    //     });
-    // }
-
-    // public function getEditorsAttribute(){
-    //     return $this->getBookUsersWithRole("editor")->pluck("id");
-    // }
-
-    // public function getAuthorsAttribute(){
-    //     return $this->getBookUsersWithRole("author")->pluck("id");
-    // }
-
-
 
 }

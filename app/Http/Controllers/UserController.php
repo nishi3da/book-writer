@@ -23,7 +23,7 @@ class UserController extends Controller
         return response()->json($admins);
     }
 
-    public function editors_list()
+    public function editorsList()
     {
         Log::debug('--- user editors_list ---');
         $id = Auth::id();
@@ -41,7 +41,7 @@ class UserController extends Controller
         return response()->json($editors);
     }
 
-    public function authors_list()
+    public function authorsList()
     {
         Log::debug('--- user authors_list ---');
         // 執筆者一覧を取得
