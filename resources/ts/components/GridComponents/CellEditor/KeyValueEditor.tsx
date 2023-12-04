@@ -1,21 +1,23 @@
 import { forwardRef, memo, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-import { ICellEditorParams, RowAnimationCssClasses } from 'ag-grid-community';
+import { ICellEditorParams, IRowNode, RowAnimationCssClasses } from 'ag-grid-community';
 import ReactDOM from 'react-dom';
 import { List, ListItem, ListItemButton } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 
-interface KeyValueEditorProps extends ICellEditorParams<any, any, any> {
+interface KeyValueEditorProps<T> extends ICellEditorParams<any, any, any> {
+  url: string;
   fieldName: string;
   keyValueObject: { [key: number]: string };
-  gridRef: React.RefObject<AgGridReact<IArticle>>;
-  setRowData: (rowData: IArticle[]) => void;
+  gridRef: React.RefObject<AgGridReact<IArticle | IBook>>;
+  setRowData: (rowData: (IArticle | IBook)[]) => void;
 }
 
 const KeyValueEditor = memo(
-  forwardRef((props: KeyValueEditorProps, ref) => {
+  forwardRef((props: KeyValueEditorProps<IArticle | IBook>, ref): JSX.Element => {
     console.log('KeyValueEditor - props', props);
+    console.log('KeyValueEditor - ', typeof props.gridRef);
 
     // props展開
     const { keyValueObject } = props;
@@ -53,16 +55,21 @@ const KeyValueEditor = memo(
       };
     });
 
-    const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, selection: number, props: KeyValueEditorProps, setSelected: (selection: number) => void) => {
+    const handleListItemClick = (
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      selection: number,
+      props: KeyValueEditorProps<IArticle | IBook>,
+      setSelected: (selection: number) => void,
+    ) => {
       console.log('handleListItemClick', selection, '=', keyValueObject[selection], props);
-      const { gridRef, setRowData, data, fieldName } = props;
+      const { gridRef, setRowData, data, fieldName, url } = props;
 
-      const newRowData: IArticle[] = [];
+      const newRowData: (IArticle | IBook)[] = [];
 
-      gridRef.current!.api.forEachNodeAfterFilterAndSort((node) => {
+      gridRef.current!.api.forEachNodeAfterFilterAndSort((node: IRowNode<IArticle | IBook>) => {
         if (node && node.data) {
-          let newRow: IArticle = { ...node.data };
-          if (newRow[fieldName] === props.data[fieldName]) {
+          let newRow: IArticle | IBook = { ...node.data };
+          if (newRow.id === props.data.id) {
             newRow[fieldName] = selection;
           }
           newRowData.push(newRow);
@@ -73,13 +80,13 @@ const KeyValueEditor = memo(
       setSelected(selection);
 
       // カスタムセルエディタで記事種別の選択が行われたら、DBも更新する
-      const newData: IArticle = { ...data };
+
+      const newData = { ...data } as IArticle | IBook;
+      console.log('newData - ', newData);
       newData[fieldName] = selection;
-
       console.log('DB', newData);
-
-      axios.put('/articles', [newData]).catch((error) => {
-        console.log('put - articles - error', error);
+      axios.put(url, [newData]).catch((error) => {
+        console.log('put - KeyValueEditor - error', error);
       });
 
       props.stopEditing();
@@ -102,5 +109,4 @@ const KeyValueEditor = memo(
   }),
 );
 
-// export default forwardRef(ArticleEditor);
 export default KeyValueEditor;

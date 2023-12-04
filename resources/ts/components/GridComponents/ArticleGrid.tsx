@@ -8,25 +8,24 @@ import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
 import { CellValueChangedEvent, ColDef, FirstDataRenderedEvent, GridReadyEvent, RowDragEndEvent } from 'ag-grid-community';
 import axios from 'axios';
-import ArticleTypeRenderer from './CellRenderer.tsx/ArticleTypeRenderer';
-import ArticleTypeEditor from './CellEditor/ArticleTypeEditor';
+import KeyValueRenderer from './CellRenderer.tsx/KeyValueRenderer';
+import KeyValueEditor from './CellEditor/KeyValueEditor';
 import { Button, IconButton, Stack } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-// import AddArticleDialog from './AddArticleDialog';
 
 type ArticleGridProps = {
   userId: number;
   bookId: number;
   articleGridRef: React.RefObject<AgGridReact<IArticle>>;
   articleTypes: { [key: number]: string };
+  articleStateTypes: { [key: number]: string };
 };
 
 let baseArticleTypeId: number;
 
 const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
   // props展開
-  const { userId, bookId, articleGridRef, articleTypes } = props;
+  const { userId, bookId, articleGridRef, articleTypes, articleStateTypes } = props;
   // 格納する要素（親）のスタイル
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
   // 格納される要素（子）のスタイル
@@ -71,41 +70,39 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
         );
       },
     },
-    // {
-    //   headerName: L.ArticleGrid.Header.Delete,
-    //   editable: false,
-    //   cellRenderer: (params) => {
-    //     return (
-    //       <IconButton aria-label='delete' color='error'>
-    //         <DeleteIcon />
-    //       </IconButton>
-    //     );
-    //   },
-    // },
     {
-      field: 'article_type_id',
-      headerName: L.ArticleGrid.Header.Type,
-      cellRenderer: ArticleTypeRenderer,
-      cellRendererParams: { articleTypes: articleTypes },
-      cellEditor: ArticleTypeEditor,
+      field: 'article_state_type_id',
+      headerName: L.ArticleGrid.Header.State,
+      cellRenderer: KeyValueRenderer,
+      cellRendererParams: { keyValueObject: articleStateTypes },
+      cellEditor: KeyValueEditor,
       cellEditorParams: {
-        articleTypes: articleTypes,
-        articleGridRef: articleGridRef,
+        url: '/articles',
+        fieldName: 'article_state_type_id',
+        keyValueObject: articleStateTypes,
+        gridRef: articleGridRef,
         setRowData: setRowData,
       },
       cellEditorPopup: true,
     },
     {
-      field: 'title',
-      headerName: L.ArticleGrid.Header.Title,
+      field: 'article_type_id',
+      headerName: L.ArticleGrid.Header.Type,
+      cellRenderer: KeyValueRenderer,
+      cellRendererParams: { keyValueObject: articleTypes },
+      cellEditor: KeyValueEditor,
+      cellEditorParams: {
+        url: '/articles',
+        fieldName: 'article_type_id',
+        keyValueObject: articleTypes,
+        gridRef: articleGridRef,
+        setRowData: setRowData,
+      },
+      cellEditorPopup: true,
     },
     {
-      field: 'sub_title',
-      headerName: L.ArticleGrid.Header.SubTitle,
-    },
-    {
-      field: 'lead_sentence',
-      headerName: L.ArticleGrid.Header.LeadSentence,
+      field: 'label',
+      headerName: L.ArticleGrid.Header.Label,
     },
     {
       field: 'article_data',
@@ -174,7 +171,7 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
     console.log('add article');
     // setAddArticleDialogOpen(true);
     // 登録の場合
-    console.log('handleAddArticleClick -', baseArticleTypeId);
+    console.log('handleAddArticleClick - baseArticoleTypeId -', baseArticleTypeId);
     axios
       .post('/articles', {
         articleData: {
@@ -207,7 +204,17 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
 
   // 内容変更時のイベント処理
   const handleCellValueChanged = useCallback((event: CellValueChangedEvent) => {
-    console.log('handleCellValueChanged', event);
+    console.log('handleCellValueChanged -', event);
+    let newRow: IArticle;
+    if (event.data) {
+      newRow = { ...event.data };
+    } else {
+      return;
+    }
+    // DBの更新
+    axios.put('/articles', [newRow]).catch((error) => {
+      console.log('put - articles - error', error);
+    });
   }, []);
 
   // 記事の削除処理

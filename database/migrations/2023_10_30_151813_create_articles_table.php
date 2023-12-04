@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained();
             $table->foreignId('article_type_id')->constrained();
             $table->integer('article_number');
-            $table->string('lable')->nullable();
+            $table->string('label')->nullable();
             $table->string('article_data')->nullable();
+            $table->foreignId('article_state_type_id')->constrained();
             $table->timestamps();
         });
     }

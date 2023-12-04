@@ -19,11 +19,12 @@ export type EditBookProps = {
   editorIds: number[];
   authorIds: number[];
   articleTypes: { [key: number]: string };
+  articleStateTypes: { [key: number]: string };
 };
 
 export const EditBook = (props: EditBookProps) => {
   // Props展開
-  const { userId, userRole, id, title, sub_title, editorIds, authorIds, articleTypes } = props;
+  const { userId, userRole, id, title, sub_title, editorIds, authorIds } = props;
   // 名前の付け替え
   const bookId = id;
 
@@ -42,6 +43,10 @@ export const EditBook = (props: EditBookProps) => {
   const editorsGridRef = useRef<AgGridReact<IUser>>(null);
   const authorsGridRef = useRef<AgGridReact<IUser>>(null);
   const articlesGridRef = useRef<AgGridReact<IArticle>>(null);
+
+  // 記事種別・記事状態
+  const [articleTypes, setArticleTypes] = useState<{ [key: number]: string }>(props.articleTypes);
+  const [articleStateTypes, setArticleStateTypes] = useState<{ [key: number]: string }>(props.articleStateTypes);
 
   // フォーム関係
   const {
@@ -139,6 +144,7 @@ export const EditBook = (props: EditBookProps) => {
             />
             {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
+
             {/* 編集者 */}
             <StyledInputLabel shrink theme={theme}>
               {L.BookGrid.AddBook.Dialog.Editors}
@@ -172,7 +178,7 @@ export const EditBook = (props: EditBookProps) => {
         </AccordionDetails>
       </Accordion>
       <h2 style={{ textAlign: 'center' }}>{L.ArticleGrid.Title}</h2>
-      <ArticleGrid userId={userId} bookId={bookId} articleGridRef={articlesGridRef} articleTypes={articleTypes} />
+      <ArticleGrid userId={userId} bookId={bookId} articleGridRef={articlesGridRef} articleTypes={articleTypes} articleStateTypes={articleStateTypes} />
     </div>
   );
 };

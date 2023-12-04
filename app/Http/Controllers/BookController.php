@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\ArticleType;
+use App\Models\BookStateType;
+use App\Models\ArticleStateType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +24,14 @@ class BookController extends Controller
         Log::debug('--- book index ---');
         $userId = Auth::id();
 
-        return view('book', ['userId' => $userId]);
+        // 書籍の進行状態の取得
+        $bookStateTypesAll = BookStateType::all();
+        $bookStateTypes = [];
+        foreach ($bookStateTypesAll as $bookStateType) {
+            $bookStateTypes[$bookStateType->id] = $bookStateType->name;
+        }
+
+        return view('book', ['userId' => $userId, 'bookStateTypes' => $bookStateTypes]);
     }
 
     /**
@@ -90,6 +99,12 @@ class BookController extends Controller
             $articleTypes[$articleType->id] = $articleType->name;
         }
 
+        $articleStateTypesAll = ArticleStateType::all();
+        $articleStateTypes = [];
+        foreach ($articleStateTypesAll as $articleStateType) {
+            $articleStateTypes[$articleStateType->id] = $articleStateType->name;
+        }
+
         // JSON化
         $results = json_decode($book->toJson(), true);
         // 配列に追加
@@ -98,6 +113,7 @@ class BookController extends Controller
         $results = array_merge($results, ['userId' => Auth::id()]);
         $results = array_merge($results, ['userRole' => Auth::user()->role]);
         $results = array_merge($results, ['articleTypes' => $articleTypes]);
+        $results = array_merge($results, ['articleStateTypes' => $articleStateTypes]);
 
         // レスポンス
         return view('editbook', ["edit_book_props" =>$results]);
@@ -132,6 +148,22 @@ class BookController extends Controller
         // 今回のリクエストの内容で再登録
         $book->users()->attach($editors);
         $book->users()->attach($authors);
+    }
+
+    public function bulkUpdate(Request $request) {
+        Log::debug('--- book buldUpdate ---');
+
+        $datas = $request->all();
+
+        foreach ($datas as $data) {
+            $book = Book::find($data['id']);
+
+            $book->id = $data['id'];
+            $book->title = $data['title'];
+            $book->sub_title = $data['sub_title'];
+            $book->book_state_type_id = $data['book_state_type_id'];
+            $book->save();
+        }
     }
 
     /**

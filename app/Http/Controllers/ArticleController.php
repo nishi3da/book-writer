@@ -18,7 +18,7 @@ class ArticleController extends Controller
         $bookId = $data['book_id'];
         $articleTypeId = $data['article_type_id'];
         $articleNumber = $data['article_number'];
-        $title = $data['label'];
+        $label = $data['label'];
         $articleData = $data['article_data'];
         $articleStateTypeId = $data['article_state_type_id'];
         $editorIds = $data['editorIds'];
@@ -30,10 +30,9 @@ class ArticleController extends Controller
         $article->book_id = $bookId;
         $article->article_number = $articleNumber;
         $article->article_type_id = $articleTypeId;
-        $article->title = $title;
-        $article->sub_title = $subTitle;
-        $article->lead_sentence = $leadSentence;
+        $article->label = $label;
         $article->article_data = $articleData;
+        $article->article_state_type_id = $articleStateTypeId;
 
         $article->save();
 
@@ -55,14 +54,12 @@ class ArticleController extends Controller
 
             $article->article_number = $data['article_number'];
             $article->article_type_id = $data['article_type_id'];
-            $article->title = $data['title'];
-            $article->sub_title = $data['sub_title'];
-            $article->lead_sentence = $data['lead_sentence'];
+            $article->label = $data['label'];
             $article->article_data = $data['article_data'];
+            $article->article_state_type_id = $data['article_state_type_id'];
             $article->save();
         }
     }
-
 
     public function articlesList(string $bookId) {
         Log::debug('--- articles_list ---');
