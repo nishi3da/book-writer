@@ -93,7 +93,7 @@ class BookController extends Controller
         $authorIds = $book->authors()->get()->pluck('id');
 
         // articleTypes取得
-        $articleTypesAll = ArticleType::all();
+        $articleTypesAll = ArticleType::where('book_id', $bookId)->get();
         $articleTypes = [];
         foreach ($articleTypesAll as $articleType) {
             $articleTypes[$articleType->id] = $articleType->name;
@@ -183,10 +183,8 @@ class BookController extends Controller
         Log::debug('--- book books_list ---');
         // ユーザーが担当する書籍一覧を表示する
         $id = Auth::id();
-        Log::debug($id);
         $user = User::find($id);
         $books = $user->books()->get();
-        Log::debug($books);
 
         return response()->json($books);
     }
