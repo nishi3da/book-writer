@@ -43,7 +43,7 @@ const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
   // 書籍のデータの削除リクエスト
   const handleBookDeleteClick = useCallback((bookId: number | null) => {
     console.log('handleBookDeleteClick');
-    if (bookId) {
+    if (bookId !== null) {
       axios
         .delete(`/books/${bookId}`)
         .then((response) => {
@@ -55,6 +55,10 @@ const DeleteBookDialog = (propr: DeleteBookDialogProps) => {
         });
     }
   }, []);
+
+  if (!bookData) {
+    return null;
+  }
 
   return (
     <Fragment>
