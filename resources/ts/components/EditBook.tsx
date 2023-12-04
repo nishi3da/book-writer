@@ -144,7 +144,6 @@ export const EditBook = (props: EditBookProps) => {
             />
             {errors.sub_title?.type === 'maxLength' && <Alert severity='error'>{L.BookGrid.Validation.MaxLength}</Alert>}
 
-
             {/* 編集者 */}
             <StyledInputLabel shrink theme={theme}>
               {L.BookGrid.AddBook.Dialog.Editors}
