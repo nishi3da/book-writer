@@ -6,20 +6,22 @@ import { List, ListItem, ListItemButton } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
 
-interface ArticleEditorProps extends ICellEditorParams<any, any, any> {
-  articleTypes: { [key: number]: string };
-  articleGridRef: React.RefObject<AgGridReact<IArticle>>;
+interface KeyValueEditorProps extends ICellEditorParams<any, any, any> {
+  fieldName: string;
+  keyValueObject: { [key: number]: string };
+  gridRef: React.RefObject<AgGridReact<IArticle>>;
   setRowData: (rowData: IArticle[]) => void;
 }
 
-const ArticleEditor = memo(
-  forwardRef((props: ArticleEditorProps, ref) => {
-    console.log('ArticleEditor - props', props);
+const KeyValueEditor = memo(
+  forwardRef((props: KeyValueEditorProps, ref) => {
+    console.log('KeyValueEditor - props', props);
 
     // props展開
-    const { articleTypes } = props;
+    const { keyValueObject } = props;
+
     // 選択した値
-    const [articleType, setArticleType] = useState<number>(props.value);
+    const [selected, setSelected] = useState<number>(props.value);
 
     // 状態監視
     const [ready, setReady] = useState<boolean>(false);
@@ -39,8 +41,8 @@ const ArticleEditor = memo(
     useImperativeHandle(ref, () => {
       return {
         getValue: () => {
-          console.log('getValue', articleType, '=', articleTypes[articleType]);
-          return articleType;
+          console.log('getValue', selected, '=', keyValueObject[selected]);
+          return selected;
         },
         isCancelBeforeStart: () => {
           return false;
@@ -51,33 +53,28 @@ const ArticleEditor = memo(
       };
     });
 
-    const handleListItemClick = (
-      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-      selection: number,
-      props: ArticleEditorProps,
-      setArticleType: (selection: number) => void,
-    ) => {
-      console.log('handleListItemClick', selection, '=', articleTypes[selection], props);
-      const { articleGridRef, setRowData, data } = props;
+    const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, selection: number, props: KeyValueEditorProps, setSelected: (selection: number) => void) => {
+      console.log('handleListItemClick', selection, '=', keyValueObject[selection], props);
+      const { gridRef, setRowData, data, fieldName } = props;
 
       const newRowData: IArticle[] = [];
 
-      articleGridRef.current!.api.forEachNodeAfterFilterAndSort((node) => {
+      gridRef.current!.api.forEachNodeAfterFilterAndSort((node) => {
         if (node && node.data) {
           let newRow: IArticle = { ...node.data };
-          if (newRow.article_number === props.data.article_number) {
-            newRow.article_type_id = selection;
+          if (newRow[fieldName] === props.data[fieldName]) {
+            newRow[fieldName] = selection;
           }
           newRowData.push(newRow);
         }
       });
 
       setRowData([...newRowData]);
-      setArticleType(selection);
+      setSelected(selection);
 
       // カスタムセルエディタで記事種別の選択が行われたら、DBも更新する
       const newData: IArticle = { ...data };
-      newData.article_type_id = selection;
+      newData[fieldName] = selection;
 
       console.log('DB', newData);
 
@@ -93,11 +90,12 @@ const ArticleEditor = memo(
     return (
       <div ref={refContainer} style={{ minWidth: 500, maxHeight: 445, backgroundColor: 'white' }}>
         <List>
-          {Object.entries(articleTypes).map(([key, value]) => (
-            <ListItem sx={{ padding: 0 }} key={key}>
-              <ListItemButton onClick={(event) => handleListItemClick(event, Number(key), props, setArticleType)}>{value}</ListItemButton>
-            </ListItem>
-          ))}
+          {keyValueObject &&
+            Object.entries(keyValueObject).map(([key, value]) => (
+              <ListItem sx={{ padding: 0 }} key={key}>
+                <ListItemButton onClick={(event) => handleListItemClick(event, Number(key), props, setSelected)}>{value}</ListItemButton>
+              </ListItem>
+            ))}
         </List>
       </div>
     );
@@ -105,4 +103,4 @@ const ArticleEditor = memo(
 );
 
 // export default forwardRef(ArticleEditor);
-export default ArticleEditor;
+export default KeyValueEditor;
