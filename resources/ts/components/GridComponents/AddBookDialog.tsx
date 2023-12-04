@@ -93,6 +93,12 @@ const AddBookDialog = (props: AddBookDialogProps): JSX.Element => {
       .catch((error) => {
         console.log('get authors - error', error);
       });
+    // フォームデータの初期化
+    setValue('title', '');
+    setValue('sub_title', '');
+    setValue('book_state_type_id', 1);
+    setValue('editorIds', selectedEditorIds);
+    setValue('authorIds', selectedAuthorIds);
   }, []);
 
   // ダイアログを閉じる

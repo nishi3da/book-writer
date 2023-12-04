@@ -14,18 +14,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddBookDialog from './AddBookDialog';
 import DeleteBookDialog from './DeleteBookDialog';
 import axios from 'axios';
+import KeyValueRenderer from './CellRenderer.tsx/KeyValueRenderer';
+import KeyValueEditor from './CellEditor/KeyValueEditor';
 
 type BookGridProps = {
   userId: number;
+  bookStateTypes: { [key: number]: string };
 };
 
 const BookGrid = (props: BookGridProps): JSX.Element => {
+  console.log('BookGrid - props', props);
+  // props展開
+  const { userId, bookStateTypes } = props;
   // DOM参照
   const gridRef = useRef<AgGridReact<IBook>>(null);
   // 格納する要素（親）のスタイル
   const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
-  // ユーザーID
-  const userId = props.userId;
   // 格納される要素（子）のスタイル
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
   // 行データ
@@ -34,7 +38,6 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
   const [addBookDialogOpen, setAddBookDialogOpen] = useState<boolean>(false);
   // 書籍削除確認ダイアログの開閉フラグ、初期値は閉じている
   const [deleteBookDialogOpen, setDeleteBookDialogOpen] = useState<boolean>(false);
-
   // 書籍ID、データ
   const [bookId, setBookId] = useState<number | null>(null);
 
@@ -57,7 +60,22 @@ const BookGrid = (props: BookGridProps): JSX.Element => {
     },
     { headerName: L.BookGrid.Header.Title, field: 'title' },
     { headerName: L.BookGrid.Header.SubTitle, field: 'sub_title' },
-    { headerName: L.BookGrid.Header.BookState, field: 'book_state_type_id' },
+    {
+      headerName: L.BookGrid.Header.BookState,
+      field: 'book_state_type_id',
+      editable: true,
+      cellRenderer: KeyValueRenderer,
+      cellRendererParams: { keyValueObject: bookStateTypes },
+      cellEditor: KeyValueEditor,
+      cellEditorParams: {
+        url: '/books',
+        fieldName: 'book_state_type_id',
+        keyValueObject: bookStateTypes,
+        gridRef: gridRef,
+        setRowData: setRowData,
+      },
+      cellEditorPopup: true,
+    },
   ]);
 
   // 各種のAPIが使用可能になったタイミングで書籍一覧を取得する

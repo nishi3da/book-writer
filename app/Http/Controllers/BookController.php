@@ -7,6 +7,8 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\User;
 use App\Models\ArticleType;
+use App\Models\BookStateType;
+use App\Models\ArticleStateType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +24,14 @@ class BookController extends Controller
         Log::debug('--- book index ---');
         $userId = Auth::id();
 
-        return view('book', ['userId' => $userId]);
+        // 書籍の進行状態の取得
+        $bookStateTypesAll = BookStateType::all();
+        $bookStateTypes = [];
+        foreach ($bookStateTypesAll as $bookStateType) {
+            $bookStateTypes[$bookStateType->id] = $bookStateType->name;
+        }
+
+        return view('book', ['userId' => $userId, 'bookStateTypes' => $bookStateTypes]);
     }
 
     /**
@@ -34,20 +43,32 @@ class BookController extends Controller
         $bookData = $request->input('bookData');
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
+        $bookStateTypeId = $bookData['book_state_type_id'];
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
+        // 新規登録
         $book = new Book();
         $book->title = $title;
         $book->sub_title = $subTitle;
-
+        $book->book_state_type_id = $bookStateTypeId;
         $book->save();
 
+        // 書籍に紐づく編集者の登録
         $editors = User::whereIn('id', $editorIds)->get();
         $book->users()->attach($editors);
-
+        // 書籍に紐づく執筆者の登録
         $authors = User::whereIn('id', $authorIds)->get();
         $book->users()->attach($authors);
+
+        // 決め打ちで「本文」の書籍種別を登録する
+        $articleType = new ArticleType();
+        $articleType->book_id = $book->id;
+        $articleType->name = '本文';
+        $articleType->depth = 1;
+        $articleType->template_id = null;
+        $articleType->save();
+        Log::debug('--- book store end ---');
     }
 
     public function edit(string $bookId)
@@ -72,10 +93,16 @@ class BookController extends Controller
         $authorIds = $book->authors()->get()->pluck('id');
 
         // articleTypes取得
-        $articleTypesAll = ArticleType::all();
+        $articleTypesAll = ArticleType::where('book_id', $bookId)->get();
         $articleTypes = [];
         foreach ($articleTypesAll as $articleType) {
             $articleTypes[$articleType->id] = $articleType->name;
+        }
+
+        $articleStateTypesAll = ArticleStateType::all();
+        $articleStateTypes = [];
+        foreach ($articleStateTypesAll as $articleStateType) {
+            $articleStateTypes[$articleStateType->id] = $articleStateType->name;
         }
 
         // JSON化
@@ -86,6 +113,7 @@ class BookController extends Controller
         $results = array_merge($results, ['userId' => Auth::id()]);
         $results = array_merge($results, ['userRole' => Auth::user()->role]);
         $results = array_merge($results, ['articleTypes' => $articleTypes]);
+        $results = array_merge($results, ['articleStateTypes' => $articleStateTypes]);
 
         // レスポンス
         return view('editbook', ["edit_book_props" =>$results]);
@@ -101,6 +129,7 @@ class BookController extends Controller
 
         $title = $bookData['title'];
         $subTitle = $bookData['sub_title'];
+        $bookStateTypeId = $bookData['book_state_type_id'];
         $editorIds = $bookData['editorIds'];
         $authorIds = $bookData['authorIds'];
 
@@ -108,6 +137,7 @@ class BookController extends Controller
 
         $book->title = $title;
         $book->sub_title = $subTitle;
+        $book->book_state_type_id = $bookStateTypeId;
         $book->save();
 
         // 書籍に紐づいたユーザーは一旦削除
@@ -118,6 +148,22 @@ class BookController extends Controller
         // 今回のリクエストの内容で再登録
         $book->users()->attach($editors);
         $book->users()->attach($authors);
+    }
+
+    public function bulkUpdate(Request $request) {
+        Log::debug('--- book buldUpdate ---');
+
+        $datas = $request->all();
+
+        foreach ($datas as $data) {
+            $book = Book::find($data['id']);
+
+            $book->id = $data['id'];
+            $book->title = $data['title'];
+            $book->sub_title = $data['sub_title'];
+            $book->book_state_type_id = $data['book_state_type_id'];
+            $book->save();
+        }
     }
 
     /**
@@ -137,10 +183,8 @@ class BookController extends Controller
         Log::debug('--- book books_list ---');
         // ユーザーが担当する書籍一覧を表示する
         $id = Auth::id();
-        Log::debug($id);
         $user = User::find($id);
         $books = $user->books()->get();
-        Log::debug($books);
 
         return response()->json($books);
     }

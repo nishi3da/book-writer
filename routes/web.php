@@ -36,6 +36,8 @@ Route::get('editor_register', [RegisterController::class, 'showRegistrationForm'
 
 // 書籍一覧のルート
 Route::resource('/books', BookController::class)->only('index', 'store', 'edit', 'update', 'destroy')->middleware('auth');
+// 書籍の一括更新用
+Route::put('/books', [BookController::class, 'bulkUpdate'])->middleware('auth');
 
 // API用
 // 書籍一覧（ログインユーザーが担当している書籍一覧）
@@ -58,7 +60,7 @@ Route::get('/article_types_list', [ArticleController::class, 'articleTypesList']
 // 記事の登録
 Route::post('/articles', [ArticleController::class, 'store'])->middleware('auth');
 // 記事の更新（ドラッグアンドドロップ）
-ROute::put('/articles', [ArticleController::class, 'update'])->middleware('auth');
+Route::put('/articles', [ArticleController::class, 'update'])->middleware('auth');
 
 // ギャラリーサンプル
 Route::get("/gallery", [GalleryController::class, "index"]);

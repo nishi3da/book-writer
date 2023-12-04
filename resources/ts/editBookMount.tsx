@@ -15,6 +15,7 @@ let props: EditBookProps = {
   editorIds: [],
   authorIds: [],
   articleTypes: {},
+  articleStateTypes: {},
 };
 
 if (scriptData) {

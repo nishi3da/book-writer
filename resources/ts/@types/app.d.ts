@@ -71,9 +71,8 @@ declare type LableType = {
       Edit: string;
       Delete: string;
       Type: string;
-      Title: string;
-      SubTitle: string;
-      LeadSentence: string;
+      Label: string;
+      State: string;
       ArticleData: string;
       CreatedAt: string;
       UpdatedAt: string;
@@ -132,6 +131,7 @@ declare type IBook = {
   book_state_type_id: number;
   created_at: string;
   updated_at: string;
+  [key: string]: string | number;
 };
 
 declare type IBookUser = IBook & {
@@ -150,12 +150,11 @@ declare type BookFormValues = {
 // 記事の送信データ型
 declare type ArticleFormValues = {
   book_id: number;
-  article_number: number;
   article_type_id: number;
-  title: string;
-  sub_title: string;
-  lead_sentence: string;
+  article_number: number;
+  label: string;
   article_data: string;
+  article_state_type_id: number;
   editorIds: number[];
   authorIds: number[];
 };
@@ -163,12 +162,12 @@ declare type ArticleFormValues = {
 declare type IArticle = {
   id: number;
   book_id: number;
-  article_number: number;
   article_type_id: number;
-  title: string;
-  sub_title: string;
-  lead_sentence: string;
+  article_number: number;
+  label: string;
   article_data: string;
+  article_state_type_id: number;
   created_at: string;
   updated_at: string;
+  [key: string]: string | number;
 };
