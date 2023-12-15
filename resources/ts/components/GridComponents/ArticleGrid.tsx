@@ -64,7 +64,7 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
       editable: false,
       cellRenderer: (params) => {
         return (
-          <IconButton aria-label='edit' color='primary'>
+          <IconButton aria-label='edit' color='primary' onClick={() => handleEditButtonClick(params.data.id)}>
             <EditIcon />
           </IconButton>
         );
@@ -119,6 +119,11 @@ const ArticleGrid = (props: ArticleGridProps): JSX.Element => {
       editable: false,
     },
   ]);
+
+  // 記事の編集画面へ
+  const handleEditButtonClick = (articleId: number) => {
+    location.href = `/articles/${articleId}/edit`;
+  };
 
   // 各種のAPIが使用可能になったタイミングで書籍一覧を取得する
   const handleGridReady = useCallback((params: GridReadyEvent, rowData: IArticle[]) => {

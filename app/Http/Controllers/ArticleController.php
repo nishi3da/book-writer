@@ -72,4 +72,30 @@ class ArticleController extends Controller
         $articleTypes = ArticleType::all();
         return response()->json($articleTypes);
     }
+
+    public function edit(string $articleId) {
+        Log::debug('--- article edit ---');
+        $article = Article::find($articleId);
+        $articleType = ArticleType::find($article->article_type_id);
+
+        $response = json_decode($article->toJson(), true);
+        $response = array_merge($response, ['articleType' => $articleType]);
+
+        return view('articleEditor', ["article_editor_props" => $response]);
+    }
+
+    public function articleEditorDataUpdate(Request $request) {
+        Log::debug('--- article editor data update ---');
+        Log::debug($request->all());
+        $articleData = $request->input('articleData');
+
+        $articleEditData = $articleData['article_data'];
+        $articleEditData = json_encode($articleEditData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+
+        $article = Article::find($articleData['id'])->first();
+        $article->article_data = $articleEditData;
+        $article->save();
+    }
+
+
 }
