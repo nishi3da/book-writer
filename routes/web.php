@@ -59,8 +59,10 @@ Route::get('/articles_list/{bookId}', [ArticleController::class, 'articlesList']
 Route::get('/article_types_list', [ArticleController::class, 'articleTypesList'])->middleware('auth');
 // 記事の登録
 Route::post('/articles', [ArticleController::class, 'store'])->middleware('auth');
-// 記事の更新（ドラッグアンドドロップ）
+// 記事の更新
 Route::put('/articles', [ArticleController::class, 'update'])->middleware('auth');
+// 記事の編集
+Route::get('/articles/{articleId}/edit', [ArticleController::class, 'edit'])->middleware('auth');
 
 // ギャラリーサンプル
 Route::get("/gallery", [GalleryController::class, "index"]);
