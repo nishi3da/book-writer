@@ -1,5 +1,20 @@
+// reset.css
+@import url('../css/reset.css');
+
 // Fonts
 @import url('https://fonts.bunny.net/css?family=Nunito');
+
+// 基本フォント
+@font-face {
+  font-family: "myFont";
+  src: url("/resources/fonts/HackGenConsoleNF-Regular.woff") format('woff');
+  font-weight: normal;
+  font-style: normal
+}
+
+* {
+  font-family: "myFont", sans-serif;
+}
 
 // Variables
 @import 'variables';
@@ -7,10 +22,11 @@
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
 
-.book-grid-title, .edit-book-title {
-    font-size: 3vh;
-    text-align: center;
-    border-bottom: solid 2px;
-    padding-bottom: 5px;
+.book-grid-title, .edit-book-title, .article-editor-title {
+  font-size: 3vh;
+  text-align: center;
+  border-bottom: solid 2px;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
 }
 

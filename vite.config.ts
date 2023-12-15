@@ -25,4 +25,5 @@ export default defineConfig({
       '@ag-grid-community': path.resolve(__dirname, './node_modules/ag-grid-community'),
     },
   },
+  base: './',
 });

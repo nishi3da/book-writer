@@ -1,5 +1,4 @@
 import 'grapesjs/dist/css/grapes.min.css';
-import '../css/grapes.css';
 import grapesjs from 'grapesjs';
 
 const editor = grapesjs.init({
@@ -15,4 +14,13 @@ const editor = grapesjs.init({
   storageManager: false,
   // Avoid any default panel
   panels: { defaults: [] },
+  style: `
+    @font-face {
+      font-family: "myFont";
+      src: url('/resources/fonts/HackGenConsoleNF-Regular.woff') format('woff');
+    }
+    * {
+      font-family: "myFont";
+    }
+  `,
 });

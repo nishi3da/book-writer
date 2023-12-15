@@ -9,7 +9,7 @@
         <button id="article_editor_save_button">{{ __('ArticleDataSave') }}</button>
 
         <div id="gjs" style="height: 80vh;">
-            <h1>aaaa</h1>
+            <p><i>Windows</i>で<b>コンピューター</b>を動かす</p>
         </div>
         <script type="application/ld+json" id="article_editor_props">
           {!! json_encode($article_editor_props) !!}
